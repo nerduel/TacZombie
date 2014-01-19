@@ -1,0 +1,74 @@
+@(message: String) 
+
+@main(message) { 
+
+	
+	<div>
+		<h1>@message</h1>
+	</div>
+	<h2>WebSocket Test</h2>
+	<input id="text" type="text" />
+	<input id="button" type="button" value="clickme" onclick="doSend();" />
+	<div id="output"></div>
+	
+	<script type="text/javascript">
+	
+	  var wsUri = "ws://localhost:9000/ws";
+	  var output;
+	
+	  function init()
+	  {
+	    output = document.getElementById("output");
+	    document.getElementById("text").value = "";
+	    testWebSocket();
+	  }
+	
+	  function testWebSocket()
+	  {
+		var WS = window['MozWebSocket'] ? MozWebSocket : WebSocket
+	    websocket = new WebSocket(wsUri);
+	    websocket.onopen = function(evt) { onOpen(evt) };
+	    websocket.onclose = function(evt) { onClose(evt) };
+	    websocket.onmessage = function(evt) { onMessage(evt) };
+	    websocket.onerror = function(evt) { onError(evt) };
+	  }
+	
+	  function onOpen(evt)
+	  {
+	    writeToScreen("CONNECTED");
+	  }
+	
+	  function onClose(evt)
+	  {
+	    writeToScreen("DISCONNECTED");
+	  }
+	
+	  function onMessage(evt)
+	  {
+	    writeToScreen('<span style="color: blue;">RESPONSE: ' + evt.data+'</span>');
+	  }
+	
+	  function onError(evt)
+	  {
+	    writeToScreen('<span style="color: red;">ERROR:</span> ' + evt.data);
+	  }
+	  	  
+	  function doSend()
+	  {
+	    writeToScreen("SENT: " + document.getElementById('text').value); 
+	    websocket.send(document.getElementById('text').value);
+	  }
+	
+	  function writeToScreen(message)
+	  {
+	    var pre = document.createElement("p");
+	    pre.style.wordWrap = "break-word";
+	    pre.innerHTML = message;
+	    output.appendChild(pre);
+	  }
+	
+	  window.addEventListener("load", init, false);
+	
+	</script>
+
+}

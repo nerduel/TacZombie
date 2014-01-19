@@ -1,6 +1,6 @@
-organization := "org.htwg"
+organization := "org.taczombie"
 
-name := "tacZombie.model"
+name := "model"
 
 version := "0.1"
 

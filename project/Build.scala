@@ -2,9 +2,10 @@ import sbt._
 import Keys._
 
 object TacZombieBuild extends Build {
-    lazy val root = Project(id = "taczombie", base = file(".")) 
-        settings (ScctPlugin.mergeReport: _*) aggregate(model)
+    lazy val root = Project(id = "taczombie", 
+                            base = file(".")) aggregate(model,wui)
 
     lazy val model = Project(id = "taczombie-model", base = file("model"))
-        settings (ScctPlugin.instrumentSettings: _*)
+
+    lazy val wui = Project(id = "taczombie-wui", base = file("wui"))
 }

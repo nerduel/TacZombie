@@ -7,5 +7,5 @@ object TacZombieBuild extends Build {
 
     lazy val model = Project(id = "taczombie-model", base = file("model"))
 
-    lazy val wui = Project(id = "taczombie-wui", base = file("wui"))
+    lazy val wui = Project(id = "taczombie-wui", base = file("wui")) dependsOn(model)
 }

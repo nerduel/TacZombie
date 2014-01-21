@@ -4,6 +4,7 @@ import scala.io.Source
 import GameObject._
 import GameState._
 import scala.collection.mutable.ListBuffer
+import taczombie.model.util.CoordinateHelper._
 
 object PlayerId extends Enumeration {
     type PlayerId = Value
@@ -14,41 +15,25 @@ class Game(val gameField : GameField,
            val humanBase : (Int, Int),
            val zombieBase : (Int, Int),
            val playerList : List[Player],
-           val currentPlayer : PlayerId.PlayerId = PlayerId.Human,
-           val gState : GameState = GameState.InGame,
-           val moves : Int,
+           val movesRemaining : Int,
            val coinAmount : Int,
            val lvlScore : Int = 0,
            val lifes : Int = 3,
+           val currentPlayer : PlayerId.PlayerId = PlayerId.Human,
+           val gState : GameState = GameState.InGame,
            val id : Int) {
 
-    def moveEast() : Game = {
-        val nextPosition = (playerList(currentPlayer.id).coordinate._1,
-            playerList(currentPlayer.id).coordinate._2 + 1)
-        updateGame(nextPosition)
-    }
-
-    def moveNorth() : Game = {
-        val nextPosition = (playerList(currentPlayer.id).coordinate._1 - 1,
-            playerList(currentPlayer.id).coordinate._2)
-        updateGame(nextPosition)
-    }
-
-    def moveSouth() : Game = {
-        val nextPosition = (playerList(currentPlayer.id).coordinate._1 + 1,
-            playerList(currentPlayer.id).coordinate._2)
-        updateGame(nextPosition)
-    }
-
-    def moveWest() : Game = {
-        val nextPosition = (playerList(currentPlayer.id).coordinate._1,
-            playerList(currentPlayer.id).coordinate._2 - 1)
-        updateGame(nextPosition)
-    }
+    def moveRight() : Game = 
+      updateGame(playerList(currentPlayer.id).coordinate.rightOf)
+    def moveUp() : Game = 
+      updateGame(playerList(currentPlayer.id).coordinate.aboveOf)
+    def moveDown() : Game = 
+      updateGame(playerList(currentPlayer.id).coordinate.belowOf)
+    def moveLeft() : Game = 
+      updateGame(playerList(currentPlayer.id).coordinate.leftOf)
     
     def getAllowedMoves = {
         val position = playerList(currentPlayer.id).coordinate
-        val validMoves = moves
         var toVisit = scala.collection.mutable.Stack(position)
         var pathList = ListBuffer(ListBuffer.empty[(Int, Int)])
         var element = position
@@ -56,7 +41,7 @@ class Game(val gameField : GameField,
         var alreadyVisited = ListBuffer(element)
 
         do {
-            if (pathList.apply(col).size < validMoves) {
+            if (pathList.apply(col).size < movesRemaining) {
                 val neighbours = getNeighbours(element, alreadyVisited.toList)
 
                 if (neighbours.size == 0) {
@@ -91,26 +76,21 @@ class Game(val gameField : GameField,
         pathList.toList.flatten.distinct
     }
     
-    private def updateGame(pos : (Int,Int)) : Game = {
-        if ((gState == GameState.InGame) &&
-            (gameField.getObject(pos) != GameObject.Wall)) {
-            update(pos)
+    private def updateGame(position : (Int,Int)) : Game = {
+        if ((gState == GameState.InGame) && walkOnAble(position)) {
+          currentPlayer match {
+            case PlayerId.Human =>
+                updateHumanMove(position)
+
+            case _ => // Zombies 
+                updateZombieMove(position)
+          }
         }
         else {
             this
         }
     }
-
-    private def update(pos : (Int, Int)) : Game = {
-        currentPlayer match {
-            case PlayerId.Human =>
-                updateHumanMove(pos)
-
-            case _ => // Zombies 
-                updateZombieMove(pos)
-        }
-    }
-
+    
     private def updateHumanMove(pos : (Int, Int)) : Game = {
 
         var updatedPlayerList = playerList
@@ -166,7 +146,7 @@ class Game(val gameField : GameField,
             }
         }
 
-        if (moves == 0) {
+        if (movesRemaining == 0) {
             updatedPlayerList = updatePlayerState
             updatedPlayer = getNextPlayerId
         }
@@ -204,7 +184,7 @@ class Game(val gameField : GameField,
 
         var updatedGameField = gameField.clearCell(pos)
         
-        if (moves == 0) {
+        if (movesRemaining == 0) {
             updatedPlayerList = updatePlayerState
             updatedPlayer = getNextPlayerId
         }
@@ -289,19 +269,21 @@ class Game(val gameField : GameField,
     // result is a List of valid coordinates for the array (y,x)
     private def getNeighbours(position : (Int, Int), alreadyVisited : List[(Int, Int)]) = {
         // von Neumann neighborhood, East, South, West, North
-        val neighbours = ListBuffer((position._1, position._2 + 1)) ++
-            ListBuffer((position._1 + 1, position._2)) ++
-            ListBuffer((position._1, position._2 - 1)) ++
-            ListBuffer((position._1 - 1, position._2))
+        val neighbours = ListBuffer(position.rightOf) ++
+          ListBuffer(position.belowOf) ++
+          ListBuffer(position.leftOf) ++
+          ListBuffer(position.aboveOf)
 
         for (
             n <- neighbours.toList;
-            if (n._1 != -1);
-            if (n._1 <= gameField.levelWidth);
-            if (n._2 != -1);
-            if (n._2 <= gameField.levelHeight);
-            if (gameField.getObject(n) != GameObject.Wall);
+            if (walkOnAble(position));
             if (!alreadyVisited.contains(n))
         ) yield n
+
+    }
+    
+    private def walkOnAble(pos: (Int,Int)) = {
+      gameField.getObject(pos) == null ||  
+      !gameField.getObject(pos).isInstanceOf[GameObject.Wall]
     }
 }

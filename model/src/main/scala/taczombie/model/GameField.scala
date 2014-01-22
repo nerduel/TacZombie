@@ -1,38 +1,124 @@
 package taczombie.model
 
-import GameObject._
+import scala.collection.immutable.TreeMap
+import taczombie.model.util.GameHelper._
+import scala.collection.immutable.HashSet
 
-class GameField(private var data : Map[(Int,Int),GameObject],
+class GameField(val id : String,
+    						val gameFieldCells : Map[(Int,Int),GameFieldCell],
                 val levelWidth : Int,
-                val levelHeight : Int) {
-  
-// TODO: still necessary?    
-//    def clearCell(pos : (Int, Int)) = {
-//        if (data(pos._1)(pos._2) != GameObject.Wall) {
-//            val newRow = data(pos._1).updated(pos._2, GameObject.None)
-//            val updatedData = data.updated(pos._1, newRow)
-//            new GameField(updatedData, levelWidth, levelHeight)
-//        }
-//        else {
-//            this
-//        }
-//    }
+                val levelHeight : Int,
+    						val humanBase : (Int, Int),
+    						val zombieBase : (Int, Int),                
+                val coinsPlaced : Int) {
 
-    def getObject(pos : (Int, Int)) = {
-        if (isValid(pos)) {
-            data(pos)
-        } // else TODO throw exception
+  def move(destinationCoords : (Int, Int), 
+        	 playerMap : TreeMap[Int,Player]) 
+    		: (GameField, List[GameFieldCell], TreeMap[Int,Player]) = {
+  	
+    val movingToken = activePlayer(playerMap).currentToken
+        
+    val updatedSourceCell = gameFieldCells.apply(movingToken.coords)
+    																			.remove(movingToken)
+    val updatedDestinationCell = gameFieldCells.apply(destinationCoords)
+    																					 .add(movingToken)
+    																					 
+    val updatedGameFieldCells = List[GameFieldCell](updatedSourceCell, 
+          																					updatedDestinationCell)  
+    														
+    // update all tokens in the playerMap
+    var finalPlayerList = playerMap
+    updatedDestinationCell.gameObjects.foreach ({ gameObject => 
+      gameObject match {
+        case playerToken : PlayerToken => {   
+          playerMap.tail.foreach(playerMapTuple => {
+          	if(playerMapTuple._2.playerTokens.contains(playerToken.id))
+          	  finalPlayerList = 
+          	    finalPlayerList.updated(playerMapTuple._1, playerMapTuple._2)
+          })
+        }
+      }
+    })
+      
+    (this.updated(updatedGameFieldCells),
+     updatedGameFieldCells,
+     finalPlayerList)
+  }
+  
+  // TODO: Check if obsolete
+  //def getCopyOfData = for (line <- data.map(_.clone)) yield line
+
+  private def isValid(pos : (Int, Int)) = {
+      if ((pos._1 < levelHeight) && (pos._1 >= 0) &&
+          (pos._2 < levelWidth) && (pos._2 >= 0))
+          true
+      else
+          false
+  }
+  
+  /**
+   * Update a GameField's Cells
+   */
+  private def updated(updatedCells : List[GameFieldCell]) : GameField = {
+    var newData = gameFieldCells
+    
+    for(cell <- updatedCells)
+      newData.+=((cell.coords, cell))
+
+  	new GameField(this.id,
+  	    					newData,
+  	    					this.levelWidth,
+  	    					this.levelHeight,
+  	    					this.humanBase,
+  	    					this.zombieBase,                
+  	    					this.coinsPlaced)
+  }
+}
+
+class GameFieldCell(val coords : (Int, Int),
+    								val gameObjects : HashSet[GameObject]) {
+  
+  /**
+   * Add a PlayerToken to the Cell
+   */
+  def add (playerToken : PlayerToken) : GameFieldCell = {
+    val zombieList = gameObjects.filter(
+        hostObject =>	hostObject.isInstanceOf[ZombieToken])
+    
+    val hostList = if (zombieList.size > 0) zombieList 
+        					 else gameObjects
+    
+    var finalHostObjects = HashSet[GameObject]()
+    var finalPlayerToken : PlayerToken = playerToken.updated(coords)
+    for (hostObject <- hostList) { 
+      hostObject match {
+      	case versatileHostObject : VersatileGameObject => {
+      		versatileHostObject isVisitedBy playerToken match {
+      			case (hostObjectResult, playerTokenResult : PlayerToken) => {
+          	  finalHostObjects.+=(hostObjectResult)
+          	  finalPlayerToken = playerTokenResult
+      			}
+      		}
+      	}
+      }
     }
     
-    // TODO: Check if obsolete
-    //def getCopyOfData = for (line <- data.map(_.clone)) yield line
-
-    private def isValid(pos : (Int, Int)) = {
-        if ((pos._1 < levelHeight) && (pos._1 >= 0) &&
-            (pos._2 < levelWidth) && (pos._2 >= 0))
-            true
-        else
-            false
-    }
+    // add final visitorObjectResult 
+    finalHostObjects += finalPlayerToken
+    
+    this.updated(finalHostObjects)
+  }
+  
+  /**
+   * Remove an object from the Cell
+   */
+  def remove(leavingObject : GameObject) : GameFieldCell =
+  	this.updated(gameObjects.-(leavingObject))
+  
+  /**
+   * Create an updated GameFieldCell from new GameObjects
+   */
+  def updated(gameObjects : HashSet[GameObject]) = 
+    new GameFieldCell(this.coords, gameObjects)
 }
 

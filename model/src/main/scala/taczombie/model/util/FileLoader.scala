@@ -1,10 +1,11 @@
 package taczombie.model.util
 
-import taczombie.model.GameObject._
-import taczombie.model.GameObject
+import taczombie.model._
 import scala.io.Source
 
-case class Configuration(array : Array[Array[GameObject]] = Array.empty,
+import scala.collection.mutable.Map
+
+case class Configuration(map: Map[(Int,Int),GameObject] = Map[(Int,Int),GameObject](),
 	        			 levelWidth : Int = 0,
 	        			 levelHeight : Int = 0,
 	        			 humanBase : (Int, Int) = (0,0),
@@ -29,37 +30,35 @@ object FileLoader {
 		val width = affectedLineSizes apply 0
 		val height = lvl.size
 		
-	    var humanBase : (Int,Int) = (0,0)
-	    var zombieBase : (Int,Int) = (0,0)
+    var humanBase : (Int,Int) = (0,0)
+    var zombieBase : (Int,Int) = (0,0)
+    
+    var coinAmount = 0
+    
+    val map = Map[(Int,Int),GameObject]()
 	    
-	    var coinAmount = 0
-	    
-	    val array : Array[Array[GameObject]] = Array.ofDim[GameObject](height,width)
-	    
-		for (row <- 0 until height)
-		{
-			for (col <- 0 until width) 
-			{
-				lvl(row)(col) match 
-				{
+		for (row <- 0 until height) {
+			for (col <- 0 until width) {
+			  val tuple = (row,col)
+				lvl(row)(col) match {
 					case '#' => 
-					    array(row)(col) = GameObject.Wall
+					    map.+= ((tuple, new Wall(0, tuple)))
 					case '.' => 
-					    array(row)(col) = GameObject.Coin
+					    map.+=((tuple, new Coin(GameObjectFactory.generateId, tuple)))
 					    coinAmount += 1
 					case ';' => 
-					    array(row)(col) = GameObject.Powerup
+					    map.+=((tuple, new Powerup(GameObjectFactory.generateId,tuple)))
 					case 'H' => 
-					    humanBase = (row,col)
-				    	array(row)(col) = GameObject.None
+					    humanBase = (tuple)
+				    	map.+=(((tuple), new HumanToken(GameObjectFactory.generateId,tuple)))
 					case 'Z' => 
-					    zombieBase = (row,col)
-					    array(row)(col) = GameObject.None
+					    zombieBase = (tuple)
+					    map.+=(((tuple), new ZombieToken(GameObjectFactory.generateId,tuple)))
 				}
 			} 
 		}
 	    
-		Configuration(array = for (line <- array.map(_.clone)) yield line,
+		Configuration(map,
 		        	  levelWidth = width,
 		        	  levelHeight = height,
 		        	  humanBase = humanBase,

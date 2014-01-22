@@ -1,6 +1,5 @@
 package taczombie.model
 
-import taczombie.model._
 import scala.collection.immutable.TreeMap
 
 trait Player {

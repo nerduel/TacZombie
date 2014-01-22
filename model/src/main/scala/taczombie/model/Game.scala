@@ -1,11 +1,11 @@
 package taczombie.model
 
-import scala.io.Source
-import GameState._
-import scala.collection.mutable.ListBuffer
-import taczombie.model.util.CoordinateHelper._
-import taczombie.model.util.GameHelper._
 import scala.collection.immutable.TreeMap
+import scala.collection.mutable.ListBuffer
+
+import GameState.GameState
+import taczombie.model.util.CoordinateHelper.intIntTuple2Wrapper
+import taczombie.model.util.GameHelper.activePlayer
 
 class Game(val id : Int,
     			 val gameField : GameField,
@@ -35,7 +35,8 @@ class Game(val id : Int,
     val (updatedGameField, updatedGameFieldCells, updatedPlayerList) = 
       gameField.move(destinationCoords, playerList)
       
-      
+    // TODO check if Human won
+    gameField.coinsPlaced
       
     new Game(id, updatedGameField, updatedPlayerList, updatedGameState)
   }

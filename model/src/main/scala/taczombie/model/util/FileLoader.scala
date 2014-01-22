@@ -1,24 +1,30 @@
 package taczombie.model.util
 
-import taczombie.model._
+import scala.Array.canBuildFrom
+import scala.collection.mutable.Map
 import scala.io.Source
 
-import scala.collection.mutable.Map
+import taczombie.model.Coin
+import taczombie.model.GameObject
+import taczombie.model.HumanToken
+import taczombie.model.Powerup
+import taczombie.model.Wall
+import taczombie.model.ZombieToken
 
 case class Configuration(map: Map[(Int,Int),GameObject] = Map[(Int,Int),GameObject](),
-	        			 levelWidth : Int = 0,
-	        			 levelHeight : Int = 0,
-	        			 humanBase : (Int, Int) = (0,0),
-	        			 zombieBase : (Int,Int) = (0,0),
-	        			 coinAmount : Int = 0,
-	        			 gameName : String = "")
+	        			 levelWidth : Int,
+	        			 levelHeight : Int,
+	        			 humanBase : (Int, Int),
+	        			 zombieBase : (Int,Int),
+	        			 coinAmount : Int,
+	        			 gameName : String)
 	        			 
 object FileLoader {
-	def load(fileName : String) : Configuration = {
-		val lvl = Source.fromFile(fileName).getLines.toArray
+	def mapName(fileName : String) : Configuration = {
+		val mapStringArray = Source.fromFile(fileName).getLines.toArray
 		
 		lazy val affectedLineSizes = { 
-			for (line <- lvl) yield line.length()
+			for (line <- mapStringArray) yield line.length()
 		}.toList.distinct
 		
 		def isGameFieldRectangular = affectedLineSizes.size == 1
@@ -28,32 +34,32 @@ object FileLoader {
 		}
 		
 		val width = affectedLineSizes apply 0
-		val height = lvl.size
+		val height = mapStringArray.size
 		
     var humanBase : (Int,Int) = (0,0)
     var zombieBase : (Int,Int) = (0,0)
     
-    var coinAmount = 0
+    var coinsPlaced = 0
     
     val map = Map[(Int,Int),GameObject]()
 	    
-		for (row <- 0 until height) {
-			for (col <- 0 until width) {
+		for (row <- 0 until height) yield {
+		  for (col <- 0 until width) yield {
 			  val tuple = (row,col)
-				lvl(row)(col) match {
+				mapStringArray(row)(col) match {
 					case '#' => 
 					    map.+= ((tuple, new Wall(0, tuple)))
 					case '.' => 
 					    map.+=((tuple, new Coin(GameObjectFactory.generateId, tuple)))
-					    coinAmount += 1
+					    coinsPlaced += 1
 					case ';' => 
-					    map.+=((tuple, new Powerup(GameObjectFactory.generateId,tuple)))
+					    map.+=((tuple, new Powerup(GameObjectFactory.generateId, tuple)))
 					case 'H' => 
 					    humanBase = (tuple)
-				    	map.+=(((tuple), new HumanToken(GameObjectFactory.generateId,tuple)))
+				    	map.+=((((tuple), new HumanToken(GameObjectFactory.generateId, tuple))))
 					case 'Z' => 
 					    zombieBase = (tuple)
-					    map.+=(((tuple), new ZombieToken(GameObjectFactory.generateId,tuple)))
+					    map.+=((((tuple), new ZombieToken(GameObjectFactory.generateId, tuple))))
 				}
 			} 
 		}
@@ -63,7 +69,7 @@ object FileLoader {
 		        	  levelHeight = height,
 		        	  humanBase = humanBase,
 		        	  zombieBase = zombieBase,
-		        	  coinAmount = coinAmount,
+		        	  coinAmount = coinsPlaced,
 		        	  gameName = fileName.split("/").last
 		)
 	}

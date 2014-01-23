@@ -1,19 +1,12 @@
 import scala.collection.mutable.ListBuffer
+import taczombie.model.GameObject
+import taczombie.model.GameObject._
+import taczombie.model.util.CoordinateHelper._
+import scala.util.Random
 
-object playgroung {
+object playground {
   println("Welcome to the Scala worksheet")       //> Welcome to the Scala worksheet
-  
                                                   
-  object PlayerId extends Enumeration {
-		type PlayerId = Value
-		val Human, Zombie1, Zombie2, Zombie3 = Value
-	}
-  
-  
-  val x = PlayerId.Human                          //> x  : playgroung.PlayerId.Value = Human
-  
-  x.id                                            //> res0: Int = 0
-  
 /*	var t = Array(Array('#','#','#','#','#'),
                 Array('#','.',' ',' ','#'),
                 Array('#',' ','#','.','#'),

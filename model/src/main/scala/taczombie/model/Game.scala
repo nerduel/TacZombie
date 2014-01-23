@@ -4,46 +4,70 @@ import scala.collection.immutable.TreeMap
 import scala.collection.mutable.ListBuffer
 
 import GameState.GameState
-import taczombie.model.util.CoordinateHelper.intIntTuple2Wrapper
-import taczombie.model.util.GameHelper.activePlayer
+import util.CoordinateHelper.intIntTuple2Wrapper
+import util.GameHelper.activePlayer
 
 class Game(val id : Int,
     			 val gameField : GameField,
-           val playerList : TreeMap[String,Player], // first player is current player!
+           val playerMap : TreeMap[String,Player], // first player is current player!
            val gameState : GameState = GameState.InGame) {
   
 	def executeCommand(gameCommand : GameCommand) : Game = {
-	  val player = activePlayer(playerList)
-	  
+	  val player = activePlayer(playerMap)
+
+
 	  var updatedGameState = gameState
-	  var (updatedGameField, updatedGameFieldCells, updatedPlayerList) = 
+	  var (updatedGameField, updatedGameFieldCells, updatedPlayerMap) = 
 	    gameCommand match {
   	    case MoveUp() => move(player.currentToken.coords.aboveOf, player)
   	    case MoveDown() => move(player.currentToken.coords.belowOf, player)
   	    case MoveLeft() => move(player.currentToken.coords.leftOf, player)
   	    case MoveRight() => move(player.currentToken.coords.rightOf, player)
 	  }
-	  
-	  // respawn  
-    updatedPlayerList.foreach({ updatedPlayer =>
+	      
+    // check if the player has collected all the coins
+    val collectedCoins = updatedPlayerMap.foldLeft(0)({(result, playerTuple) 
+      		=> result + playerTuple._2.coinsCollected})
+    if(collectedCoins == gameField.coinsPlaced)
+      updatedGameState = GameState.Win
+      
+    println("collectec coins: " + collectedCoins)
+ 
+	  // Respawn dead players randomly on map  
+    updatedPlayerMap.foreach({ updatedPlayer =>
       if (updatedPlayer._2.currentToken.dead) {
         // TODO: check for Dead tokens and re-spawn them
       }
-    })
-      
-    // check if the player has collected all the coins
-    if (updatedPlayerList.foldLeft(0)({(result, playerTuple) 
-      		=> result + playerTuple._2.coinsCollected}) == gameField.coinsPlaced)
-      updatedGameState = GameState.Win
+    })	  
+	      
     
     // TODO check for lifesRemaining for token
       
     // TODO check for movesRemaining for player  
     
     // TODO check if all HumanTokens are dead
+    
+    // TODO cycle tokens
+    updatedPlayerMap = cycleTokenMaps(updatedPlayerMap)
+    
+    // TODO cycle player  
       
-    new Game(id, updatedGameField, updatedPlayerList, updatedGameState)
-	}  
+    new Game(id, updatedGameField, updatedPlayerMap, updatedGameState)
+	}
+	
+	private def cyclePlayerMap(playerMap : TreeMap[String,Player]) 
+		: TreeMap[String,Player] = 	playerMap.tail.+(playerMap.head)
+		
+	private def cycleTokenMaps(playerMap : TreeMap[String,Player]) 
+		: TreeMap[String,Player] = {
+	  var udpatedPlayerMap = playerMap
+	  playerMap.foreach(playerMapTuple => {
+	  	udpatedPlayerMap = udpatedPlayerMap.updated(playerMapTuple._1, playerMapTuple._2.updatedCycledTokens)
+	  })
+	  udpatedPlayerMap
+	}
+	
+	//private def cycleTokenMap(tokenMap : TreeMap[Int,PlayerToken]) : Player
 
 	private def move(requestedDestinationCoords : (Int,Int), player : Player) 
 			: (GameField, List[GameFieldCell], TreeMap[String,Player]) = {
@@ -61,7 +85,7 @@ class Game(val id : Int,
     }
     
     // process the actual move. dead tokens will have .dead = true
-    gameField.move(destinationCoords, playerList)
+    gameField.move(destinationCoords, playerMap)
   }
 	  	
 	private def calculateAllowedMoves(player : Player) = {
@@ -301,6 +325,6 @@ class Game(val id : Int,
     }
     
     private def walkOnAble(pos: (Int,Int)) = {
-      !gameField.gameFieldCells(pos).gameObjects.contains(new Wall(0, pos)) 
+      !gameField.gameFieldCells(pos).containsWall
     }
 }

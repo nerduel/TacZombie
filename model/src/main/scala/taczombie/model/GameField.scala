@@ -37,7 +37,7 @@ class GameField(val id : String,
     val updatedSourceCell = gameFieldCells.apply(movingToken.coords)
     																			.remove(movingToken)
     val updatedDestinationCell = gameFieldCells.apply(destinationCoords)
-    																					 .add(movingToken)
+    																					 .moveHere(movingToken)
 		 
     val updatedGameFieldCells = List[GameFieldCell](updatedSourceCell, 
           																					updatedDestinationCell)  
@@ -93,11 +93,45 @@ class GameField(val id : String,
 
 class GameFieldCell(val coords : (Int, Int),
     								val gameObjects : HashSet[GameObject]) {
+
+  val constructedGameObjects = HashSet[GameObject]()
+  
+  def containsZombieToken() : Boolean = {
+    gameObjects.filter(gameObject =>  
+      gameObject.isInstanceOf[ZombieToken]).nonEmpty
+  }
+  
+  def containsHumanToken() : Boolean = {
+    gameObjects.filter(gameObject =>  
+      gameObject.isInstanceOf[HumanToken]).nonEmpty
+  }  
+  
+  def containsWall() : Boolean = {
+    gameObjects.filter(gameObject =>  
+      gameObject.isInstanceOf[Wall]).nonEmpty
+  }
+
+  def containsCoin() : Boolean = {
+    gameObjects.filter(gameObject =>  
+      gameObject.isInstanceOf[Coin]).nonEmpty
+  }
+  
+  def containsPowerup() : Boolean = {
+    gameObjects.filter(gameObject =>  
+      gameObject.isInstanceOf[Powerup]).nonEmpty
+  }
+      
+  /**
+   * Add a gameObject and return the new GameFieldCell
+   */
+  def addHere(gameObject : GameObject) : GameFieldCell = {
+    this.updated(gameObjects.+(gameObject))
+  }
   
   /**
-   * Add a PlayerToken to the Cell
+   * Move a PlayerToken to the Cell
    */
-  def add (playerToken : PlayerToken) : GameFieldCell = {
+  def moveHere (playerToken : PlayerToken) : GameFieldCell = {
     val zombieList = gameObjects.filter(
         hostObject =>	hostObject.isInstanceOf[ZombieToken])
     

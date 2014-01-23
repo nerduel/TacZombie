@@ -65,6 +65,7 @@ case class HumanToken(id : Int,
                   		extends PlayerToken {
   
   require(powerupTime >= 0)
+  require(frozenTime >= 0)
   
   def updated(coords : (Int,Int)) = updated(newCoords = coords)
   def updatedMoved() = updated(addedPowerupTime = -1, addedFrozenTime = -1)
@@ -74,9 +75,20 @@ case class HumanToken(id : Int,
       				addedPowerupTime : Int = 0,
       				addedFrozenTime : Int = 0,
       				dead : Boolean = this.dead) = {
+    
+    // checks
+    val newPowerUpTime = { var tmp = this.powerupTime+addedPowerupTime
+      if (tmp < 0) 0
+      else tmp
+    }
+    val newFrozenTime = { var tmp = this.frozenTime+addedFrozenTime
+      if (tmp < 0) 0
+      else tmp
+    }
+    
     new HumanToken(this.id, newCoords, this.coins+addedCoins, 
-        					 this.powerupTime+addedPowerupTime,
-        					 this.score, this.frozenTime+addedFrozenTime,
+        					 newPowerUpTime,
+        					 this.score, newFrozenTime,
         					 dead)
   }
       

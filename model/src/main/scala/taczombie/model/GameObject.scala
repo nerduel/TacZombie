@@ -4,7 +4,9 @@ trait GameObject {
   val id : Int
   val coords : (Int, Int)
 
-  override def hashCode = id
+  override def hashCode(): Int = {
+    id
+  }
 }
   
 trait StaticGameObject extends GameObject
@@ -27,7 +29,7 @@ case class Coin(id : Int,
     versatileGameObject match {
       case humanToken : HumanToken => 
         (null, humanToken.updated(addedCoins = 1, addedScore = 1))
-      case _ => (this, versatileGameObject)
+      case zombieToken : ZombieToken => (this, zombieToken)
   }
 }
    
@@ -39,7 +41,7 @@ case class Powerup(id : Int,
     versatileGameObject match {
       case humanToken : HumanToken => 
         (null, humanToken.updated(addedPowerupTime = 10, addedScore = 1))
-      case _ => (this, versatileGameObject)
+      case zombieToken : ZombieToken => (this, zombieToken)
   }
 }
 
@@ -53,6 +55,8 @@ trait PlayerToken extends VersatileGameObject {
   
   def updated(coords : (Int,Int)) : PlayerToken
   def updatedMoved() : PlayerToken
+  
+  
 }
 
 case class HumanToken(id : Int, 
@@ -92,15 +96,18 @@ case class HumanToken(id : Int,
         					 dead)
   }
       
-  def isVisitedBy (versatileGameObject : VersatileGameObject) = 
+  def isVisitedBy (versatileGameObject : VersatileGameObject) = { 
     versatileGameObject match {
-      case zombieToken : ZombieToken => 
+      case zombieToken : ZombieToken => {
         (zombieToken.dead, this.powerupTime) match {
         case (false, 0) => (this.updated(addedScore = -killScore, dead = true),
             			 				 zombieToken)
         case (false, _) => (this.updated(addedScore = killScore), 
             								zombieToken.updated(dead = true))
         case (true, _) => (this, zombieToken) // spawn!
+        }
+      }
+      case humanToken : HumanToken => (this, humanToken)
     }
   }
 }

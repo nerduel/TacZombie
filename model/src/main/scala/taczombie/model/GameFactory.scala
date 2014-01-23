@@ -111,13 +111,13 @@ object GameFactory {
     }
     
     // Create the player map with a human and a zombie player with tokens
+    // TODO: make this scalable for more players
     var playerMap : TreeMap[String, Player] = TreeMap[String, Player]()
     val humanId = defaultHumanName + this.generateId
-    playerMap = playerMap.updated(
-        defaultHumanName, 
-    		new Human(humanId, humanTokens))
+    playerMap = playerMap.updated(humanId, 
+    															new Human(humanId, humanTokens))
     val zombieId = defaultZombieName + this.generateId
-    playerMap = playerMap.updated(defaultZombieName, 
+    playerMap = playerMap.updated(zombieId, 
                   								new Zombie(zombieId, zombieTokens))
     
     val gameField = new GameField(gameName,

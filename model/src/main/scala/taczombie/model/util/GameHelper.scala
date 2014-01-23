@@ -5,7 +5,7 @@ import scala.collection.immutable.TreeMap
 import taczombie.model.Player
 
 object GameHelper {
-	def activePlayer(playerList : TreeMap[Int,Player]) : Player = playerList.head._2
+	def activePlayer(playerList : TreeMap[String,Player]) : Player = playerList.head._2
 }
 
 object GameObjectFactory {

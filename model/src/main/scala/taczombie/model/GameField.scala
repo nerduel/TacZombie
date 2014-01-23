@@ -1,8 +1,9 @@
 package taczombie.model
 
-import scala.collection.immutable.TreeMap
-import taczombie.model.util.GameHelper._
 import scala.collection.immutable.HashSet
+import scala.collection.immutable.TreeMap
+
+import taczombie.model.util.GameHelper._
 
 class GameField(val id : String,
     						val gameFieldCells : Map[(Int,Int),GameFieldCell],
@@ -12,25 +13,40 @@ class GameField(val id : String,
     						val zombieBase : (Int, Int),                
                 val coinsPlaced : Int) {
 
+  /**
+   * This method moves a player's active token to destination coordinates.
+   * @param spawning If a token is spawned it does not credit a real move 
+   * @return Updated Game, List of changed Cells, Updated PlayerMap 
+   */
   def move(destinationCoords : (Int, Int), 
-        	 playerMap : TreeMap[Int,Player]) 
-    		: (GameField, List[GameFieldCell], TreeMap[Int,Player]) = {
+        	 playerMap : TreeMap[String,Player],
+        	 spawning : Boolean = false,
+        	 fakeMove : Boolean = false) 
+    		: (GameField, List[GameFieldCell], TreeMap[String,Player]) = {
   	
-    val movingToken = activePlayer(playerMap).currentToken
-        
+    val (movingPlayer, movingToken) = { 
+      if(spawning) { 
+      	(activePlayer(playerMap), activePlayer(playerMap).currentToken)
+      } else {
+        (activePlayer(playerMap).updatedMoved(), 
+         activePlayer(playerMap).currentToken.updatedMoved())
+      }
+    }
+
+    
     val updatedSourceCell = gameFieldCells.apply(movingToken.coords)
     																			.remove(movingToken)
     val updatedDestinationCell = gameFieldCells.apply(destinationCoords)
     																					 .add(movingToken)
-    																					 
+		 
     val updatedGameFieldCells = List[GameFieldCell](updatedSourceCell, 
           																					updatedDestinationCell)  
-    														
-    // update all tokens in the playerMap
-    var finalPlayerList = playerMap
+
+    // update the player and all tokens
+    var finalPlayerList = playerMap.updated(movingPlayer.name, movingPlayer)
     updatedDestinationCell.gameObjects.foreach ({ gameObject => 
       gameObject match {
-        case playerToken : PlayerToken => {   
+        case playerToken : PlayerToken => {
           playerMap.tail.foreach(playerMapTuple => {
           	if(playerMapTuple._2.playerTokens.contains(playerToken.id))
           	  finalPlayerList = 
@@ -95,7 +111,8 @@ class GameFieldCell(val coords : (Int, Int),
       	case versatileHostObject : VersatileGameObject => {
       		versatileHostObject isVisitedBy playerToken match {
       			case (hostObjectResult, playerTokenResult : PlayerToken) => {
-          	  finalHostObjects.+=(hostObjectResult)
+      			  finalHostObjects = (finalHostObjects.-(hostObjectResult))
+          	  										.+(hostObjectResult)
           	  finalPlayerToken = playerTokenResult
       			}
       		}

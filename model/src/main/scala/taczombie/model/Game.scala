@@ -9,38 +9,61 @@ import taczombie.model.util.GameHelper.activePlayer
 
 class Game(val id : Int,
     			 val gameField : GameField,
-           val playerList : TreeMap[Int,Player], // first player is current player!
+           val playerList : TreeMap[String,Player], // first player is current player!
            val gameState : GameState = GameState.InGame) {
   
 	def executeCommand(gameCommand : GameCommand) : Game = {
 	  val player = activePlayer(playerList)
-	  gameCommand match {
-	    case MoveUp() => move(player.currentToken.coords.aboveOf, player)
-	    case MoveDown() => move(player.currentToken.coords.belowOf, player)
-	    case MoveLeft() => move(player.currentToken.coords.leftOf, player)
-	    case MoveRight() => move(player.currentToken.coords.rightOf, player)
-	    case _ => this // TODO: exception unknown command
-	  }
-	}  
-
-	private def move(destinationCoords : (Int,Int), player : Player) : Game = {
 	  
-	  // TODO: exception cannot move
-    if(gameState != GameState.InGame) null
-    if(!walkOnAble(destinationCoords)) null
-    
-    var updatedGameState : GameState = null
-
-    // process the actual move. dead tokens will have .dead = true
-    val (updatedGameField, updatedGameFieldCells, updatedPlayerList) = 
-      gameField.move(destinationCoords, playerList)
+	  var updatedGameState = gameState
+	  var (updatedGameField, updatedGameFieldCells, updatedPlayerList) = 
+	    gameCommand match {
+  	    case MoveUp() => move(player.currentToken.coords.aboveOf, player)
+  	    case MoveDown() => move(player.currentToken.coords.belowOf, player)
+  	    case MoveLeft() => move(player.currentToken.coords.leftOf, player)
+  	    case MoveRight() => move(player.currentToken.coords.rightOf, player)
+	  }
+	  
+	  // respawn  
+    updatedPlayerList.foreach({ updatedPlayer =>
+      if (updatedPlayer._2.currentToken.dead) {
+        // TODO: check for Dead tokens and re-spawn them
+      }
+    })
       
-    // TODO check if Human won
-    gameField.coinsPlaced
+    // check if the player has collected all the coins
+    if (updatedPlayerList.foldLeft(0)({(result, playerTuple) 
+      		=> result + playerTuple._2.coinsCollected}) == gameField.coinsPlaced)
+      updatedGameState = GameState.Win
+    
+    // TODO check for lifesRemaining for token
+      
+    // TODO check for movesRemaining for player  
+    
+    // TODO check if all HumanTokens are dead
       
     new Game(id, updatedGameField, updatedPlayerList, updatedGameState)
+	}  
+
+	private def move(requestedDestinationCoords : (Int,Int), player : Player) 
+			: (GameField, List[GameFieldCell], TreeMap[String,Player]) = {
+
+    if(gameState != GameState.InGame) null // TODO: invalid gamestate
+    
+    val destinationCoords = {
+      if(!walkOnAble(requestedDestinationCoords) ||
+      		player.currentToken.frozenTime > 0) 
+      {
+        player.currentToken.coords
+      } else { 
+        requestedDestinationCoords
+      }
+    }
+    
+    // process the actual move. dead tokens will have .dead = true
+    gameField.move(destinationCoords, playerList)
   }
-  	
+	  	
 	private def calculateAllowedMoves(player : Player) = {
       var toVisit = scala.collection.mutable.Stack.empty[(Int,Int)]
       val position = player.currentToken.coords

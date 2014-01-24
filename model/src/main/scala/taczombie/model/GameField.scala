@@ -44,6 +44,9 @@ class GameField(val id : String,
     val updatedGameFieldCells = List[GameFieldCell](updatedSourceCell, 
           																					updatedDestinationCell)
 
+
+    println(movingPlayer.playerTokens)
+    
     var finalPlayers : Players = players.updatedExistingPlayer(movingPlayer)																			
     finalPlayers = finalPlayers.updatedFromUpdatedGameFieldCell(updatedDestinationCell)
     

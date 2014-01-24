@@ -8,5 +8,7 @@ case class MoveDown() extends Move
 case class MoveLeft() extends Move
 case class MoveRight() extends Move
 
+case class NextToken() extends GameCommand
+case class NextPlayer() extends GameCommand
 case class Restart() extends GameCommand
 case class Quit() extends GameCommand

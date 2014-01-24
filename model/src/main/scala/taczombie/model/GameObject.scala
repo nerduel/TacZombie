@@ -55,8 +55,6 @@ trait PlayerToken extends VersatileGameObject {
   
   def updated(coords : (Int,Int)) : PlayerToken
   def updatedMoved() : PlayerToken
-  
-  
 }
 
 case class HumanToken(id : Int, 
@@ -123,20 +121,26 @@ case class ZombieToken(id : Int,
   def updated(newCoords : (Int, Int) = this.coords,
       				addedFrozenTime : Int = 0,
       				dead : Boolean = false) = {
+    var newFrozentime = this.frozenTime+addedFrozenTime
+    if (newFrozentime < 0) 
+      newFrozentime = 0
+      
     new ZombieToken(this.id, newCoords,
-        					  this.frozenTime+addedFrozenTime,
+        					  newFrozentime,
         					  dead)
   }
   
   def isVisitedBy (versatileGameObject : VersatileGameObject) = 
     versatileGameObject match {
-      case humanToken : HumanToken => 
+      case humanToken : HumanToken => {
         (humanToken.dead, humanToken.powerupTime) match {
           case (true, _) => (this, humanToken) // spawn!
           case (false, 0) => (this,
               			 humanToken.updated(addedScore = -killScore, dead = true))              			 
           case (false, _) => (this.updated(dead = true),
-              			 humanToken.updated(addedScore = killScore))
+              			 humanToken.updated(addedScore = killScore))        
+        }
       }
-  }
+      case zombieToken : ZombieToken => (this, zombieToken)
+    }
 }

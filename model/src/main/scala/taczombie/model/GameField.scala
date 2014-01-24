@@ -19,19 +19,18 @@ class GameField(val id : String,
    * @return Updated Game, List of changed Cells, Updated PlayerMap 
    */
   def move(destinationCoords : (Int, Int), 
-        	 playerMap : TreeMap[String,Player],
+        	 players : Players,
         	 spawning : Boolean = false,
         	 fakeMove : Boolean = false) 
-    		: (GameField, List[GameFieldCell], TreeMap[String,Player]) = {
+    		: (GameField, List[GameFieldCell], Players) = {
   	
-
-    
+   
     val (movingPlayer, movingToken) = { 
       if(spawning) { 
-      	(activePlayer(playerMap), activePlayer(playerMap).currentToken)
+      	(players.currentPlayer, players.currentPlayer.currentToken)
       } else {
-        (activePlayer(playerMap).updatedMoved(), 
-         activePlayer(playerMap).currentToken.updatedMoved())
+        (players.currentPlayer.updatedMoved(), 
+         players.currentPlayer.currentToken.updatedMoved())
       }
     }
 
@@ -39,57 +38,21 @@ class GameField(val id : String,
     println("moving " + movingToken + " to " + destinationCoords)
 
     val updatedSourceCell = gameFieldCells.apply(movingToken.coords)
-    																			.remove(movingToken)																			
-
+    																			.remove(movingToken)
     val (updatedDestinationCell, updatedMovingToken) =
     	gameFieldCells.apply(destinationCoords).moveHere(movingToken)
-
     val updatedGameFieldCells = List[GameFieldCell](updatedSourceCell, 
           																					updatedDestinationCell)
 
-    // TODO debug print           																					
-    println(updatedMovingToken)
-          																					
-    //var finalPlayerList = playerMap
-    val updatedMovingPlayer = (movingPlayer, updatedMovingToken) match {
-      case (humanPlayer : Human, humanToken : HumanToken) => {
-        humanPlayer.updatedToken(humanToken)
-      }
-      case (zombiePlayer : Zombie, zombieToken : ZombieToken) => {
-        zombiePlayer.updatedToken(zombieToken)
-      }
-    }
-    
-    println(updatedMovingPlayer)
-          																					
-    // collect all PlayerToken id's in updated cell
-    val updatedDestinationCellPlayerTokensIds = 
-      updatedDestinationCell.gameObjects.filter(gameObject => 
-      	gameObject.isInstanceOf[PlayerToken]).map(token => token.id)
-    
-    // debug print
-    println(updatedDestinationCellPlayerTokensIds)
- 
-    var finalPlayerMap = playerMap.updated(updatedMovingPlayer.name, updatedMovingPlayer)    
-    finalPlayerMap.tail.foreach(playerMapTuple => {
-      // thisPlayersTokensInDestinationCell
-      playerMapTuple._2.playerTokens.filter(token => {
-         updatedDestinationCellPlayerTokensIds.contains(token._2.id)
-      }).foreach(token => {
-        val updatedPlayer = playerMapTuple._2 match  {
-          case human : Human => human.updatedToken(token._2.asInstanceOf[HumanToken])
-          case zombie : Zombie => zombie.updatedToken(token._2.asInstanceOf[ZombieToken])
-        }
-        finalPlayerMap = finalPlayerMap.updated(updatedPlayer.name, updatedPlayer)
-      })
-    })
+    var finalPlayers : Players = players.updatedExistingPlayer(movingPlayer)																			
+    finalPlayers = finalPlayers.updatedFromUpdatedGameFieldCell(updatedDestinationCell)
     
     // TODO debug print 
-    finalPlayerMap.foreach(player => println(player)) 
+    //finalPlayerMap.foreach(player => println(player)) 
     
     (this.updated(updatedGameFieldCells),
      updatedGameFieldCells,
-     finalPlayerMap)
+     finalPlayers)
   }
   
   // TODO: Check if obsolete

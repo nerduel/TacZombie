@@ -25,6 +25,7 @@ case class Human(val name : String,
     result + token._2.coins)
   def score = playerTokens.foldLeft(0)({(result,token) => 
     result + token._2.score})
+      
 
   def updated(playerTokens : TreeMap[Int,HumanToken] = this.playerTokens,
     				 movesRemainingAdded : Int = 0,

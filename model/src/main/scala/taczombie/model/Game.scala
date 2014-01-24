@@ -5,19 +5,18 @@ import scala.collection.mutable.ListBuffer
 
 import GameState.GameState
 import util.CoordinateHelper.intIntTuple2Wrapper
-import util.GameHelper.activePlayer
 
 class Game(val id : Int,
     			 val gameField : GameField,
-           val playerMap : TreeMap[String,Player], // first player is current player!
+           val players : Players, // first player is current player!
            val gameState : GameState = GameState.InGame) {
   
 	def executeCommand(gameCommand : GameCommand) : Game = {
-	  val player = activePlayer(playerMap)
+	  val player = players.currentPlayer
 
 
 	  var updatedGameState = gameState
-	  var (updatedGameField, updatedGameFieldCells, updatedPlayerMap) = 
+	  var (updatedGameField, updatedGameFieldCells, updatedPlayers) = 
 	    gameCommand match {
   	    case MoveUp() => move(player.currentToken.coords.aboveOf, player)
   	    case MoveDown() => move(player.currentToken.coords.belowOf, player)
@@ -26,51 +25,48 @@ class Game(val id : Int,
 	  }
 	      
     // check if the player has collected all the coins
-    val collectedCoins = updatedPlayerMap.foldLeft(0)({(result, playerTuple) 
-      		=> result + playerTuple._2.coinsCollected})
-    if(collectedCoins == gameField.coinsPlaced)
+    if(player.coinsCollected == gameField.coinsPlaced)
       updatedGameState = GameState.Win
       
-    println("collectec coins: " + collectedCoins)
+    println("collectec coins for player " + player.name + player.coinsCollected)
  
 	  // Respawn dead players randomly on map  
-    updatedPlayerMap.foreach({ updatedPlayer =>
-      if (updatedPlayer._2.currentToken.dead) {
-        // TODO: check for Dead tokens and re-spawn them
-      }
-    })	  
+//    updatedPlayers.foreach({ updatedPlayer =>
+//      if (updatedPlayer._2.currentToken.dead) {
+//        // TODO: check for Dead tokens and re-spawn them
+//      }
+//    })	  
 	      
     
     // TODO check for lifesRemaining for token
       
-    // TODO check for movesRemaining for player  
+    // TODO check for movesRemaining for player
+    if (player.movesRemaining == 0) {
+      println("switching players")
+      updatedPlayers = updatedPlayers.updatedRotatedPlayers
+    } else {
+      println("switching tokens")
+    }
     
     // TODO check if all HumanTokens are dead
-    
-    // TODO cycle tokens
-    updatedPlayerMap = cycleTokenMaps(updatedPlayerMap)
+//    println(updatedPlayers)
+//    players = players
+//    println(updatedPlayerMap)
+//    
+//    // TODO cycle tokens
+//    println(updatedPlayerMap)
+//    updatedPlayerMap = cycleTokenMaps(updatedPlayerMap)
+//    println(updatedPlayerMap)
     
     // TODO cycle player  
       
-    new Game(id, updatedGameField, updatedPlayerMap, updatedGameState)
-	}
-	
-	private def cyclePlayerMap(playerMap : TreeMap[String,Player]) 
-		: TreeMap[String,Player] = 	playerMap.tail.+(playerMap.head)
-		
-	private def cycleTokenMaps(playerMap : TreeMap[String,Player]) 
-		: TreeMap[String,Player] = {
-	  var udpatedPlayerMap = playerMap
-	  playerMap.foreach(playerMapTuple => {
-	  	udpatedPlayerMap = udpatedPlayerMap.updated(playerMapTuple._1, playerMapTuple._2.updatedCycledTokens)
-	  })
-	  udpatedPlayerMap
+    new Game(id, updatedGameField, updatedPlayers, updatedGameState)
 	}
 	
 	//private def cycleTokenMap(tokenMap : TreeMap[Int,PlayerToken]) : Player
 
 	private def move(requestedDestinationCoords : (Int,Int), player : Player) 
-			: (GameField, List[GameFieldCell], TreeMap[String,Player]) = {
+			: (GameField, List[GameFieldCell], Players) = {
 
     if(gameState != GameState.InGame) null // TODO: invalid gamestate
     
@@ -85,7 +81,7 @@ class Game(val id : Int,
     }
     
     // process the actual move. dead tokens will have .dead = true
-    gameField.move(destinationCoords, playerMap)
+    gameField.move(destinationCoords, players)
   }
 	  	
 	private def calculateAllowedMoves(player : Player) = {
@@ -131,180 +127,6 @@ class Game(val id : Int,
 
       pathList.toList.flatten.distinct
   }
-
-    private def updateHumanMove(pos : (Int, Int)) : Game = { null
-//
-//        var updatedPlayerList = playerList
-//        var updatedPlayer = currentPlayer
-//        var updatedGameState = gState
-//        var updatedLifes = lifes
-//        var updatedCoinAmount = coinAmount
-//        var updatedLevelScore = lvlScore
-//
-//        gameField.getObject(pos) match {
-//            case GameObject.Coin =>
-//                val state = updatedPlayerList(currentPlayer.id).state
-//                updatedPlayerList = updatedPlayerList.updated(currentPlayer.id,
-//                    new Human(pos, state))
-//                updatedLevelScore += 1
-//                updatedCoinAmount -= 1
-//                if (updatedCoinAmount == 0)
-//                    updatedGameState = GameState.Win
-//
-//            case GameObject.Powerup =>
-//                updatedPlayerList = updatedPlayerList.updated(currentPlayer.id,
-//                    new Human(pos, zombieKiller()))
-//
-//            case GameObject.None =>
-//                val state = updatedPlayerList(currentPlayer.id).state
-//                updatedPlayerList = updatedPlayerList.updated(currentPlayer.id,
-//                    new Human(pos, state))
-//        }
-//
-//        var updatedGameField = gameField.clearCell(pos)
-//
-//        val playerCollisions = {
-//            for (player <- playerList.tail) yield player
-//        }.filter(_.coordinate == pos).zipWithIndex
-//
-//        if (playerCollisions.size > 0) {
-//            playerList(currentPlayer.id).state match {
-//                case z : zombieKiller =>
-//                    updatedLevelScore += 2
-//                    for (pC <- playerCollisions) {
-//                        updatedPlayerList =
-//                            updatedPlayerList.updated(pC._2, new Zombie(zombieBase, killed()))
-//                    }
-//
-//                case _ =>
-//                    if (lifes == 0)
-//                        updatedGameState = GameState.GameOver
-//                    else {
-//                        updatedGameState = GameState.Lose
-//                        updatedLevelScore -= 15
-//                        updatedLifes -= 1
-//                    }
-//            }
-//        }
-//
-//        if (movesRemaining == 0) {
-//            updatedPlayerList = updatePlayerState
-//            updatedPlayer = getNextPlayerId
-//        }
-//
-//        this.copy(gameField = updatedGameField, playerList = updatedPlayerList,
-//            gState = updatedGameState, moves = moves - 1,
-//            currentPlayer = updatedPlayer, coinAmount = updatedCoinAmount,
-//            lvlScore = updatedLevelScore, lifes = updatedLifes)
-    }
-    
-    private def updateZombieMove(pos : (Int, Int)) : Game = { null
-//        var updatedLevelScore = lvlScore
-//        var updatedGameState = gState
-//        var updatedLifes = lifes
-//        var updatedPlayer = currentPlayer
-//        var updatedPlayerList = playerList
-//
-//        if (playerList(PlayerId.Human.id).coordinate == pos) {
-//            playerList(PlayerId.Human.id).state match {
-//                case z : zombieKiller =>
-//                    updatedLevelScore += 1
-//                    updatedPlayerList = playerList.updated(currentPlayer.id,
-//                        new Zombie(zombieBase, killed()))
-//
-//                case _ =>
-//                    if (lifes == 0)
-//                        updatedGameState = GameState.GameOver
-//                    else {
-//                        updatedGameState = GameState.Lose
-//                        updatedLevelScore -= 15
-//                        updatedLifes -= 1
-//                    }
-//            }
-//        }
-//
-//        var updatedGameField = gameField.clearCell(pos)
-//        
-//        if (movesRemaining == 0) {
-//            updatedPlayerList = updatePlayerState
-//            updatedPlayer = getNextPlayerId
-//        }
-//
-//        this.copy(gameField = updatedGameField, playerList = updatedPlayerList,
-//            currentPlayer = updatedPlayer, gState = updatedGameState,
-//            moves = moves - 1, lvlScore = updatedLevelScore, lifes = updatedLifes)
-    }
-
-    private def updatePlayerState: List[Player] = { null
-//        playerList(currentPlayer.id).state match {
-//            case k : killed if k.time > 0 =>
-//			  		playerList.updated(currentPlayer.id,
-//			  		        new Zombie(playerList(currentPlayer.id).coordinate,
-//			  		                   killed(k.time - 1)))
-//			  		
-//		  	case k : killed if k.time == 0 =>
-//		  		playerList.updated(currentPlayer.id,
-//			  		        new Zombie(playerList(currentPlayer.id).coordinate,
-//			  		                   normal()))
-//			  		                   
-//		  	case z : zombieKiller if z.time > 0 => 
-//		  	    playerList.updated(currentPlayer.id,
-//			  		        new Human(playerList(currentPlayer.id).coordinate,
-//			  		                   zombieKiller(z.time - 1)))
-//		  	    
-//		  	case z : zombieKiller if z.time == 0 =>
-//		  	    playerList.updated(currentPlayer.id,
-//			  		        new Human(playerList(currentPlayer.id).coordinate,
-//			  		                   normal()))
-//			  		
-//	  		case _ => playerList
-//        }
-    }
-    
-//    def copy(gameField : GameField = gameField,
-//                     playerList : List[Player] = playerList,
-//                     currentPlayer : PlayerId.PlayerId = currentPlayer,
-//                     gState : GameState = gState,
-//                     moves : Int = moves,
-//                     coinAmount : Int = coinAmount,
-//                     lvlScore : Int = lvlScore,
-//                     lifes : Int = lifes) : Game = new Game(gameField,
-//        humanBase, zombieBase, playerList, currentPlayer,
-//        gState, moves, coinAmount, lvlScore, lifes, id)
-
-    private def getNextPlayerId = { null
-//        var x : Boolean = false
-//        var potentialPlayer = currentPlayer
-//
-//        def nextPlayerFound(player : PlayerId.PlayerId) = {
-//            playerList(player.id).state match {
-//                case k : killed => false
-//                case _ => true
-//            }
-//        }
-//
-//        while (x == false) {
-//            potentialPlayer = potentialPlayer match {
-//                case PlayerId.Human =>
-//                    x = nextPlayerFound(PlayerId.Zombie1)
-//                    PlayerId.Zombie1
-//
-//                case PlayerId.Zombie1 =>
-//                    x = nextPlayerFound(PlayerId.Zombie2)
-//                    PlayerId.Zombie2
-//
-//                case PlayerId.Zombie2 =>
-//                    x = nextPlayerFound(PlayerId.Zombie3)
-//                    PlayerId.Zombie3
-//
-//                case PlayerId.Zombie3 =>
-//                    x = nextPlayerFound(PlayerId.Human)
-//                    PlayerId.Human
-//            }
-//        }
-//
-//        potentialPlayer
-    }
 
     // Input must be (y,x). map needs coords in (y,x)
     // result is a List of valid coordinates for the array (y,x)

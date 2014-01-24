@@ -1,10 +1,12 @@
 package taczombie.model.util
 
 import scala.language.implicitConversions
+
 import spray.json.DefaultJsonProtocol
 import spray.json.JsValue
 import spray.json.pimpAny
 import taczombie.model.Game
+import taczombie.model.util.CoordinateHelper._
 import taczombie.model.GameFieldCell
 import taczombie.model.Human
 import taczombie.model.Zombie
@@ -31,17 +33,17 @@ object JsonHelper {
     // TODO: changedCells should be reacheable through the game class,
     def toJson(cmd: String, changedCells: Map[(Int, Int), GameFieldCell]): String = {
       val gameState = g.gameState.toString
-      val currentPlayer = g.playerMap.head._2
+      val currentPlayer = g.players.currentPlayer
       var currentPlayerTokenAsChar = ' '
       var lifes = 0
-      val movesLeft = currentPlayer.movesRemaining
+      val movesRemaining = currentPlayer.movesRemaining
       val coins = currentPlayer.coinsCollected
       val score = currentPlayer.score
       val width = g.gameField.levelWidth
       var powerUp = 0
       val height = g.gameField.levelHeight
 
-      g.playerMap.head._2 match {
+      g.players.currentPlayer match {
         case h: Human =>
           currentPlayerTokenAsChar = 'H'
           powerUp = h.currentToken.powerupTime
@@ -52,6 +54,8 @@ object JsonHelper {
 
       // Collect and simplify changed game cells
       var cells = List[Cell]()
+      
+      var allowedMoves = currentPlayer.currentToken.coords.calculateAllowedMoves(movesRemaining)
       
       for (gameFieldCell <- changedCells) {
         val char: Char = {
@@ -64,17 +68,25 @@ object JsonHelper {
           else 'N'
         }
 
-        val canBeVisited = false
+        val canBeVisited = {
+          if(allowedMoves.contains(gameFieldCell)) {
+            allowedMoves = allowedMoves.filter(_ != gameFieldCell)
+            true
+          } else false
+        }
+          
         //        val canBeVisited = g.calculateAllowedMoves(currentPlayer).filter(cell =>
         //          cell._1 == gameFieldCell._1 &&
         //            cell._2 == gameFieldCell._2).size == 1
 
         cells ::: Cell(gameFieldCell._1._1, gameFieldCell._1._2, char, canBeVisited) :: Nil
       }
+      
+      
 
       import GameDataJsonProtocol._
 
-      val gameData = GameData(gameState, currentPlayerTokenAsChar, lifes, movesLeft, coins, score, powerUp, width, height)
+      val gameData = GameData(gameState, currentPlayerTokenAsChar, lifes, movesRemaining, coins, score, powerUp, width, height)
       val gameDataJson = gameData.toJson
       val data = Data(cmd, gameDataJson, cells.toJson)
 

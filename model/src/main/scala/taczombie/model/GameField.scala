@@ -44,10 +44,15 @@ class GameField(val id : String,
     val updatedGameFieldCells = List[GameFieldCell](updatedSourceCell, 
           																					updatedDestinationCell)
 
-
-    println(movingPlayer.playerTokens)
+    val updatedMovingPlayer = movingPlayer match {
+      case human : Human => 
+        human.updatedToken(updatedMovingToken.asInstanceOf[HumanToken])
+      case zombie : Zombie => 
+        zombie.updatedToken(updatedMovingToken.asInstanceOf[ZombieToken])
+    }  
     
-    var finalPlayers : Players = players.updatedExistingPlayer(movingPlayer)																			
+    
+    var finalPlayers : Players = players.updatedExistingPlayer(updatedMovingPlayer)																			
     finalPlayers = finalPlayers.updatedFromUpdatedGameFieldCell(updatedDestinationCell)
     
     // TODO debug print 

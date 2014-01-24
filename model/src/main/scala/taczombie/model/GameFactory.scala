@@ -69,8 +69,8 @@ object GameFactory {
     var coinsPlaced : Int = 0
     
     // collect tokens
-    var humanTokens = new PlayerTokens[HumanToken]
-    var zombieTokens = new PlayerTokens[ZombieToken]
+    var humanTokens = new PlayerTokens[HumanToken](List[HumanToken]())
+    var zombieTokens = new PlayerTokens[ZombieToken](List[ZombieToken]())
     
     var gameFieldCells = Map[(Int,Int), GameFieldCell]()
     
@@ -115,10 +115,10 @@ object GameFactory {
     // Create the player map with a human and a zombie player with tokens
     // TODO: make this scalable for more players
     var players : Players = new Players(List[Player]())
-    val humanId = defaultHumanName + this.generateId
-    players = players.updatedWithNewPlayer(new Human(humanId, humanTokens))
     val zombieId = defaultZombieName + this.generateId
     players = players.updatedWithNewPlayer(new Zombie(zombieId, zombieTokens))
+    val humanId = defaultHumanName + this.generateId
+    players = players.updatedWithNewPlayer(new Human(humanId, humanTokens))
     
     val gameField = new GameField(gameName,
                 gameFieldCells,

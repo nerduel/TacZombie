@@ -6,18 +6,23 @@ import util.CoordinateHelper.intIntTuple2Wrapper
 class Game(val id : Int,
     			 val gameField : GameField,
            val players : Players, // first player is current player!
-           val gameState : GameState = GameState.InGame) {
+           val gameState : GameState = GameState.InGame,
+           val lastUpdatedGameFieldCells : List[GameFieldCell] = List[GameFieldCell]()) {
   
-	def executeCommand(gameCommand : GameCommand) : Game = {
+	def executeCommand(gameCommand : GameCommand) 
+			: Game = {
 	  var player = players.currentPlayer
 
 	  var updatedGameState = gameState
 	  var (updatedGameField, updatedGameFieldCells, updatedPlayers) = 
 	    gameCommand match {
-  	    case MoveUp() => move(player.currentToken.coords.aboveOf, player)
-  	    case MoveDown() => move(player.currentToken.coords.belowOf, player)
-  	    case MoveLeft() => move(player.currentToken.coords.leftOf, player)
-  	    case MoveRight() => move(player.currentToken.coords.rightOf, player)
+  	    case MoveUp => move(player.currentToken.coords.aboveOf, player)
+  	    case MoveDown => move(player.currentToken.coords.belowOf, player)
+  	    case MoveLeft => move(player.currentToken.coords.leftOf, player)
+  	    case MoveRight => move(player.currentToken.coords.rightOf, player)
+
+  	    //TODO nextGame
+  	    //TODO nextToken
 	  }
 	  
 	  player = updatedPlayers.currentPlayer
@@ -26,33 +31,32 @@ class Game(val id : Int,
     if(player.coinsCollected == gameField.coinsPlaced)
       updatedGameState = GameState.Win
       
-    println("collectec coins for player " + player.name + player.coinsCollected)
+    println("collected coins for player " + player.name + " : " + player.coinsCollected)
  
     // TODO check for lifesRemaining for token
       
     // TODO check for movesRemaining for player
+	  
     if (player.movesRemaining == 0) {
       println("switching players")
       updatedPlayers = updatedPlayers.updatedRotatedPlayers
     } else {
-      println("remaining moves: " + player.movesRemaining + " -> switching tokens")
-      updatedPlayers = updatedPlayers.
-      								 		updatedExistingPlayer(player.updatedCycledTokens)
+      println("remaining moves " + player.movesRemaining)
+//      println("remaining moves: " + player.movesRemaining + " -> switching tokens")
+//      updatedPlayers = updatedPlayers.
+//      								 		updatedExistingPlayer(player.updatedCycledTokens)
     }
     
-    // TODO check if all HumanTokens are dead
+	  // TODO check if all HumanTokens are dead
 //    println(updatedPlayers)
 //    players = players
 //    println(updatedPlayerMap)
 //    
-//    // TODO cycle tokens
-//    println(updatedPlayerMap)
-//    updatedPlayerMap = cycleTokenMaps(updatedPlayerMap)
-//    println(updatedPlayerMap)
     
     // TODO cycle player  
       
-    new Game(id, updatedGameField, updatedPlayers, updatedGameState)
+    new Game(id, updatedGameField, updatedPlayers, 
+        updatedGameState,updatedGameFieldCells)
 	}
 	
 	//private def cycleTokenMap(tokenMap : TreeMap[Int,PlayerToken]) : Player

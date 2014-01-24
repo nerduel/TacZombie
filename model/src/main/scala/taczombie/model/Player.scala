@@ -2,7 +2,15 @@ package taczombie.model
 
 import scala.collection.immutable.TreeMap
 
+private object defaults {
+  val humanMoves = 20
+  val lifes = 3
+  val zombieMoves = 1
+}
+
 trait Player {
+  
+  val defaultHumanMoves = 10
   
   val name : String
   val playerTokens : PlayerTokens[PlayerToken]
@@ -10,7 +18,6 @@ trait Player {
   def currentToken : PlayerToken
   def coinsCollected : Int
   def score : Int
-  
   def updatedMoved() : Player
   def updatedCycledTokens() : Player
   def updatedResetMovesRemaining() : Player
@@ -18,8 +25,8 @@ trait Player {
 
 case class Human(val name : String,
     						 val playerTokens : PlayerTokens[HumanToken],
-    						 val movesRemaining : Int = 5,
-    						 val lifes : Int = 3)
+    						 val movesRemaining : Int = defaults.humanMoves,
+    						 val lifes : Int = defaults.lifes)
     extends Player  {
   
   def currentToken : HumanToken = playerTokens.currentToken
@@ -43,7 +50,7 @@ case class Human(val name : String,
   
   def updatedCycledTokens() : Human = {
     if(playerTokens.tokenList.size > 1)
-    	updated(playerTokens.updatedNextToken)
+    	updated(this.playerTokens.updatedNextToken)
     else this
   }
   
@@ -54,7 +61,7 @@ case class Human(val name : String,
 
 case class Zombie(val name : String,
     						  val playerTokens : PlayerTokens[ZombieToken],
-									val movesRemaining : Int = 3)
+									val movesRemaining : Int = defaults.zombieMoves)
     extends Player {
   def currentToken : ZombieToken = playerTokens.currentToken
   val coinsCollected = 0

@@ -1,27 +1,36 @@
 package taczombie.model
 
-class PlayerTokens[+TokenType](val tokenList : List[TokenType] = List[TokenType]()) {
-   
-	def currentToken : TokenType = {
+import scala.language.higherKinds
+
+class PlayerTokens[+A <: PlayerToken](val tokenList : List[A]) {
+  
+	def currentToken : A = {
 	  	tokenList.head
 	}
-	
-	def updatedWithNewToken[SpecialTokenType >: TokenType](playerToken : SpecialTokenType) : PlayerTokens[SpecialTokenType] = {
-    if(!tokenList.contains(playerToken))
-      new PlayerTokens[SpecialTokenType](tokenList.+:(playerToken))
-    else this
-  }
-	
-	def updatedWithExistingToken[SpecialTokenType >: TokenType]
-			(playerToken : SpecialTokenType) : PlayerTokens[SpecialTokenType] = {
-	  if(tokenList.contains(playerToken)) {
-	    val index = tokenList.indexOf(playerToken)
-	    new PlayerTokens[SpecialTokenType](tokenList.updated(index, playerToken))
-	  }
-	  else this
+  
+ 	def updatedWithNewToken[A <: PlayerToken](playerToken : A) : PlayerTokens[A] = {
+			new PlayerTokens[A](tokenList.asInstanceOf[List[A]] ::: playerToken :: Nil)
+ 	  
+// 	  	var newList = List[A]()
+// 	  	for(a <- this.tokenList.asInstanceOf[List[A]])
+// 	  	  if(a.id != playerToken.id)
+// 	  	  	newList = newList.+:(a)
+// 	  	  else throw new Exception("already in here")
+// 	  	
+// 	  	newList = newList.+:(playerToken)
+//      new PlayerTokens[A](newList)
 	}
 	
-	def updatedNextToken() : PlayerTokens[TokenType] = {
-	  new PlayerTokens[TokenType](tokenList.tail ::: tokenList.head :: Nil)
+	def updatedWithExistingToken[A <: PlayerToken]
+			(playerToken : A) : PlayerTokens[A] = {
+	  
+	  	val index = tokenList.indexOf( 
+	  			tokenList.filter(t => t.id == playerToken.id).head)
+			
+			new PlayerTokens[A](tokenList.asInstanceOf[List[A]].updated(index, playerToken))
+	}
+	
+	def updatedNextToken() : PlayerTokens[A] = {
+	  new PlayerTokens[A](tokenList.tail ::: tokenList.head :: Nil)
 	}
 }

@@ -2,6 +2,7 @@ package taczombie.test.model
 
 import taczombie.model.GameFactory
 import taczombie.model.GameField
+import taczombie.model.MoveDown
 import taczombie.model.MoveLeft
 import taczombie.model.MoveRight
 
@@ -34,16 +35,22 @@ object HelloGame {
   }
 
 	def main(args: Array[String]) {
-	  var game = GameFactory.newGame(false, humans = 2, zombies = 2)
+	  var game = GameFactory.newGame(false, humans = 1, zombies = 1)
 	  
   	printGameField(game.gameField)
   	
-  	for(i <- 0 until 6) {
-  		game = { 
-  		  	game.executeCommand(new MoveRight())
-  		    game.executeCommand(new MoveLeft())
-  		}
-  		printGameField(game.gameField)
-  	}
+  	  
+		game = game.executeCommand(MoveLeft)
+		game = game.executeCommand(MoveLeft)
+		game = game.executeCommand(MoveLeft)
+		game = game.executeCommand(MoveLeft)
+		game = game.executeCommand(MoveDown)
+		game = game.executeCommand(MoveDown)
+		game = game.executeCommand(MoveRight)
+		game = game.executeCommand(MoveRight)
+		game = game.executeCommand(MoveRight)
+		game = game.executeCommand(MoveRight)
+		
+		printGameField(game.gameField)
 	}
 }

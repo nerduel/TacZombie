@@ -15,10 +15,10 @@ object JsonHelper {
 
   case class GameData(gameState: String, currentPlayer: Char,
     lifes: Int, movesLeft: Int, coins: Int,
-    score: Int, powerUp: Int, width: Int,
-    height: Int)
+    score: Int, powerUp: Int, levelWidth: Int,
+    levelHeight: Int)
 
-  case class Cell(x: Int, y: Int, token: String, isHiglighted: Boolean)
+  case class Cell(x: Int, y: Int, token: Char, isHiglighted: Boolean)
 
   object GameDataJsonProtocol extends DefaultJsonProtocol {
     implicit val GameDataFormat = jsonFormat9(GameData)
@@ -27,11 +27,11 @@ object JsonHelper {
   }
 
   class Game2JsonHelper(g: Game) {
-    
+
     // TODO: changedCells should be reacheable through the game class,
     def toJson(cmd: String, changedCells: Map[(Int, Int), GameFieldCell]): String = {
       val gameState = g.gameState.toString
-      val currentPlayer = g.playerList.head._2
+      val currentPlayer = g.playerMap.head._2
       var currentPlayerTokenAsChar = ' '
       var lifes = 0
       val movesLeft = currentPlayer.movesRemaining
@@ -41,7 +41,7 @@ object JsonHelper {
       var powerUp = 0
       val height = g.gameField.levelHeight
 
-      g.playerList.head._2 match {
+      g.playerMap.head._2 match {
         case h: Human =>
           currentPlayerTokenAsChar = 'H'
           powerUp = h.currentToken.powerupTime
@@ -52,22 +52,25 @@ object JsonHelper {
 
       // Collect and simplify changed game cells
       var cells = List[Cell]()
+      
       for (gameFieldCell <- changedCells) {
-        val char = {
-          if (gameFieldCell._2 == null) ""
-          else if (gameFieldCell._2.containsWall) "███"
-          else if (gameFieldCell._2.containsZombieToken) " Z " //"😈"
-          else if (gameFieldCell._2.containsHumanToken) " H " //"😃"
-          else if (gameFieldCell._2.containsCoin) " • "
-          else if (gameFieldCell._2.containsPowerup) " ★ "
-          else ""
+        val char: Char = {
+          if (gameFieldCell._2 == null) ' '
+          else if (gameFieldCell._2.containsWall) 'W'
+          else if (gameFieldCell._2.containsZombieToken) 'Z'
+          else if (gameFieldCell._2.containsHumanToken) 'H'
+          else if (gameFieldCell._2.containsCoin) 'C'
+          else if (gameFieldCell._2.containsPowerup) 'P'
+          else ' '
         }
 
-        val canBeMovedTo = g.calculateAllowedMoves(currentPlayer).filter(cell =>
-          cell._1 == gameFieldCell._1 &&
-            cell._2 == gameFieldCell._2).size == 1
+        val canBeVisited = false
+        //        val canBeVisited = g.calculateAllowedMoves(currentPlayer).filter(cell =>
+        //          cell._1 == gameFieldCell._1 &&
+        //            cell._2 == gameFieldCell._2).size == 1
 
-        cells :+ Cell(gameFieldCell._1._1, gameFieldCell._1._2, char, canBeMovedTo)
+        // TODO: DOESNT WORK YET
+        // cells.+:Cell(gameFieldCell._1._1, gameFieldCell._1._2, char, canBeVisited)
       }
 
       import GameDataJsonProtocol._

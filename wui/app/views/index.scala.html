@@ -1,25 +1,20 @@
 @(message: String) 
 
 @main(message) { 
-
-	
 	<div>
 		<h1>@message</h1>
 	</div>
 	<h2>WebSocket Test</h2>
-	<input id="text" type="text" />
-	<input id="button" type="button" value="clickme" onclick="doSend();" />
 	<div id="output"></div>
 	
 	<script type="text/javascript">
-	
-	  var wsUri = "ws://localhost:9000/ws";
+	  var wsUri = "ws://localhost:9000/broadcast";
 	  var output;
 	
 	  function init()
 	  {
 	    output = document.getElementById("output");
-	    document.getElementById("text").value = "";
+	    document.getElementById('text').value = "";
 	    testWebSocket();
 	  }
 	
@@ -55,10 +50,24 @@
 	  	  
 	  function doSend()
 	  {
-	    writeToScreen("SENT: " + document.getElementById('text').value); 
 	    websocket.send(document.getElementById('text').value);
 	  }
 	
+	  function displayError(message)
+	  {
+		  
+	  }
+	  
+	  function paintGrid(width, height, data) 
+	  {
+		  
+	  }
+	  
+	  function paintGameData(data)
+	  {
+	  
+	  }
+	  
 	  function writeToScreen(message)
 	  {
 	    var pre = document.createElement("p");

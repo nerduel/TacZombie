@@ -1,0 +1,253 @@
+@(message: String) 
+
+@main(message) { 
+
+  <div>
+    <h1>@message</h1>
+  </div>
+  
+  <div id="gameField">
+   <table id="grid">
+     <tr>
+       <td class="wall"></td>
+       <td class="wall"></td>
+       <td class="wall"></td>
+     </tr>
+     <tr>
+        <td class="wall"></td>
+        <td>&nbsp;</td>
+        <td class="wall"></td>
+      </tr>
+      <tr>
+        <td class="wall"></td>
+        <td>&nbsp;</td>
+        <td class="wall"></td>
+      </tr>
+      <tr>
+        <td class="wall"></td>
+        <td class="wall"></td>
+        <td class="wall" ></td>
+      </tr>
+   </table>
+  </div>
+  
+  <div id="gameData">
+    <table id="gState">
+      <tr>
+        <td>Current player:</td>
+        <td class="scnd" id="cPlayer">0</td>
+      </tr>
+      <tr>
+        <td>Current lifes: </td>
+        <td class="scnd" id="cLifes">0</td>
+      </tr>
+      <tr>
+        <td>Current coins: </td>
+        <td class="scnd" id="cCoins">0</td>
+      </tr>
+      <tr>
+        <td>Score: </td>
+        <td class="scnd" id="cScore">0</td>
+      </tr>
+      <tr>
+        <td>ZombieKiller: </td>
+        <td class="scnd" id="cZKiller">NO</td>
+      </tr>
+      <tr id="bottom" >
+        <td >Moves remaining: </td>
+        <td class="scnd" id="cMoves">0</td>
+      </tr>
+    </table>
+  </div>
+  <div id="clear"></div>
+  <div id="header">
+    <h3 id="message1">New Game</h3>
+  </div>
+		
+  <script type="text/javascript">
+    var wsUri = "ws://localhost:9000/broadcast";
+    var notifier;
+    var grid;
+  
+    function init()
+    {
+      notifier = document.getElementById('notifier');
+      grid = document.getElementById("grid")
+      connectToServer();
+    }
+  
+    function connectToServer()
+    {
+    var WS = window['MozWebSocket'] ? MozWebSocket : WebSocket
+      websocket = new WebSocket(wsUri);
+      websocket.onopen = function(evt) { onOpen(evt) };
+      websocket.onclose = function(evt) { onClose(evt) };
+      websocket.onmessage = function(evt) { onMessage(evt) };
+      websocket.onerror = function(evt) { onError(evt) };
+    }
+  
+    function onOpen(evt)
+    {
+    }
+  
+    function onClose(evt)
+    {
+    }
+  
+    function onMessage(evt)
+    {
+    	var msg = JSON.parse(evt.data);
+    	
+    	switch(msg.cmd) {
+    	  case "error":
+    		  displayError(msg.message);
+    		  break;
+
+    	  case "newGame":
+    		  renewGrid(msg.gameData.levelHeight,msg.gameData.levelWidth);
+    	  case "notify":
+    		  updateView(msg);
+    	}
+  	
+    }
+    
+    function renewGrid(height,width)
+    {
+    	var contentTable = document.getElementById("grid");
+    	changeElement("grid","","")
+    	
+      for (var r = 0; r < height; r++) 
+      { 
+        var tRow = document.createElement("tr");
+        for (var c = 0; c < width; c++)
+        {
+          var tDesk = document.createElement("td");
+          tDesk.id = r.toString() + "," + c.toString();
+          tDesk.className = "empty";
+          tRow.appendChild(tDesk);
+        }
+        grid.appendChild(tRow);
+      }
+    }
+
+    function displayError(msg)
+    {
+    	changeElement("message1","color: red", msg)
+    }
+    
+    function updateView(data) {
+    	switch (data.gameData.currentPlayer) 
+    	{
+        case "H":
+          changeElement("cPlayer", "", "Human");
+          break;
+          
+        case "Z":
+          changeElement("cPlayer", "", "Zombie");
+          break;
+    	}
+    	
+ 		  propagateState(data.gameData.gameState, data.gameData.score);
+    		  
+ 		  changeElement("cLifes", "", data.gameData.lifes);
+ 		  
+ 		  changeElement("cMoves", "", data.gameData.movesRemaining);
+           
+ 		  changeElement("cCoins", "", data.gameData.coins);
+       
+ 		  changeElement("cScore", "", data.gameData.score);
+ 		  
+ 		  switch (data.gameData.powerUp) 
+ 		  {
+ 			  case true:
+ 				  changeElement("cZKiller", "", "YES");
+ 				  break;
+ 				  
+ 			  case false:
+ 				  changeElement("cZKiller", "", "NO");
+ 				  break;
+ 		  }
+ 		  
+			  for (var i in data.cells) 
+			  {
+				  updateCell(data.cells[i])
+			  } 
+		  
+    }
+    
+    function propagateState(state,score)
+    {
+    	switch (state) 
+    	{
+   		  case "won":
+   			  //alert("Congratualtion!! You won!!\n" + "Loading next Map");
+   			  break;
+   			  
+   		  case "gameOver":
+   			  //alert("GameOver!!\n" + "Your final score: " + score);
+   			  break;
+    	}
+    }
+    
+    function changeElement(id, style, content)
+    {
+      var toChange = document.getElementById(id);
+      toChange.style = style;
+      toChange.innerHTML = content;
+    }
+    
+    function updateCell(cell)
+    {
+   	  var cellId = (cell.y + "," + cell.x).toString();
+   	  var cellNode = document.getElementById(cellId);
+   	  
+   	  switch (cell.token) 
+   	  {
+   		  case 'H':
+   			  if (cell.isHiglighted == true)
+   				  cellNode.className = "hHuman";
+   			  else
+   				  cellNode.className = "human"; 
+   			  break;
+   			  
+ 			  case 'Z':
+ 				  if (cell.isHiglighted == true)
+ 					 cellNode.className = "hZombie";
+          else
+        	  cellNode.className = "zombie";
+ 				  
+ 				  break;
+ 				  
+ 			  case 'C':
+ 				  if (cell.isHiglighted == true)
+           cellNode.className = "hCoin";
+          else
+            cellNode.className = "coin";
+          break;
+          
+        case 'P':
+        	if (cell.isHiglighted == true)
+           cellNode.className = "hPowerup";
+          else
+            cellNode.className = "powerup";
+          break;
+          
+        case 'W':
+        	cellNode.className = "wall"
+          break;
+            
+        case 'N':
+        	if (cell.isHiglighted == true)
+           cellNode.className = "hEmpty";
+          else
+            cellNode.className = "empty";
+          break;
+   	  }
+    } 
+    
+    window.addEventListener("load", init, false);
+  
+  </script>
+  
+  
+}

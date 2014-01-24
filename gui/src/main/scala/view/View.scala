@@ -37,29 +37,16 @@ import javafx.beans.value.ObservableIntegerValue
 import javafx.beans.value.ObservableNumberValue
 import javafx.beans.value.ChangeListener
 import scalafx.beans.property.StringProperty
+import controller.Communication
+import util.userMsg
+import util.MoveUp
 
 object View extends JFXApp { 
+ 
   
   var map = scalafx.collections.ObservableMap[(Int,Int), Color]()
   var mapProperty = Map[(Int,Int), StringProperty]().empty
-  
-  for(row <- 0 to 10; col <- 0 to 10) {
-    if (row % 2 == 0) {
-      map += ((row,col) -> (Color.YELLOW))
-      mapProperty += ((row,col) -> StringProperty("Zombie"))
-  	}
-    else if (col % 2 == 0) {
-      map += ((row,col) -> (Color.GREEN))
-      mapProperty += ((row,col) -> StringProperty("Human"))
-    }
-    else {
-      map += ((row,col) -> (Color.RED))
-      mapProperty += ((row,col) -> StringProperty("Coin"))
-    }
-  }	 
- 
-  
-  
+   
   val currentPlayerFromModel = new StringProperty("0")
   
   stage = new JFXApp.PrimaryStage {
@@ -73,26 +60,10 @@ object View extends JFXApp {
     scene = new Scene {
       onKeyPressed = {e:KeyEvent =>
         e.code match {
-          case KeyCode.UP => 
-            println("MoveUP")
-            mapProperty(row,col).update(cell)
-            row += 1; col += 1
-            println("Row+Col: " + (row+col))
-            println("Mapsize/Col: " +mapProperty.size/10 )
-            if ((row >= mapProperty.size/col)) {
-              row = 0; col = 0
-              cell match {
-                case "Coin" => cell = "Zombie"
-                case "Zombie" => cell = "Human"
-                case "Human" => cell = "Coin"
-              }
-            }
-          case KeyCode.DOWN => 
-            println("MoveDOWN")
-            currentPlayerFromModel.update((currentPlayerFromModel.value.toInt + 1).toString)
-          case KeyCode.LEFT => println("MoveLEFT")
-          case KeyCode.RIGHT => println("MoveRIGHT")
-          case KeyCode.SPACE => println("MoveYield")
+          case KeyCode.UP => Communication.moveUp
+          case KeyCode.DOWN => Communication.moveDown
+          case KeyCode.LEFT => Communication.moveLeft
+          case KeyCode.RIGHT => Communication.moveRight
           case _ => 
         }
       }
@@ -106,22 +77,11 @@ object View extends JFXApp {
         val newGameButton = new Button {
           text = "New Game"
           minWidth = 75
-          onAction = (event: ActionEvent) => {
-            println("NewGame clicked.")
-          }
-        }
-
-        val quitGameButton = new Button {
-          text = "Quit Game"
-          minWidth = 75
-          onAction = (event: ActionEvent) => {
-            close()
-            println("QuitGame clicked.")
-          }
+          onAction = (event: ActionEvent) => Communication.newGame
         }
 
         val toolBar = new ToolBar {
-          content = List(newGameButton, quitGameButton)
+          content = List(newGameButton)
         }
         
         /***************

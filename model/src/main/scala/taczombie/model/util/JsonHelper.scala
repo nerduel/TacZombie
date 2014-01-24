@@ -55,13 +55,13 @@ object JsonHelper {
       
       for (gameFieldCell <- changedCells) {
         val char: Char = {
-          if (gameFieldCell._2 == null) ' '
+          if (gameFieldCell._2 == null) 'N'
           else if (gameFieldCell._2.containsWall) 'W'
           else if (gameFieldCell._2.containsZombieToken) 'Z'
           else if (gameFieldCell._2.containsHumanToken) 'H'
           else if (gameFieldCell._2.containsCoin) 'C'
           else if (gameFieldCell._2.containsPowerup) 'P'
-          else ' '
+          else 'N'
         }
 
         val canBeVisited = false
@@ -69,8 +69,7 @@ object JsonHelper {
         //          cell._1 == gameFieldCell._1 &&
         //            cell._2 == gameFieldCell._2).size == 1
 
-        // TODO: DOESNT WORK YET
-        // cells.+:Cell(gameFieldCell._1._1, gameFieldCell._1._2, char, canBeVisited)
+        cells ::: Cell(gameFieldCell._1._1, gameFieldCell._1._2, char, canBeVisited) :: Nil
       }
 
       import GameDataJsonProtocol._

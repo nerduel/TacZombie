@@ -8,9 +8,12 @@ import play.api.libs.iteratee.Iteratee
 import play.api.mvc.Controller
 import play.api.mvc.WebSocket
 import play.api.mvc.Action
+import taczombie.model.GameFactory
 
 object Application extends Controller {
 
+  var myGame = GameFactory.newGame(random = false, humans = 1, zombies = 1)
+  
   def game = Action {
     Ok(views.html.game("TacZombie"))
   }
@@ -19,19 +22,29 @@ object Application extends Controller {
     Map[String, ListBuffer[play.api.libs.iteratee.Concurrent.Channel[String]]](
         "lobby" -> new ListBuffer[play.api.libs.iteratee.Concurrent.Channel[String]]()
     )
-
+  
+  import taczombie.model.util.JsonHelper._
   def broadcast = WebSocket.async[String] { request =>
-
+  	
     concurrent.future {
       val (out, channel) = Concurrent.broadcast[String]
 
-      println(request.id)
-
+      println("Id of view: " + request.id)
+      
       outchannels.apply("lobby").append(channel)
+      
+      channel.push(myGame.toJson(All)
 
       val in = Iteratee.foreach[String] { msg =>
-        println("receiving message: " + msg)
-        outchannels("lobby").foreach(_.push(msg))
+        println("[DEBUG]: receiving message: " + msg)
+        
+        val game = GameController.evaluateCommand(msg, myGame)
+
+        val answer = game.toJson(Updated)
+          
+        outchannels("lobby").foreach(_.push(answer))
+        
+        myGame = game
       }
 
       (in, out)

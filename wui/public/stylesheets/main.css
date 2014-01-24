@@ -2,7 +2,20 @@ body {
   color: black; background-color: white;
   font-size: 100.01%;
   font-family: Helvetica,Arial,sans-serif;
-  margin: 0; padding: 1em;
+  padding-left: 1em;
+  margin-left: 0;
+  margin-top: -1em;
+  overflow: scroll;
+}
+
+
+#container {
+  /*
+  border-left: 1px dashed #FAA;
+  border-right: 1px dashed #FAA;
+  */
+  margin: 0 auto;
+  width: 960px;
 }
 
 div#footer {
@@ -11,7 +24,7 @@ div#footer {
 }
 
 div#gameField {
-    display: inline-block;
+    display: block;
 	  font-size: 0.91em;
 	  float: left; 
 	  margin: 0; padding: 0.1em;
@@ -80,7 +93,8 @@ div#gameField table#grid td.hEmpty {
 
 div#gameData {
 	  display: inline-block;
-    margin-left:3em ;
+	  float: left;
+    margin-left: 2em;
     padding: 0 0em;
     background-color: #DDDDDD;
 }
@@ -99,4 +113,12 @@ div#gameData tr#bottom td{
 
 div#clear {
     clear: both;
+}
+
+#footer {
+    clear: left;
+    margin-top:1em;
+    background:#efefef;
+    text-align:left;
+    padding-left: 3em;
 }

@@ -2,7 +2,6 @@ package taczombie.model
 
 import scala.Array.canBuildFrom
 import scala.collection.immutable.HashSet
-import scala.collection.immutable.TreeMap
 import scala.io.Source
 
 object GameFactory {
@@ -70,8 +69,8 @@ object GameFactory {
     var coinsPlaced : Int = 0
     
     // collect tokens
-    var humanTokens = TreeMap[Int,HumanToken]()
-    var zombieTokens = TreeMap[Int,ZombieToken]()
+    var humanTokens = new PlayerTokens[HumanToken](List[HumanToken]())
+    var zombieTokens = new PlayerTokens[ZombieToken](List[ZombieToken]())
     
     var gameFieldCells = Map[(Int,Int), GameFieldCell]()
     
@@ -92,14 +91,14 @@ object GameFactory {
               humanBase = (tuple)
               for(i <- 0 until humanTokenCount) {
                 val humanToken = new HumanToken(this.generateId, (tuple))
-                humanTokens = humanTokens.updated(humanToken.id, humanToken)
+                humanTokens = humanTokens.updatedWithNewToken(humanToken)
                 tmpGameFieldCell = tmpGameFieldCell.addHere(humanToken)
               }              
           case 'Z' =>
               zombieBase = (tuple)
               for(i <- 0 until zombieTokenCount) {
                 val zombieToken =  new ZombieToken(this.generateId, (tuple))
-                zombieTokens = zombieTokens.updated(zombieToken.id, zombieToken)                
+                zombieTokens = zombieTokens.updatedWithNewToken(zombieToken)                
                 tmpGameFieldCell = tmpGameFieldCell.addHere(zombieToken)
               }
           case c : Char => {
@@ -116,10 +115,10 @@ object GameFactory {
     // Create the player map with a human and a zombie player with tokens
     // TODO: make this scalable for more players
     var players : Players = new Players(List[Player]())
-    val humanId = defaultHumanName + this.generateId
-    players = players.updatedWithNewPlayer(new Human(humanId, humanTokens))
     val zombieId = defaultZombieName + this.generateId
     players = players.updatedWithNewPlayer(new Zombie(zombieId, zombieTokens))
+    val humanId = defaultHumanName + this.generateId
+    players = players.updatedWithNewPlayer(new Human(humanId, humanTokens))
     
     val gameField = new GameField(gameName,
                 gameFieldCells,

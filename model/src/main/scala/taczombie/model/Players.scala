@@ -1,5 +1,7 @@
 package taczombie.model
 
+
+
 class Players(val playerList : List[Player]) {
     
   def currentPlayer() : Player = playerList.head
@@ -31,26 +33,27 @@ class Players(val playerList : List[Player]) {
   	: Players = {
     var updatedPlayers : Players = this
     playerList.foreach(player => {
-      player.playerTokens.foreach(playerToken => {
+      player.playerTokens.tokenList.foreach(playerToken => {
         gameFieldCell.gameObjects.foreach(gameObject =>{
-      	  (player, playerToken._2, gameObject) match {
+      	  (player, playerToken, gameObject) match {
       	    case(human : Human, playerHumanToken : HumanToken, 
-      	        	cellHumanToken : HumanToken) =>
+      	        	cellHumanToken : HumanToken) => {
       	      if(playerHumanToken.id == cellHumanToken.id) {
       	        println("found same token")
       	        updatedPlayers = updatedPlayers.updatedExistingPlayer(
       	            human.updatedToken(cellHumanToken))
-      	      }      	        
-      	        
+      	      }
+	        	}
       	    case(zombie : Zombie, playerZombieToken : ZombieToken, 
-      	        	cellZombieToken : ZombieToken) =>
+      	        	cellZombieToken : ZombieToken) => {
       	      if(playerZombieToken.id == cellZombieToken.id) {
       	        println("found same token")
       	        updatedPlayers = updatedPlayers.updatedExistingPlayer(
       	            zombie.updatedToken(cellZombieToken))
       	      }
+	        	}
       	    case _ =>
-      	  	} 
+    	  	} 
       	})
       })
     })
@@ -58,10 +61,9 @@ class Players(val playerList : List[Player]) {
   }
   
   def updatedRotatedPlayers() : Players = {
+    var finalPlayers = this
+    playerList.foreach(player => 
+      finalPlayers = finalPlayers.updatedExistingPlayer(player.updatedResetMovesRemaining))
     new Players(playerList.tail ::: playerList.head :: Nil)
   }
-  
-//  def udpatedRotatedTokens(player : Player) {
-//    val newPlayer = player.playerTokens
-//  }
 }

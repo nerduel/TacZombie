@@ -47,7 +47,7 @@ case class Powerup(id : Int,
 
 trait PlayerToken extends VersatileGameObject {
   protected val killScore = 3
-  
+  val id : Int
   val frozenTime : Int
   require(frozenTime >= 0)
   

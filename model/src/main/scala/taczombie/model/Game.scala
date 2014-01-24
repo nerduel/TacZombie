@@ -3,6 +3,15 @@ package taczombie.model
 import GameState.GameState
 import util.CoordinateHelper.intIntTuple2Wrapper
 
+object defaults {
+  val humanMoves = 20
+  val lifes = 3
+  val zombieMoves = 1
+  
+  val humanName = "Pacman"
+  val zombieName = "Zombie"
+}
+
 class Game(val id : Int,
     			 val gameField : GameField,
            val players : Players, // first player is current player!

@@ -150,9 +150,12 @@ class GameFieldCell(val coords : (Int, Int),
       	case versatileHostObject : VersatileGameObject => {
       		versatileHostObject isVisitedBy finalPlayerToken match {
       			case (hostObjectResult, playerTokenResult : PlayerToken) => {
-      			  if(hostObjectResult != null)
-      			  	finalHostObjects = finalHostObjects.-(hostObjectResult)
-      			  																		 .+(hostObjectResult)
+      			  	finalHostObjects = finalHostObjects.-(versatileHostObject)
+      			  	if(hostObjectResult.isInstanceOf[PlayerToken] &&
+      			  	    hostObjectResult.asInstanceOf[PlayerToken].dead == true) {}
+      			  	else if(hostObjectResult != null)
+      			  	  finalHostObjects = finalHostObjects.+(hostObjectResult)
+
               finalPlayerToken = playerTokenResult
       			}
       		}
@@ -169,8 +172,11 @@ class GameFieldCell(val coords : (Int, Int),
   /**
    * Remove an object from the Cell
    */
-  def remove(leavingObject : GameObject) : GameFieldCell =
-  	this.updated(gameObjects.-(leavingObject))
+  def remove(leavingObject : GameObject) : GameFieldCell = {
+    val toRemove = this.gameObjects
+    									 		.filter(go => go.id == leavingObject.id).head
+  	this.updated(this.gameObjects.-(toRemove))
+  }
   
   /**
    * Create an updated GameFieldCell from new GameObjects

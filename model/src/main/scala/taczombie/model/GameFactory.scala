@@ -31,10 +31,6 @@ object GameFactory {
     
     new Game(generateId, gameField, playerMap, GameState.InGame)
   }
-
-
-  val defaultHumanName = "Pacman"
-  val defaultZombieName = "Zombie"
     
   def createGameFieldAndPlayerMap(humanTokenCount : Int, zombieTokenCount : Int,
                     file : String = null,
@@ -115,9 +111,9 @@ object GameFactory {
     // Create the player map with a human and a zombie player with tokens
     // TODO: make this scalable for more players
     var players : Players = new Players(List[Player]())
-    val zombieId = defaultZombieName + this.generateId
+    val zombieId = defaults.zombieName + this.generateId
     players = players.updatedWithNewPlayer(new Zombie(zombieId, zombieTokens))
-    val humanId = defaultHumanName + this.generateId
+    val humanId = defaults.humanName + this.generateId
     players = players.updatedWithNewPlayer(new Human(humanId, humanTokens))
     
     val gameField = new GameField(gameName,

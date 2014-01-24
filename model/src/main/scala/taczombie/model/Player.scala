@@ -2,12 +2,6 @@ package taczombie.model
 
 import scala.collection.immutable.TreeMap
 
-private object defaults {
-  val humanMoves = 20
-  val lifes = 3
-  val zombieMoves = 1
-}
-
 trait Player {
   
   val defaultHumanMoves = 10

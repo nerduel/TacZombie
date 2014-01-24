@@ -50,6 +50,13 @@ object HelloGame {
 		game = game.executeCommand(MoveRight)
 		game = game.executeCommand(MoveRight)
 		game = game.executeCommand(MoveRight)
+		game = game.executeCommand(MoveRight)
+		game = game.executeCommand(MoveRight)
+		game = game.executeCommand(MoveRight)
+		game = game.executeCommand(MoveRight)
+		game = game.executeCommand(MoveRight)
+		game = game.executeCommand(MoveRight)
+		game = game.executeCommand(MoveRight)
 		
 		printGameField(game.gameField)
 	}

@@ -1,5 +1,6 @@
 package taczombie.model
 
+import scala.Array.canBuildFrom
 import scala.collection.immutable.HashSet
 import scala.collection.immutable.TreeMap
 import scala.io.Source
@@ -13,9 +14,12 @@ object GameFactory {
   
   val defaultFile =  
     "/home/junky/synchronized/TacZombie/model/src/test/scala/taczombie/test/model/TestLevel_correct"
-  
+    
+  val defaultHumans = 1
+  val defaultZombies = 1
+    
   def newGame(random : Boolean = false, file : String = defaultFile, 
-      humans :Int = defaultHumans, zombies : Int= defaultZombies) : Game = {
+      humans: Int = defaultHumans, zombies: Int= defaultZombies) : Game = {
     
     val (gameField, playerMap) = {
 //      if(random == false)
@@ -29,17 +33,16 @@ object GameFactory {
     new Game(generateId, gameField, playerMap, GameState.InGame)
   }
 
-  val defaultHumans = 1
-  val defaultZombies = 3
+
   val defaultHumanName = "Pacman"
   val defaultZombieName = "Zombie"
     
-  def createGameFieldAndPlayerMap(humanTokens : Int, zombieTokens : Int,
+  def createGameFieldAndPlayerMap(humanTokenCount : Int, zombieTokenCount : Int,
                     file : String = null,
                     level : Array[String] = null,
                     name : String = null)
         
-        : (GameField, TreeMap[String,Player])  = {
+        : (GameField, Players)  = {
     
     val (mapStringArray, gameName) = {
       if(file != null)
@@ -77,7 +80,7 @@ object GameFactory {
         val tuple = (row,col)
         var tmpGameFieldCell = new GameFieldCell((tuple), HashSet[GameObject]())
         var validCharacterRead = true
-        mapStringArray.apply(row).apply(col) match {
+        mapStringArray(row)(col) match {
           case '#' =>
               tmpGameFieldCell = tmpGameFieldCell.addHere(new Wall(0,(tuple)))
           case '.' =>
@@ -87,14 +90,14 @@ object GameFactory {
               tmpGameFieldCell = tmpGameFieldCell.addHere(new Powerup(this.generateId, (tuple)))
           case 'H' =>
               humanBase = (tuple)
-              for(i <- 0 to defaultHumans) {
+              for(i <- 0 until humanTokenCount) {
                 val humanToken = new HumanToken(this.generateId, (tuple))
                 humanTokens = humanTokens.updated(humanToken.id, humanToken)
                 tmpGameFieldCell = tmpGameFieldCell.addHere(humanToken)
               }              
           case 'Z' =>
               zombieBase = (tuple)
-              for(i <- 0 to defaultZombies) {
+              for(i <- 0 until zombieTokenCount) {
                 val zombieToken =  new ZombieToken(this.generateId, (tuple))
                 zombieTokens = zombieTokens.updated(zombieToken.id, zombieToken)                
                 tmpGameFieldCell = tmpGameFieldCell.addHere(zombieToken)
@@ -111,14 +114,12 @@ object GameFactory {
     }
     
     // Create the player map with a human and a zombie player with tokens
-    var playerMap : TreeMap[String, Player] = TreeMap[String, Player]()
+    // TODO: make this scalable for more players
+    var players : Players = new Players(List[Player]())
     val humanId = defaultHumanName + this.generateId
-    playerMap = playerMap.updated(
-        defaultHumanName, 
-    		new Human(humanId, humanTokens))
+    players = players.updatedWithNewPlayer(new Human(humanId, humanTokens))
     val zombieId = defaultZombieName + this.generateId
-    playerMap = playerMap.updated(defaultZombieName, 
-                  								new Zombie(zombieId, zombieTokens))
+    players = players.updatedWithNewPlayer(new Zombie(zombieId, zombieTokens))
     
     val gameField = new GameField(gameName,
                 gameFieldCells,
@@ -128,6 +129,6 @@ object GameFactory {
                 zombieBase,
                 coinsPlaced)
     
-    (gameField, playerMap)
+    (gameField, players)
   }
 }

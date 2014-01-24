@@ -3,7 +3,7 @@ package taczombie.model
 import scala.collection.immutable.HashSet
 import scala.collection.immutable.TreeMap
 
-import taczombie.model.util.GameHelper._
+import util.GameHelper._
 
 class GameField(val id : String,
     						val gameFieldCells : Map[(Int,Int),GameFieldCell],
@@ -19,46 +19,40 @@ class GameField(val id : String,
    * @return Updated Game, List of changed Cells, Updated PlayerMap 
    */
   def move(destinationCoords : (Int, Int), 
-        	 playerMap : TreeMap[String,Player],
+        	 players : Players,
         	 spawning : Boolean = false,
         	 fakeMove : Boolean = false) 
-    		: (GameField, List[GameFieldCell], TreeMap[String,Player]) = {
+    		: (GameField, List[GameFieldCell], Players) = {
   	
+   
     val (movingPlayer, movingToken) = { 
       if(spawning) { 
-      	(activePlayer(playerMap), activePlayer(playerMap).currentToken)
+      	(players.currentPlayer, players.currentPlayer.currentToken)
       } else {
-        (activePlayer(playerMap).updatedMoved(), 
-         activePlayer(playerMap).currentToken.updatedMoved())
+        (players.currentPlayer.updatedMoved(), 
+         players.currentPlayer.currentToken.updatedMoved())
       }
     }
 
-    
+    // TODO debug print 
+    println("moving " + movingToken + " to " + destinationCoords)
+
     val updatedSourceCell = gameFieldCells.apply(movingToken.coords)
     																			.remove(movingToken)
-    val updatedDestinationCell = gameFieldCells.apply(destinationCoords)
-    																					 .moveHere(movingToken)
-		 
+    val (updatedDestinationCell, updatedMovingToken) =
+    	gameFieldCells.apply(destinationCoords).moveHere(movingToken)
     val updatedGameFieldCells = List[GameFieldCell](updatedSourceCell, 
-          																					updatedDestinationCell)  
+          																					updatedDestinationCell)
 
-    // update the player and all tokens
-    var finalPlayerList = playerMap.updated(movingPlayer.name, movingPlayer)
-    updatedDestinationCell.gameObjects.foreach ({ gameObject => 
-      gameObject match {
-        case playerToken : PlayerToken => {
-          playerMap.tail.foreach(playerMapTuple => {
-          	if(playerMapTuple._2.playerTokens.contains(playerToken.id))
-          	  finalPlayerList = 
-          	    finalPlayerList.updated(playerMapTuple._1, playerMapTuple._2)
-          })
-        }
-      }
-    })
-      
+    var finalPlayers : Players = players.updatedExistingPlayer(movingPlayer)																			
+    finalPlayers = finalPlayers.updatedFromUpdatedGameFieldCell(updatedDestinationCell)
+    
+    // TODO debug print 
+    //finalPlayerMap.foreach(player => println(player)) 
+    
     (this.updated(updatedGameFieldCells),
      updatedGameFieldCells,
-     finalPlayerList)
+     finalPlayers)
   }
   
   // TODO: Check if obsolete
@@ -94,7 +88,9 @@ class GameField(val id : String,
 class GameFieldCell(val coords : (Int, Int),
     								val gameObjects : HashSet[GameObject]) {
 
-  val constructedGameObjects = HashSet[GameObject]()
+  def isEmpty() : Boolean = {
+    gameObjects.size == 0
+  }  
   
   def containsZombieToken() : Boolean = {
     gameObjects.filter(gameObject =>  
@@ -131,7 +127,8 @@ class GameFieldCell(val coords : (Int, Int),
   /**
    * Move a PlayerToken to the Cell
    */
-  def moveHere (playerToken : PlayerToken) : GameFieldCell = {
+  def moveHere (playerToken : PlayerToken) 
+  		: (GameFieldCell, PlayerToken) = {
     val zombieList = gameObjects.filter(
         hostObject =>	hostObject.isInstanceOf[ZombieToken])
     
@@ -143,11 +140,12 @@ class GameFieldCell(val coords : (Int, Int),
     for (hostObject <- hostList) { 
       hostObject match {
       	case versatileHostObject : VersatileGameObject => {
-      		versatileHostObject isVisitedBy playerToken match {
+      		versatileHostObject isVisitedBy finalPlayerToken match {
       			case (hostObjectResult, playerTokenResult : PlayerToken) => {
-      			  finalHostObjects = (finalHostObjects.-(hostObjectResult))
-          	  										.+(hostObjectResult)
-          	  finalPlayerToken = playerTokenResult
+      			  if(hostObjectResult != null)
+      			  	finalHostObjects = finalHostObjects.-(hostObjectResult)
+      			  																		 .+(hostObjectResult)
+              finalPlayerToken = playerTokenResult
       			}
       		}
       	}
@@ -157,7 +155,7 @@ class GameFieldCell(val coords : (Int, Int),
     // add final visitorObjectResult 
     finalHostObjects += finalPlayerToken
     
-    this.updated(finalHostObjects)
+    (this.updated(finalHostObjects), finalPlayerToken)
   }
   
   /**

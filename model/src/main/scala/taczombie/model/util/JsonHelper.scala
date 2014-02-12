@@ -15,7 +15,7 @@ object JsonHelper {
   case class Data(cmd: String, gameData: JsValue, cells: JsValue)
 
   case class GameData(gameState: String, currentPlayer: Char,
-    lifes: Int, movesLeft: Int, coins: Int,
+    lifes: Int, movesRemaining: Int, coins: Int,
     score: Int, powerUp: Int, levelWidth: Int,
     levelHeight: Int)
 
@@ -33,8 +33,8 @@ object JsonHelper {
   
 
   class Game2JsonHelper(g: Game) {   
+    // TODO: This function does not return cells 
     def toJson(command: Type): String = {
-      
       var cmd = ""
       command match {
         case All => cmd = "all"
@@ -61,19 +61,23 @@ object JsonHelper {
         case z: Zombie =>
           currentPlayerTokenAsChar = 'Z'
       }
-
+      
       // Collect and simplify changed game cells
-      var cells = List[Cell]()
       
       import taczombie.model.util.CoordinateHelper._
-      var allowedMoves = currentPlayer.currentToken.coords.calculateAllowedMoves(movesRemaining)
-      val gameFieldCellsFromAllowedMoves = g.gameField.gameFieldCells.filter(x => allowedMoves.contains(x._1, x._2))
-      for (gameFieldCell <- gameFieldCellsFromAllowedMoves) {
-        cells ::: Cell(gameFieldCell._1._1, gameFieldCell._1._2, getChar(gameFieldCell._2), true) :: Nil
-      }
+      var allowedMoves = currentPlayer.currentToken.coords.calculateAllowedMoves(movesRemaining,g)
+      val gameFieldCellsFromAllowedMoves = g.gameField.gameFieldCells.filter(x => allowedMoves.contains(x._1._1, x._1._2))
       
-      for (gameFieldCell <- lastUpdatedGameFieldCells.filter(_.coords != gameFieldCellsFromAllowedMoves)) {
-        cells ::: Cell(gameFieldCell.coords._1,gameFieldCell.coords._2, getChar(gameFieldCell), false) :: Nil
+      var cells = { 
+        for {
+          	gameFieldCell <- gameFieldCellsFromAllowedMoves
+        	cell = Cell(gameFieldCell._1._1, gameFieldCell._1._2, getChar(gameFieldCell._2), true)
+        } yield cell
+      }.toList ::: { 
+        for { 
+        	gameFieldCell <- lastUpdatedGameFieldCells.filter(_.coords != gameFieldCellsFromAllowedMoves)
+        	cell = Cell(gameFieldCell.coords._1,gameFieldCell.coords._2, getChar(gameFieldCell), false)
+        } yield cell
       }
       
       import GameDataJsonProtocol._

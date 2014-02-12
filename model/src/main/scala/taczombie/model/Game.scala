@@ -4,16 +4,16 @@ import GameState.GameState
 import util.CoordinateHelper.intIntTuple2Wrapper
 
 object defaults {
-  val humanMoves = 20
+  val humanMoves = 5
   val lifes = 3
-  val zombieMoves = 1
+  val zombieMoves = 5
   
   val humanName = "Pacman"
   val zombieName = "Zombie"
 }
 
 class Game(val id : Int,
-    			 val gameField : GameField,
+    	   val gameField : GameField,
            val players : Players, // first player is current player!
            val gameState : GameState = GameState.InGame,
            val lastUpdatedGameFieldCells : List[GameFieldCell] = List[GameFieldCell]()) {

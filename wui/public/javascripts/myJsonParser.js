@@ -1,18 +1,9 @@
 var wsUri = "ws://localhost:9000/broadcast";
-// KEY CODES
-var switchToken = 9; // tab
-var nextPlayer = 13; // enter|return
-var leftArrow = 37;
-var upArrow = 38;
-var rightArrow = 39;
-var downArrow = 40;
-var nextGame = 78; // n
-var quit = 81; // q
-
 var grid;
+window.addEventListener("load", init, false);
 
 function init() {
-	grid = document.getElementById("grid")
+	grid = document.getElementById("grid");
 	connectToServer();
 }
 
@@ -20,35 +11,33 @@ function connectToServer() {
 	var WS = window['MozWebSocket'] ? MozWebSocket : WebSocket
 	websocket = new WebSocket(wsUri);
 	websocket.onopen = function(evt) {
-		onOpen(evt)
+		onOpen(evt);
 	};
 	websocket.onclose = function(evt) {
-		onClose(evt)
+		onClose(evt);
 	};
 	websocket.onmessage = function(evt) {
-		onMessage(evt)
+		onMessage(evt);
 	};
 	websocket.onerror = function(evt) {
-		onError(evt)
+		onError(evt);
 	};
 }
 
 function onOpen(evt) {
+	websocket.send("getGameData");
 }
 
 function onClose(evt) {
-	websocket.send("quitGame");
 }
 
 function onError(evt) {
 	alert("ERROR");
 }
 
-
 function onMessage(evt) {
 	try {
 		var msg = JSON.parse(evt.data);
-		
 		switch (msg.cmd) {
 		case "error":
 			displayError(msg.message);
@@ -57,12 +46,14 @@ function onMessage(evt) {
 		case "all":
 			renewGrid(msg.gameData.levelHeight, msg.gameData.levelWidth);
 			updateView(msg);
-			displayInformation("New Game Loaded.")
+			displayInformation("New Game Loaded.");
+			document.getElementById("gameData").style = "";
 			break;
 			
 		case "updated":
+			renewGrid(msg.gameData.levelHeight, msg.gameData.levelWidth);
 			updateView(msg);
-			displayInformation("Turn of player was valid.")
+			displayInformation("Turn of player was valid.");
 			break;
 		}
 	} catch (e) {
@@ -86,12 +77,13 @@ function renewGrid(height, width) {
 	}
 }
 
+
 function displayError(msg) {
-	changeElement("message1", "color: red", msg)
+	changeElement("message1", "color: red", msg);
 }
 
 function displayInformation(msg) {
-	changeElement("message1", "", msg)
+	changeElement("message1", "", msg);
 }
 
 function updateView(data) {
@@ -126,22 +118,25 @@ function updateView(data) {
 	}
 
 	for ( var i in data.cells) {
-		updateCell(data.cells[i])
+		updateCell(data.cells[i]);
 	}
 
 }
+
 
 function propagateState(state, score) {
 	switch (state) {
 	case "won":
-		// alert("Congratualtion!! You won!!\n" + "Loading next Map");
+		alert("Congratualtion!! You won!!\n" + "Loading next Map");
+		websocket.send("getGameData");
 		break;
 
 	case "gameOver":
-		// alert("GameOver!!\n" + "Your final score: " + score);
+		alert("GameOver!!\n" + "Your final score: " + score);
 		break;
 	}
 }
+
 
 function changeElement(id, style, content) {
 	var toChange = document.getElementById(id);
@@ -149,8 +144,9 @@ function changeElement(id, style, content) {
 	toChange.innerHTML = content;
 }
 
+
 function updateCell(cell) {
-	var cellId = (cell.y + "," + cell.x).toString();
+	var cellId = (cell.x + "," + cell.y).toString();
 	var cellNode = document.getElementById(cellId);
 
 	switch (cell.token) {
@@ -184,7 +180,7 @@ function updateCell(cell) {
 		break;
 
 	case 'W':
-		cellNode.className = "wall"
+		cellNode.className = "wall";
 		break;
 
 	case 'N':
@@ -196,4 +192,57 @@ function updateCell(cell) {
 	}
 }
 
-window.addEventListener("load", init, false);
+function handleKeyEvent(evt)
+{
+	var switchToken = 9; // tab
+	var nextPlayer = 13; // enter|return
+	var leftArrow = 37;
+	var upArrow = 38;
+	var rightArrow = 39;
+	var downArrow = 40;
+	var nextGame = 78; // n
+
+	var textBox = document.getElementById("userInput");
+	var charCode = (evt.which) ? evt.which : evt.keyCode;
+	switch (charCode) {
+	case leftArrow:
+		doSend("moveLeft");
+		textBox.value = "left";
+		break;
+
+	case upArrow:
+		doSend("moveUp");
+		textBox.value = "up";
+		break;
+
+	case rightArrow:
+		doSend("moveRight");
+		textBox.value = "right";
+		break;
+
+	case downArrow:
+		doSend("moveDown");
+		textBox.value = "down";
+		break;
+
+	case nextPlayer:
+		doSend("nextPlayer");
+		textBox.value = "nextPlayer";
+		break;
+
+	case switchToken:
+		doSend("switchToken");
+		textBox.value = "switchToken";
+		break;
+
+	case nextGame:
+		doSend("nextGame");
+		textBox.value = "nextGame";
+		break;
+	}
+}
+
+function doSend(command) 
+{
+	websocket.send(command);
+}

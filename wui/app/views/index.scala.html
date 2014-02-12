@@ -1,83 +1,82 @@
 @(message: String) 
 
 @main(message) { 
-	<div>
-		<h1>@message</h1>
-	</div>
-	<h2>WebSocket Test</h2>
-	<div id="output"></div>
-	
-	<script type="text/javascript">
-	  var wsUri = "ws://localhost:9000/broadcast";
-	  var output;
-	
-	  function init()
-	  {
-	    output = document.getElementById("output");
-	    document.getElementById('text').value = "";
-	    testWebSocket();
-	  }
-	
-	  function testWebSocket()
-	  {
-		var WS = window['MozWebSocket'] ? MozWebSocket : WebSocket
-	    websocket = new WebSocket(wsUri);
-	    websocket.onopen = function(evt) { onOpen(evt) };
-	    websocket.onclose = function(evt) { onClose(evt) };
-	    websocket.onmessage = function(evt) { onMessage(evt) };
-	    websocket.onerror = function(evt) { onError(evt) };
-	  }
-	
-	  function onOpen(evt)
-	  {
-	    writeToScreen("CONNECTED");
-	  }
-	
-	  function onClose(evt)
-	  {
-	    writeToScreen("DISCONNECTED");
-	  }
-	
-	  function onMessage(evt)
-	  {
-	    writeToScreen('<span style="color: blue;">RESPONSE: ' + evt.data+'</span>');
-	  }
-	
-	  function onError(evt)
-	  {
-	    writeToScreen('<span style="color: red;">ERROR:</span> ' + evt.data);
-	  }
-	  	  
-	  function doSend()
-	  {
-	    websocket.send(document.getElementById('text').value);
-	  }
-	
-	  function displayError(message)
-	  {
-		  
-	  }
-	  
-	  function paintGrid(width, height, data) 
-	  {
-		  
-	  }
-	  
-	  function paintGameData(data)
-	  {
-	  
-	  }
-	  
-	  function writeToScreen(message)
-	  {
-	    var pre = document.createElement("p");
-	    pre.style.wordWrap = "break-word";
-	    pre.innerHTML = message;
-	    output.appendChild(pre);
-	  }
-	
-	  window.addEventListener("load", init, false);
-	
-	</script>
 
+  <div id="container">
+  <div>
+    <h1>@message</h1>
+  </div>
+  
+  <div id="gameField">
+   <table id="grid">
+   </table>
+  </div>
+  
+  <div id="gameInfo">
+	  <div id="gameData" style="visibility: hidden;">
+	    <table id="gState">
+	      <tr>
+	        <td>Current player:</td>
+	        <td class="scnd" id="cPlayer"></td>
+	      </tr>
+	      <tr>
+	        <td>Current lifes: </td>
+	        <td class="scnd" id="cLifes"></td>
+	      </tr>
+	      <tr>
+	        <td>Current coins: </td>
+	        <td class="scnd" id="cCoins"></td>
+	      </tr>
+	      <tr>
+	        <td>Score: </td>
+	        <td class="scnd" id="cScore"></td>
+	      </tr>
+	      <tr>
+	        <td>ZombieKiller: </td>
+	        <td class="scnd" id="cZKiller"></td>
+	      </tr>
+	      <tr id="bottom" >
+	        <td >Moves remaining: </td>
+	        <td class="scnd" id="cMoves"></td>
+	      </tr>
+	    </table>
+	  </div>
+	  
+	  <div id="divider"></div>
+	  
+	  <div id="gameControl">
+	    <table>
+	      <tr id="">
+	        <th colspan="2">Commands:</th>
+	      </tr>
+	      <tr>
+	        <td>Move:</td>
+	        <td class="scnd" style="background-image: URL(/assets/images/arrow_keys.png)" width="100%"></td>
+	      </tr>
+        <tr>
+          <td>SwitchToken:</td>
+          <td class="scnd">tab</td>
+        </tr>
+        <tr>
+          <td>Next Player:</td>
+          <td class="scnd">return</td>
+        </tr>
+        <tr>
+          <td>Next Game:</td>
+          <td class="scnd">n</td>
+        </tr>
+	    </table>
+	  </div>
+  </div>
+  <div id="clear"></div>
+  
+  <input onkeypress="javascript:return false;" id="userInput" onkeydown="javascript:return handleKeyEvent(event);" type="text" name="userInput"></input>
+	
+	<div id="clear"></div>
+  
+  <div id="footer">
+    <b>Game message:</b>
+    <span id="message1">Welcome to TacZombie</span>
+  </div>
+  </div>
 }

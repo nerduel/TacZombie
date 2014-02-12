@@ -3,7 +3,7 @@
 # ~~~~
 
 # Home page
-GET   /                        controllers.Application.game
+GET   /                        controllers.Application.index
 GET		/broadcast               controllers.Application.broadcast
 #GET		/view						       controllers.Application.updateView
 

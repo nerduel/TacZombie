@@ -14,8 +14,8 @@ object Application extends Controller {
 
   var myGame = GameFactory.newGame(random = false, humans = 1, zombies = 1)
   
-  def game = Action {
-    Ok(views.html.game("TacZombie"))
+  def index = Action {
+    Ok(views.html.index("TacZombie"))
   }
   
   val outchannels = 
@@ -29,22 +29,23 @@ object Application extends Controller {
     concurrent.future {
       val (out, channel) = Concurrent.broadcast[String]
 
-      println("Id of view: " + request.id)
+      println(request.id)
       
       outchannels.apply("lobby").append(channel)
-      
-      channel.push(myGame.toJson(All)
 
       val in = Iteratee.foreach[String] { msg =>
         println("[DEBUG]: receiving message: " + msg)
         
-        val game = GameController.evaluateCommand(msg, myGame)
-
-        val answer = game.toJson(Updated)
-          
-        outchannels("lobby").foreach(_.push(answer))
-        
-        myGame = game
+        if (msg == "getGameData") {
+        	channel.push(myGame.toJson(All))
+        }
+        else {
+	        val game = GameController.evaluateCommand(msg, myGame)
+	        
+	        outchannels("lobby").foreach(_.push(game.toJson(Updated)))
+	        
+	        myGame = game
+        }
       }
 
       (in, out)

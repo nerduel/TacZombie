@@ -37,7 +37,7 @@ object GameController {
 	      currentGame.executeCommand(MoveDown)
 	      
 	    case "nextPlayer" =>
-	      //currentGame.executeCommand(new NextPlayer())
+	      //currentGame.executeCommand(NextPlayer())
 	      currentGame
 	      
 	    case "switchToken" =>
@@ -49,11 +49,9 @@ object GameController {
 	    	  // TODO: GameFactory needs to take old score 
 	    	  // GameFactory.nextLevel(currentGame)
 	    	  GameFactory.newGame(random = false, humans = 1, zombies = 1)
-	    	  
 	    	else
 	    	  // new Start
 	    	  GameFactory.newGame(random = false, humans = 1, zombies = 1)
-	    	  
 	  }
 	}
 	

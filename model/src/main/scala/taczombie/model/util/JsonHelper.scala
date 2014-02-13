@@ -30,11 +30,10 @@ object JsonHelper {
   case object All extends Type
   case object Updated extends Type
   
-  var lastHighlightedGameFieldCells : List[JsonHelper.Cell] = List.empty
+  var prevAllowedMoves : List[(Int,Int)] = List.empty
 
 
   class Game2JsonHelper(g: Game) {   
-    // TODO: This function does not return cells 
     def toJson(command: Type): String = {
       
       var lastUpdatedGameFieldCells: List[GameFieldCell] = List.empty
@@ -75,29 +74,35 @@ object JsonHelper {
       val allowedMoves = currentPlayer.currentToken.coords.calculateAllowedMoves(movesRemaining,g)
       val gameFieldCellsFromAllowedMoves = g.gameField.gameFieldCells.filter(x => allowedMoves.contains(x._1._1, x._1._2))
       
+      // Get current gameFieldCells which were highlighted, but now arent highlighted anymore.
+      val gameFieldCellsFromPrevAllowedMoves = g.gameField.gameFieldCells.filter(x => lastAllowedMoves.filter(
+              y => !allowedMoves.contains(y)).contains(x._1._1, x._1._2))
+      // Updated lastAllowedMoves
+      prevAllowedMoves = allowedMoves
+              
+      // Add highlighted Cells.
       var highlightedCells = {for {
           	gameFieldCell <- gameFieldCellsFromAllowedMoves
         	cell = Cell(gameFieldCell._1._1, gameFieldCell._1._2, getChar(gameFieldCell._2), true)
         } yield cell
       }.toList
       
+      // Add updated Cells.
       var updatedCells = highlightedCells ::: { 
         for { 
         	gameFieldCell <- lastUpdatedGameFieldCells.filter(x => !gameFieldCellsFromAllowedMoves.contains(x.coords))
         	cell = Cell(gameFieldCell.coords._1,gameFieldCell.coords._2, getChar(gameFieldCell), false)
         } yield cell
       }
-      
+               
+      // Add unhighlighted Cells. (because they arent counted as updated cells).
       var cells = updatedCells ::: { 
         for { 
-        	gameFieldCell <- highlightedCells.filter(x => !updatedCells.contains(x))
-        	cell = Cell(gameFieldCell.x,gameFieldCell.y, gameFieldCell.token, false)
+        	gameFieldCell <- gameFieldCellsFromPrevAllowedMoves
+        	cell = Cell(gameFieldCell._1._1,gameFieldCell._1._2, getChar(gameFieldCell._2), false)
         } yield cell
-      }
-            
-      lastHighlightedGameFieldCells = highlightedCells
-      
-      
+      }.toList
+                  
       import GameDataJsonProtocol._
 
       val gameData = GameData(gameState, currentPlayerTokenAsChar, lifes, movesRemaining, coins, score, powerUp, width, height)

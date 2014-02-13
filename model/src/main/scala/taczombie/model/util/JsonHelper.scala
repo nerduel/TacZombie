@@ -75,7 +75,7 @@ object JsonHelper {
       val gameFieldCellsFromAllowedMoves = g.gameField.gameFieldCells.filter(x => allowedMoves.contains(x._1._1, x._1._2))
       
       // Get current gameFieldCells which were highlighted, but now arent highlighted anymore.
-      val gameFieldCellsFromPrevAllowedMoves = g.gameField.gameFieldCells.filter(x => lastAllowedMoves.filter(
+      val gameFieldCellsFromPrevAllowedMoves = g.gameField.gameFieldCells.filter(x => prevAllowedMoves.filter(
               y => !allowedMoves.contains(y)).contains(x._1._1, x._1._2))
       // Updated lastAllowedMoves
       prevAllowedMoves = allowedMoves

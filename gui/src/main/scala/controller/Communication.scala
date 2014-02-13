@@ -5,47 +5,49 @@ import com.scalaloader.ws.Connecting
 import com.scalaloader.ws.Disconnected
 import com.scalaloader.ws.TextMessage
 import com.scalaloader.ws.WebSocketClientFactory
+import util.Observable
+import model.ViewModel
+import spray.json.DefaultJsonProtocol
+import spray.json._
 
-class Communication {
-  var connected = false
+class Communication(model: ViewModel)  {
+  private var connected = false
+  private var message = ""
 
-  val wsFactory = WebSocketClientFactory(2)
-  var wsUri = new java.net.URI("ws://127.0.0.1:9000/broadcast")
+  private val wsFactory = WebSocketClientFactory(1)
+  private var wsUri = new java.net.URI("ws://127.0.0.1:9000/broadcast")
 
-  val wsClient = wsFactory.newClient(wsUri) {
+  private val wsClient = wsFactory.newClient(wsUri) {
     case Connecting =>
       println("Connecting")
     case Disconnected(_, reason) =>
-      println("The websocket ist connected!")
       connected = false
     case TextMessage(_, data) =>
-      handleData(data)
+      handleInput(data)
+      message = data
     case Connected(_) =>
-      println("The websocket is connected!")
+      println("Connected")
       connected = true
   }
+
+  wsClient.connect
+
+  def moveUp = send("moveUp")
+  def moveDown = send("moveDown")
+  def moveLeft = send("moveLeft")
+  def moveRight = send("moveRight")
+  def newGame = send("newGame")
+  def disconnect = {
+    wsClient.disconnect
+    wsFactory.shutdownAll
+  }
+
+  private def send(msg: String) = {
+    if (connected)
+      wsClient.send(msg)
+  }
   
-  def send(msg:String) = {
-    while(!connected)
-    	Thread.sleep(100)
-    	
-    wsClient.send(msg)
+  private def handleInput(data : String) {
+    model.toObject(data.asJson)
   }
-
-  def handleData(data: String) {
-    //    data match {
-    //      case 
-    //    }
-  }
-}
-
-object Communication {
-  val wsConnection = new Communication
-  wsConnection.wsClient.connect
-
-  def moveUp = wsConnection.send("moveUp")
-  def moveDown = wsConnection.send("moveDown")
-  def moveLeft = wsConnection.send("moveLeft")
-  def moveRight = wsConnection.send("moveRight")
-  def newGame = wsConnection.send("newGame")
 }

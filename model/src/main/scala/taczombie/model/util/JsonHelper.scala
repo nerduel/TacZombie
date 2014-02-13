@@ -1,7 +1,6 @@
 package taczombie.model.util
 
 import scala.language.implicitConversions
-
 import spray.json.DefaultJsonProtocol
 import spray.json.JsValue
 import spray.json.pimpAny
@@ -35,13 +34,19 @@ object JsonHelper {
   class Game2JsonHelper(g: Game) {   
     // TODO: This function does not return cells 
     def toJson(command: Type): String = {
+      
+      var lastUpdatedGameFieldCells: List[GameFieldCell] = List.empty
+      
       var cmd = ""
       command match {
-        case All => cmd = "all"
-        case Updated => cmd = "updated"
+        case All => 
+          cmd = "all"
+          lastUpdatedGameFieldCells = {for {cell <- g.gameField.gameFieldCells} yield cell._2 }.toList
+        case Updated => 
+          cmd = "updated"
+          lastUpdatedGameFieldCells = g.lastUpdatedGameFieldCells
       }
       
-      val lastUpdatedGameFieldCells = g.lastUpdatedGameFieldCells
       val gameState = g.gameState.toString
       val currentPlayer = g.players.currentPlayer
       var currentPlayerTokenAsChar = ' '
@@ -65,7 +70,7 @@ object JsonHelper {
       // Collect and simplify changed game cells
       
       import taczombie.model.util.CoordinateHelper._
-      var allowedMoves = currentPlayer.currentToken.coords.calculateAllowedMoves(movesRemaining,g)
+      val allowedMoves = currentPlayer.currentToken.coords.calculateAllowedMoves(movesRemaining,g)
       val gameFieldCellsFromAllowedMoves = g.gameField.gameFieldCells.filter(x => allowedMoves.contains(x._1._1, x._1._2))
       
       var cells = { 
@@ -75,7 +80,7 @@ object JsonHelper {
         } yield cell
       }.toList ::: { 
         for { 
-        	gameFieldCell <- lastUpdatedGameFieldCells.filter(_.coords != gameFieldCellsFromAllowedMoves)
+        	gameFieldCell <- lastUpdatedGameFieldCells.filter(x => !gameFieldCellsFromAllowedMoves.contains(x.coords))
         	cell = Cell(gameFieldCell.coords._1,gameFieldCell.coords._2, getChar(gameFieldCell), false)
         } yield cell
       }

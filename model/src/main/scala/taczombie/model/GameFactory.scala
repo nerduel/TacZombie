@@ -12,7 +12,7 @@ object GameFactory {
   }
   
   val defaultFile =  
-    "/home/junky/synchronized/TacZombie/model/src/test/scala/taczombie/test/model/TestLevel_correct"
+    "/home/lars/Documents/taczombie/model/src/test/scala/taczombie/test/model/TestLevel_correct"
     
   val defaultHumans = 1
   val defaultZombies = 1

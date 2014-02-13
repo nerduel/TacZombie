@@ -30,6 +30,8 @@ object JsonHelper {
   case object All extends Type
   case object Updated extends Type
   
+  var lastHighlightedGameFieldCells : List[JsonHelper.Cell] = List.empty
+
 
   class Game2JsonHelper(g: Game) {   
     // TODO: This function does not return cells 
@@ -73,17 +75,28 @@ object JsonHelper {
       val allowedMoves = currentPlayer.currentToken.coords.calculateAllowedMoves(movesRemaining,g)
       val gameFieldCellsFromAllowedMoves = g.gameField.gameFieldCells.filter(x => allowedMoves.contains(x._1._1, x._1._2))
       
-      var cells = { 
-        for {
+      var highlightedCells = {for {
           	gameFieldCell <- gameFieldCellsFromAllowedMoves
         	cell = Cell(gameFieldCell._1._1, gameFieldCell._1._2, getChar(gameFieldCell._2), true)
         } yield cell
-      }.toList ::: { 
+      }.toList
+      
+      var updatedCells = highlightedCells ::: { 
         for { 
         	gameFieldCell <- lastUpdatedGameFieldCells.filter(x => !gameFieldCellsFromAllowedMoves.contains(x.coords))
         	cell = Cell(gameFieldCell.coords._1,gameFieldCell.coords._2, getChar(gameFieldCell), false)
         } yield cell
       }
+      
+      var cells = updatedCells ::: { 
+        for { 
+        	gameFieldCell <- highlightedCells.filter(x => !updatedCells.contains(x))
+        	cell = Cell(gameFieldCell.x,gameFieldCell.y, gameFieldCell.token, false)
+        } yield cell
+      }
+            
+      lastHighlightedGameFieldCells = highlightedCells
+      
       
       import GameDataJsonProtocol._
 

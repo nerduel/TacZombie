@@ -1,4 +1,4 @@
-package view
+package view.gui
 
 import scala.swing.BorderPanel
 import scala.swing.Button
@@ -12,38 +12,38 @@ import scala.swing.event.Event
 case object quit extends Event
 
 class GameCommands(model: ViewModel, controller: Communication) extends BorderPanel {
-  
+
   val buttonUp = new Button("Up") {
-    listenTo(mouse.clicks) 
+    listenTo(mouse.clicks)
     reactions += {
-    	case me: MouseClicked => controller.moveUp; println("up")
-    }  
+      case me: MouseClicked => controller.moveUp; println("up")
+    }
   }
-  val buttonDown = new Button("Down"){
-    listenTo(mouse.clicks) 
+  val buttonDown = new Button("Down") {
+    listenTo(mouse.clicks)
     reactions += {
-    	case me: MouseClicked => controller.moveDown; println("down")
-    }  
+      case me: MouseClicked => controller.moveDown; println("down")
+    }
   }
-  val buttonLeft = new Button("Left"){
-    listenTo(mouse.clicks) 
+  val buttonLeft = new Button("Left") {
+    listenTo(mouse.clicks)
     reactions += {
-    	case me: MouseClicked => controller.moveLeft; println("left")
-    }  
+      case me: MouseClicked => controller.moveLeft; println("left")
+    }
   }
-  val buttonRight = new Button("Right"){
-    listenTo(mouse.clicks) 
+  val buttonRight = new Button("Right") {
+    listenTo(mouse.clicks)
     reactions += {
-    	case me: MouseClicked => controller.moveRight; println("right")
-    }  
+      case me: MouseClicked => controller.moveRight; println("right")
+    }
   }
-    
-  val buttonQuit = new Button("Quit"){
-    
-    listenTo(mouse.clicks) 
+
+  val buttonQuit = new Button("Quit") {
+
+    listenTo(mouse.clicks)
     reactions += {
-    	case me: MouseClicked => controller.disconnect; println("disconnect");exit(0)
-    }  
+      case me: MouseClicked => controller.disconnect; println("disconnect"); exit(0)
+    }
   }
 
   add(buttonUp, BorderPanel.Position.North)

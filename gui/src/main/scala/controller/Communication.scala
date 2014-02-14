@@ -5,14 +5,12 @@ import com.scalaloader.ws.Connecting
 import com.scalaloader.ws.Disconnected
 import com.scalaloader.ws.TextMessage
 import com.scalaloader.ws.WebSocketClientFactory
-import model.ViewModel
-import spray.json.DefaultJsonProtocol
-import spray.json._
-import scala.swing.event.Event
 
-class Communication(model: ViewModel)  {
+import model.ViewModel
+import spray.json.pimpString
+
+class Communication(model: ViewModel) {
   private var connected = false
-  private var message = ""
   private val wsFactory = WebSocketClientFactory(1)
   private var wsUri = new java.net.URI("ws://127.0.0.1:9000/broadcast")
 
@@ -22,9 +20,7 @@ class Communication(model: ViewModel)  {
     case Disconnected(_, reason) =>
       connected = false
     case TextMessage(_, data) =>
-      println(data)
       handleInput(data)
-      message = data
     case Connected(_) =>
       println("Connected")
       connected = true
@@ -33,10 +29,10 @@ class Communication(model: ViewModel)  {
   }
 
   wsClient.connect
-  while(!connected)  {
+  while (!connected) {
     Thread.sleep(200)
-  	send("getGameData")
-  }  
+    send("getGameData")
+  }
 
   def moveUp = send("moveUp")
   def moveDown = send("moveDown")
@@ -51,12 +47,11 @@ class Communication(model: ViewModel)  {
     if (connected)
       wsClient.send(msg)
   }
-  
-  private def handleInput(data : String) {
-    if(data.contains("cmd")) {
+
+  private def handleInput(data: String) {
+    if (data.contains("cmd")) {
       model.toObject(data.asJson)
-    }
-    else 
-      println(data)
+    } else
+      println("Received unknown message Type!")
   }
 }

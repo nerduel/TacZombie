@@ -10,7 +10,7 @@ class GameStats(model: ViewModel) extends BoxPanel(swing.Orientation.Vertical) {
   reactions += {
     case gameUpdated => update
   }
-  
+    
   var gameState = new LeftAlignedValueText("GameState:", "n/a")
   var currentPlayerToken = new LeftAlignedValueText("Current Player:","n/a")
   var lifes = new LeftAlignedValueText("Lifes:", "n/a")
@@ -36,5 +36,4 @@ class GameStats(model: ViewModel) extends BoxPanel(swing.Orientation.Vertical) {
     score.update(model.score.toString)
     powerUp.update(model.powerUp.toString)
   }
-
 }

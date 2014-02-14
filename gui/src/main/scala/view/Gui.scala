@@ -11,21 +11,25 @@ import controller.Communication
 import model.ViewModel
 
 class Gui(val model: ViewModel, val controller: Communication) extends swing.Frame {
-  title = "TacZombie"
-
+  title = "TacZombie" 
+    
   preferredSize = new Dimension(1024, 768)
 
   val gameStats = new GameStats(model)
   val gameMessages = new GameMessage(model)
   val gameCommands = new GameCommands(model, controller)
+  while(!model.receivedAll) {
+    Thread.sleep(100)
+  }
   val gameField = new GameField(model)
-  
+    
   contents = new BorderPanel {
     add(new FlowPanel(gameStats), BorderPanel.Position.East)
     add(new Label("north"), BorderPanel.Position.North)
     add(gameMessages, BorderPanel.Position.South)
     add(new FlowPanel(gameCommands), BorderPanel.Position.West)
     add(new FlowPanel(gameField), BorderPanel.Position.Center)
+    
     listenTo(keys)
     reactions += {
       case KeyPressed(_, Key.Up, _, _) =>
@@ -40,6 +44,7 @@ class Gui(val model: ViewModel, val controller: Communication) extends swing.Fra
         controller.newGame
       case KeyPressed(_, Key.Q, _, _) =>
         controller.disconnect
+        exit(0)
     }
     focusable = true
     requestFocus

@@ -1,25 +1,14 @@
 package view
 
-import scala.swing.GridPanel
 import model.ViewModel
-import javax.swing.border.Border
-import javax.swing.BorderFactory
-import java.awt.Color
+import taczombie.model.util.JsonHelper.Cell
 
-class GameField(model : ViewModel) extends GridPanel(model.levelWidth, model.levelHeight){
-
-	border = BorderFactory.createLineBorder(Color.YELLOW, 2)
+class GameField(model: ViewModel) extends swing.GridPanel(model.levelWidth, model.levelHeight) {
   
-  for(cell <- model.cells) {
-	  contents += new GameCell(cell)
-	} 
-  
-  listenTo(model)
-  reactions += {
-    case gameUpdated => update
-  }
-  
-  def update {
-    
-  }
+  model.cells.foreach(cell => addCell(cell))
+      
+  def addCell(cell: ((Int,Int),(Char,Boolean))) {
+    println(cell)
+    contents += new GameCell(model, cell)
+    }
 }

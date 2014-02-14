@@ -11,10 +11,10 @@ object Main {
   	val gui =  new Gui(model, controller)
     gui.visible = true
     
-    while(true) {
-      model.coins = model.coins + 1
-      model.updated
-      Thread.sleep(1000)
-    }
+//    while(true) {
+//      model.coins = model.coins + 1
+//      model.updated
+//      Thread.sleep(1000)
+//    }
   }
 }

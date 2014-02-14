@@ -8,10 +8,12 @@ import DefaultJsonProtocol._
 import taczombie.model.GameState
 import scala.swing.Publisher
 import scala.swing.event.Event
+import scala.collection.SortedMap
 
 case object gameUpdated extends Event
 
 class ViewModel extends Publisher {
+  var receivedAll = false
   import taczombie.model.util.JsonHelper.GameDataJsonProtocol._
   var cmd = ""
   var gameState = " "
@@ -21,28 +23,29 @@ class ViewModel extends Publisher {
   var coins = 0
   var score = 0
   var powerUp = 0
-  var levelWidth = 10
-  var levelHeight = 10
-  var cells = List[Cell]()
+  var levelWidth = 0
+  var levelHeight = 0
+  var cells = SortedMap[(Int,Int),(Char,Boolean)]()
 
   def toObject(json: JsValue) {
     val data: Data = json.convertTo[Data]
     val gameData = data.gameData.convertTo[GameData]
-    cells = data.cells.convertTo[List[Cell]]
+    val updatedCells = data.cells.convertTo[List[Cell]]
+    updatedCells.foreach{x =>
+      cells += (x.x,x.y) -> (x.token,x.isHiglighted)
+    }    
     cmd = data.cmd
     gameState = gameData.gameState.toString()
     currentPlayerTokenAsChar = gameData.currentPlayer
     lifes = gameData.lifes
-    movesRemaining = gameData.movesLeft
+    movesRemaining = gameData.movesRemaining
     score = gameData.score
     powerUp = gameData.powerUp
-    levelHeight = gameData.levelWidth
+    levelWidth = gameData.levelWidth
     levelHeight = gameData.levelHeight
-    
-    publish(gameUpdated)
-  }
-  
-  def updated {
+    if(cmd == "all")
+      receivedAll = true
+      
     publish(gameUpdated)
   }
 }

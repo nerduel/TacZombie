@@ -1,7 +1,7 @@
 package view.tui
 
-import model.ViewModel
 import controller.Communication
+import model.ViewModel
 import util.Observer
 
 class Tui(model: ViewModel, controller: Communication) extends Observer {

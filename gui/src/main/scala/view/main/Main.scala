@@ -5,7 +5,7 @@ import model.ViewModel
 import view.gui.Gui
 import view.tui.Tui
 
-object Gui {
+object GUI {
 
   def main(args: Array[String]) {
     val model = new ViewModel
@@ -15,7 +15,7 @@ object Gui {
   }
 }
 
-object MainGui {
+object TUI {
 
   def main(args: Array[String]) {
     val model = new ViewModel

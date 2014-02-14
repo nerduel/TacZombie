@@ -22,9 +22,6 @@ class Tui(model: ViewModel, controller: Communication) extends Observer {
       val input = readLine
 
       input.toList match {
-        case 'q' :: Nil =>
-          controller.disconnect
-          exit(0)
         case 'w' :: Nil =>
           controller.moveUp
         case 's' :: Nil =>
@@ -33,8 +30,15 @@ class Tui(model: ViewModel, controller: Communication) extends Observer {
           controller.moveLeft
         case 'd' :: Nil =>
           controller.moveRight
+        case 'q' :: Nil =>
+          controller.disconnect
+          exit(0)
         case 'n' :: Nil =>
           controller.newGame
+        case 'g' :: Nil =>
+          controller.switchToken
+        case 'h' :: Nil =>
+          controller.nextPlayer
         case _ =>
           println("Invalid Input!")
           printHelp
@@ -48,6 +52,7 @@ class Tui(model: ViewModel, controller: Communication) extends Observer {
 
     println("\nWelcome to TacZombie!")
     update
+    printHelp
   }
 
   def update {
@@ -57,7 +62,8 @@ class Tui(model: ViewModel, controller: Communication) extends Observer {
   def printHelp {
     println("------------------------------")
     println("Move Player: <a>, <w>, <s>, <d>")
-    println("Finisch Move: <g>")
+    println("Switch Token: <g>")
+    println("Next Player: <h>")
     println("New Game: <n>")
     println("Quit Game: <q>")
     println("------------------------------")

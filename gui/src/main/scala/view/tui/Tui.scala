@@ -79,7 +79,25 @@ class Tui(model: ViewModel, controller: Communication) extends Observer {
             print(Console.WHITE_B + getChar(cell._1) + Console.RESET)
         }
       }
-      print('\n')
+      
+      x match {
+        case 0 => print("\t Current player:\t" + getTokenName(model.currentPlayerTokenAsChar) + '\n')
+        case 1 => print("\t Current lifes:\t\t" + model.lifes + '\n')
+        case 2 => print("\t Current coins:\t\t" + model.coins + '\n')
+        case 3 => print("\t Score:\t\t\t" + model.score + '\n')
+        case 4 => print("\t Zombiekiller:\t\t" + model.powerUp + '\n')
+        case 5 => print("\t ------------------------\n")
+        case 6 => print("\t Moves remaining:\t" + model.movesRemaining + '\n')
+        case _ => print('\n')
+      }
+    }
+  }
+  
+  def getTokenName(token: Char) : String = {
+    token match {
+      case 'H' => return "Human"
+      case 'Z' => return "Zombie"
+      case _ => return "Unknown"
     }
   }
 

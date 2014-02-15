@@ -22,7 +22,7 @@ object GameFactory {
     
     val (gameField, playerMap) = {
 //      if(random == false)
-        	createGameFieldAndPlayerMap(humans, zombies, defaultFile)
+        	createGameFieldAndPlayerMap(humans, zombies, file)
 //      else {
 //        	var (level, name) = fromRandom()
 //        	createGameFieldAndPlayerMap(humans, zombies, level, name)

@@ -12,65 +12,82 @@
    </table>
   </div>
   
-  <div id="gameInfo">
-	  <div id="gameData" style="visibility: hidden;">
-	    <table id="gState">
-	      <tr>
-	        <td>Current player:</td>
-	        <td class="scnd" id="cPlayer"></td>
-	      </tr>
-	      <tr>
-	        <td>Current lifes: </td>
-	        <td class="scnd" id="cLifes"></td>
-	      </tr>
-	      <tr>
-	        <td>Current coins: </td>
-	        <td class="scnd" id="cCoins"></td>
-	      </tr>
-	      <tr>
-	        <td>Score: </td>
-	        <td class="scnd" id="cScore"></td>
-	      </tr>
-	      <tr>
-	        <td>ZombieKiller: </td>
-	        <td class="scnd" id="cZKiller"></td>
-	      </tr>
-	      <tr id="bottom" >
-	        <td >Moves remaining: </td>
-	        <td class="scnd" id="cMoves"></td>
-	      </tr>
-	    </table>
+  <div id="rightBox">
+	  <div id="gameInfo">
+		  <div id="gameData" style="visibility: hidden;">
+		    <table id="gState">
+		      <tr>
+		        <td>Current player:</td>
+		        <td class="scnd" id="cPlayer"></td>
+		      </tr>
+		      <tr>
+		        <td>Current lifes: </td>
+		        <td class="scnd" id="cLifes"></td>
+		      </tr>
+		      <tr>
+		        <td>Current coins: </td>
+		        <td class="scnd" id="cCoins"></td>
+		      </tr>
+		      <tr>
+		        <td>Score: </td>
+		        <td class="scnd" id="cScore"></td>
+		      </tr>
+		      <tr>
+		        <td>ZombieKiller: </td>
+		        <td class="scnd" id="cZKiller"></td>
+		      </tr>
+		      <tr id="bottom" >
+		        <td >Moves remaining: </td>
+		        <td class="scnd" id="cMoves"></td>
+		      </tr>
+		    </table>
+		  </div>
+		  
+		  <div id="dividerH"></div>
+		  
+		  <div id="gameControl">
+		    <table>
+		      <tr id="">
+		        <th colspan="2">Commands:</th>
+		      </tr>
+		      <tr>
+		        <td>Move:</td>
+		        <td class="scnd" style="background-image: URL(/assets/images/arrow_keys.png)" width="100%"></td>
+		      </tr>
+	        <tr>
+	          <td>Switch Token:</td>
+	          <td class="scnd">&lt;tab&gt;</td>
+	        </tr>
+	        <tr>
+	          <td>Next Player:</td>
+	          <td class="scnd">&lt;return&gt;</td>
+	        </tr>
+	        <tr>
+	          <td>Next Game:</td>
+	          <td class="scnd">&lt;n&gt;</td>
+	        </tr>
+	        <tr>
+	          <td>Restart Game:</td>
+	          <td class="scnd">&lt;r&gt;</td>
+	        </tr>
+	        <tr>
+	          <td>Quit:</td>
+	          <td class="scnd">&lt;q&gt;</td>
+	        </tr>
+		    </table>
+		  </div>
 	  </div>
 	  
-	  <div id="divider"></div>
+	  <div id="dividerV"></div>
 	  
-	  <div id="gameControl">
-	    <table>
-	      <tr id="">
-	        <th colspan="2">Commands:</th>
-	      </tr>
-	      <tr>
-	        <td>Move:</td>
-	        <td class="scnd" style="background-image: URL(/assets/images/arrow_keys.png)" width="100%"></td>
-	      </tr>
-        <tr>
-          <td>SwitchToken:</td>
-          <td class="scnd">tab</td>
-        </tr>
-        <tr>
-          <td>Next Player:</td>
-          <td class="scnd">return</td>
-        </tr>
-        <tr>
-          <td>Next Game:</td>
-          <td class="scnd">n</td>
-        </tr>
-	    </table>
+	  <div id="logger">
+	     <p>Log:</p>
+	     <textarea id="log" readonly="readonly" wrap="soft"></textarea>
 	  </div>
-  </div>
+	</div>
   <div id="clear"></div>
   
-  <input onkeypress="javascript:return false;" id="userInput" onkeydown="javascript:return handleKeyEvent(event);" type="text" name="userInput"></input>
+  <input onkeypress="javascript:return false;" onkeydown="javascript:return handleKeyEvent(event);" type="text" id="userInput" name="userInput"></input>
 	
 	<div id="clear"></div>
   

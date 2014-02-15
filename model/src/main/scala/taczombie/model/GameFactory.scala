@@ -3,6 +3,7 @@ package taczombie.model
 import scala.Array.canBuildFrom
 import scala.collection.immutable.HashSet
 import scala.io.Source
+import scala.collection.mutable.HashMap
 
 object GameFactory {
   var counter : Int = 1
@@ -22,7 +23,7 @@ object GameFactory {
     
     val (gameField, playerMap) = {
 //      if(random == false)
-        	createGameFieldAndPlayerMap(humans, zombies, defaultFile)
+        	createGameFieldAndPlayerMap(humans, zombies, file)
 //      else {
 //        	var (level, name) = fromRandom()
 //        	createGameFieldAndPlayerMap(humans, zombies, level, name)
@@ -65,10 +66,10 @@ object GameFactory {
     var coinsPlaced : Int = 0
     
     // collect tokens
-    var humanTokens = new PlayerTokens[HumanToken](List[HumanToken]())
-    var zombieTokens = new PlayerTokens[ZombieToken](List[ZombieToken]())
+    val humanTokenIds = scala.collection.mutable.ListBuffer[Int]()
+    val zombieTokenIds = scala.collection.mutable.ListBuffer[Int]()
     
-    var gameFieldCells = Map[(Int,Int), GameFieldCell]()
+    val gameFieldCells = scala.collection.mutable.HashMap[(Int,Int), GameFieldCell]()
     
     for (row <- 0 until levelHeight) yield {
       for (col <- 0 until levelWidth) yield {
@@ -87,14 +88,14 @@ object GameFactory {
               humanBase = (tuple)
               for(i <- 0 until humanTokenCount) {
                 val humanToken = new HumanToken(this.generateId, (tuple))
-                humanTokens = humanTokens.updatedWithNewToken(humanToken)
+                humanTokenIds.+=(humanToken.id)
                 tmpGameFieldCell = tmpGameFieldCell.addHere(humanToken)
               }              
           case 'Z' =>
               zombieBase = (tuple)
               for(i <- 0 until zombieTokenCount) {
                 val zombieToken =  new ZombieToken(this.generateId, (tuple))
-                zombieTokens = zombieTokens.updatedWithNewToken(zombieToken)                
+                zombieTokenIds.+=(zombieToken.id)                
                 tmpGameFieldCell = tmpGameFieldCell.addHere(zombieToken)
               }
           case c : Char => {
@@ -103,7 +104,7 @@ object GameFactory {
           }
         }
         if(validCharacterRead) {
-           gameFieldCells = gameFieldCells.+((tuple,tmpGameFieldCell))
+           gameFieldCells.+=((tuple,tmpGameFieldCell))
         }
       }
     }
@@ -112,12 +113,12 @@ object GameFactory {
     // TODO: make this scalable for more players
     var players : Players = new Players(List[Player]())
     val zombieId = defaults.zombieName + this.generateId
-    players = players.updatedWithNewPlayer(new Zombie(zombieId, zombieTokens))
+    players = players.updatedWithNewPlayer(new Zombie(zombieId, zombieTokenIds.toList))
     val humanId = defaults.humanName + this.generateId
-    players = players.updatedWithNewPlayer(new Human(humanId, humanTokens))
+    players = players.updatedWithNewPlayer(new Human(humanId, humanTokenIds.toList))
     
     val gameField = new GameField(gameName,
-                gameFieldCells,
+                gameFieldCells.toMap,
                 levelWidth,
                 levelHeight,
                 humanBase,

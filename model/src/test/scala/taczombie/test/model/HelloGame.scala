@@ -5,6 +5,7 @@ import taczombie.model.GameField
 import taczombie.model.MoveDown
 import taczombie.model.MoveLeft
 import taczombie.model.MoveRight
+import taczombie.model.Game
 
 object HelloGame {
   
@@ -22,8 +23,8 @@ object HelloGame {
           if (cell == null) ""
           else if (cell.isEmpty) "   "            
           else if (cell.containsWall) "███"
-          else if (cell.containsZombieToken) " Z " //"😈"
-          else if (cell.containsHumanToken) " H " //"😃"
+          else if (cell.containsLivingZombieToken) " Z " //"😈"
+          else if (cell.containsLivingHumanToken) " H " //"😃"
           else if (cell.containsCoin) " • "
           else if (cell.containsPowerup) " ★ "
           else ""
@@ -34,30 +35,31 @@ object HelloGame {
     }
   }
 
-	def main(args: Array[String]) {
-	  var game = GameFactory.newGame(false, humans = 1, zombies = 1)
+	def main(args: Array[String]) {	  
+	  var gameResultTuple : Tuple2[Game, List[String]] = 
+	    (GameFactory.newGame(false, humans = 1, zombies = 1), null)
 	  
-  	printGameField(game.gameField)
+  	printGameField(gameResultTuple._1.gameField)
   	
   	  
-		game = game.executeCommand(MoveLeft)
-		game = game.executeCommand(MoveLeft)
-		game = game.executeCommand(MoveLeft)
-		game = game.executeCommand(MoveLeft)
-		game = game.executeCommand(MoveDown)
-		game = game.executeCommand(MoveDown)
-		game = game.executeCommand(MoveRight)
-		game = game.executeCommand(MoveRight)
-		game = game.executeCommand(MoveRight)
-		game = game.executeCommand(MoveRight)
-		game = game.executeCommand(MoveRight)
-		game = game.executeCommand(MoveRight)
-		game = game.executeCommand(MoveRight)
-		game = game.executeCommand(MoveRight)
-		game = game.executeCommand(MoveRight)
-		game = game.executeCommand(MoveRight)
-		game = game.executeCommand(MoveRight)
+		gameResultTuple = gameResultTuple._1.executeCommand(MoveLeft)
+		gameResultTuple = gameResultTuple._1.executeCommand(MoveLeft)
+		gameResultTuple = gameResultTuple._1.executeCommand(MoveLeft)
+		gameResultTuple = gameResultTuple._1.executeCommand(MoveLeft)
+		gameResultTuple = gameResultTuple._1.executeCommand(MoveDown)
+		gameResultTuple = gameResultTuple._1.executeCommand(MoveDown)
+		gameResultTuple = gameResultTuple._1.executeCommand(MoveRight)
+		gameResultTuple = gameResultTuple._1.executeCommand(MoveRight)
+		gameResultTuple = gameResultTuple._1.executeCommand(MoveRight)
+		gameResultTuple = gameResultTuple._1.executeCommand(MoveRight)
+		gameResultTuple = gameResultTuple._1.executeCommand(MoveRight)
+		gameResultTuple = gameResultTuple._1.executeCommand(MoveRight)
+		gameResultTuple = gameResultTuple._1.executeCommand(MoveRight)
+		gameResultTuple = gameResultTuple._1.executeCommand(MoveRight)
+		gameResultTuple = gameResultTuple._1.executeCommand(MoveRight)
+		gameResultTuple = gameResultTuple._1.executeCommand(MoveRight)
+		gameResultTuple = gameResultTuple._1.executeCommand(MoveRight)
 		
-		printGameField(game.gameField)
+		printGameField( gameResultTuple._1.gameField)
 	}
 }

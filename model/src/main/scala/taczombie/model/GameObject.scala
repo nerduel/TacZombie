@@ -4,9 +4,7 @@ trait GameObject {
   val id : Int
   val coords : (Int, Int)
 
-  override def hashCode(): Int = {
-    id
-  }
+  override def hashCode(): Int = id
 }
   
 trait StaticGameObject extends GameObject
@@ -28,7 +26,8 @@ case class Coin(id : Int,
   def isVisitedBy (versatileGameObject : VersatileGameObject) = 
     versatileGameObject match {
       case humanToken : HumanToken => 
-        (null, humanToken.updated(addedCoins = 1, addedScore = 1))
+        (null, humanToken.updated(newCoins = 
+          humanToken.coins + 1, newScore = humanToken.score+1))
       case zombieToken : ZombieToken => (this, zombieToken)
   }
 }
@@ -40,20 +39,29 @@ case class Powerup(id : Int,
   def isVisitedBy (versatileGameObject : VersatileGameObject) = 
     versatileGameObject match {
       case humanToken : HumanToken => 
-        (null, humanToken.updated(addedPowerupTime = 10, addedScore = 1))
+        (null, humanToken.updated(newPowerupTime = 
+          humanToken.powerupTime+10, newScore = humanToken.score+1))
       case zombieToken : ZombieToken => (this, zombieToken)
   }
 }
 
 trait PlayerToken extends VersatileGameObject {
-  protected val killScore = 3
   val id : Int
   val frozenTime : Int
   require(frozenTime >= 0)
   
   val dead : Boolean
   
-  def updated(coords : (Int,Int)) : PlayerToken
+  def coins : Int
+  def score : Int
+  
+  def updated(newCoords : (Int,Int) = coords,
+      				newCoins : Int = coins,
+      				newScore : Int = score, 
+      				newPowerupTime : Int = 0,
+      				newFrozenTime : Int = this.frozenTime,
+      				newDead : Boolean = this.dead) : PlayerToken
+  
   def updatedMoved() : PlayerToken
 }
 
@@ -67,41 +75,46 @@ case class HumanToken(id : Int,
                   		extends PlayerToken {
   
   require(powerupTime >= 0)
-  require(frozenTime >= 0)
   
-  def updated(coords : (Int,Int)) = updated(newCoords = coords)
-  def updatedMoved() = updated(addedPowerupTime = -1, addedFrozenTime = -1)
-  def updated(newCoords : (Int,Int) = this.coords,
-      				addedCoins : Int = 0,
-      				addedScore : Int = 0, 
-      				addedPowerupTime : Int = 0,
-      				addedFrozenTime : Int = 0,
-      				dead : Boolean = this.dead) = {
-    
+
+  override def updated(newCoords : (Int,Int) = this.coords,
+      				newCoins : Int = this.coins,
+      				newScore : Int = this.score, 
+      				newPowerupTime : Int = this.powerupTime,
+      				newFrozenTime : Int = this.frozenTime,
+      				newDead : Boolean = this.dead) = {    
     // checks
-    val newPowerUpTime = { var tmp = this.powerupTime+addedPowerupTime
+    val checkedNewPowerUpTime = { var tmp = newPowerupTime
       if (tmp < 0) 0
       else tmp
     }
-    val newFrozenTime = { var tmp = this.frozenTime+addedFrozenTime
+    val checkedNewFrozenTime = { var tmp = newFrozenTime
       if (tmp < 0) 0
       else tmp
     }
     
-    new HumanToken(this.id, newCoords, this.coins+addedCoins, 
-        					 newPowerUpTime,
-        					 this.score, newFrozenTime,
+    new HumanToken(this.id, newCoords, newCoins, 
+        					 checkedNewFrozenTime,
+        					 newScore, checkedNewPowerUpTime,
         					 dead)
   }
+  
+  
+  def updatedMoved() = updated(newPowerupTime = 
+    this.powerupTime-1, newFrozenTime = this.frozenTime-1)
+  def updated(frozenTime : Int) : HumanToken = 
+    updated(newFrozenTime = frozenTime)
       
   def isVisitedBy (versatileGameObject : VersatileGameObject) = { 
     versatileGameObject match {
       case zombieToken : ZombieToken => {
         (zombieToken.dead, this.powerupTime) match {
-        case (false, 0) => (this.updated(addedScore = -killScore, dead = true),
+        case (false, 0) => (this.updated(newScore = 
+          this.score-defaults.killScore, newDead = true),
             			 				 zombieToken)
-        case (false, _) => (this.updated(addedScore = killScore), 
-            								zombieToken.updated(dead = true))
+        case (false, _) => (this.updated(newScore = 
+          this.score+defaults.killScore), 
+            								zombieToken.updated(newDead = true))
         case (true, _) => (this, zombieToken) // spawn!
         }
       }
@@ -116,18 +129,19 @@ case class ZombieToken(id : Int,
     									 dead : Boolean = false)
     									 extends NonHuman with PlayerToken {
   
-  def updated(coords : (Int,Int)) = updated(newCoords = coords)
-  def updatedMoved() = updated(addedFrozenTime = -1)
-  def updated(newCoords : (Int, Int) = this.coords,
-      				addedFrozenTime : Int = 0,
-      				dead : Boolean = false) = {
-    var newFrozentime = this.frozenTime+addedFrozenTime
-    if (newFrozentime < 0) 
-      newFrozentime = 0
-      
-    new ZombieToken(this.id, newCoords,
-        					  newFrozentime,
-        					  dead)
+  def coins = 0
+  def score = 0
+  def powerupTime = 0
+  
+  def updatedMoved() = updated(newFrozenTime = this.frozenTime - 1)
+  
+  def updated(newCoords : (Int,Int) = this.coords,
+      				newCoins : Int = this.coins,
+      				newScore : Int = this.score, 
+      				newPowerupTime : Int = this.powerupTime,
+      				newFrozenTime : Int = this.frozenTime,
+      				newDead : Boolean = this.dead) : ZombieToken = {
+  	new ZombieToken(this.id, newCoords, newFrozenTime, newDead)
   }
   
   def isVisitedBy (versatileGameObject : VersatileGameObject) = 
@@ -136,9 +150,11 @@ case class ZombieToken(id : Int,
         (humanToken.dead, humanToken.powerupTime) match {
           case (true, _) => (this, humanToken) // spawn!
           case (false, 0) => (this,
-              			 humanToken.updated(addedScore = -killScore, dead = true))              			 
-          case (false, _) => (this.updated(dead = true),
-              			 humanToken.updated(addedScore = killScore))        
+              			 humanToken.updated(newScore = 
+              			   humanToken.score-defaults.killScore, newDead = true))              			 
+          case (false, _) => (this.updated(newDead = true),
+              			 humanToken.updated(newScore = 
+              			   humanToken.score+defaults.killScore))        
         }
       }
       case zombieToken : ZombieToken => (this, zombieToken)

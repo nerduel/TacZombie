@@ -2,6 +2,9 @@ package taczombie.model
 
 import scala.language.higherKinds
 
+/**
+ * obsolete!
+ */
 class PlayerTokens[+A <: PlayerToken](val tokenList : List[A]) {
   
 	def currentToken : A = {

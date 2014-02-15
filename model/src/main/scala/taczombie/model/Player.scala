@@ -3,81 +3,86 @@ package taczombie.model
 import scala.collection.immutable.TreeMap
 
 trait Player {
-  
-  val defaultHumanMoves = 10
-  
-  val name : String
-  val playerTokens : PlayerTokens[PlayerToken]
+	val name : String
+  val playerTokenIds : List[Int]  
   val movesRemaining : Int
-  def currentToken : PlayerToken
-  def coinsCollected : Int
-  def score : Int
-  def updatedMoved() : Player
-  def updatedCycledTokens() : Player
+	
+	def currentTokenId = playerTokenIds.head
+  def coins(gameField : GameField) : Int = 0
+  def score(gameField : GameField) : Int = 0
+  
+  def currentToken(gameField : GameField) : PlayerToken
+  
+  def updated(updatedPlayerTokenIds : List[Int] = playerTokenIds,
+    				 upodatedMovesRemaining : Int = this.movesRemaining) : Player				 
+    				 
+  def updatedMoved() : Player = updated(upodatedMovesRemaining = this.movesRemaining-1)
+  def updatedCycledTokens() : Player = {
+    if(playerTokenIds.size > 1)
+    	updated(playerTokenIds.tail ::: playerTokenIds.head :: Nil)
+    else this
+	}
+	
   def updatedResetMovesRemaining() : Player
 }
 
 case class Human(val name : String,
-    						 val playerTokens : PlayerTokens[HumanToken],
+    						 val playerTokenIds : List[Int],
     						 val movesRemaining : Int = defaults.humanMoves,
     						 val lifes : Int = defaults.lifes)
     extends Player  {
   
-  def currentToken : HumanToken = playerTokens.currentToken
-  def coinsCollected = playerTokens.tokenList.foldLeft(0)((result,token) => 
-    result + token.coins)
-  def score = playerTokens.tokenList.foldLeft(0)({(result,token) => 
-    result + token.score})
-      
-
-  def updated(playerTokens : PlayerTokens[HumanToken] = this.playerTokens,
-    				 movesRemainingAdded : Int = 0,
-    				 lifesAdded : Int = 0) : Human = {
-    new Human(this.name, playerTokens, this.movesRemaining+movesRemainingAdded, 
-        			this.lifes + lifesAdded)
-  }
-    
-  def updatedToken(changedToken : HumanToken) : Human =
-    updated(this.playerTokens.updatedWithExistingToken(changedToken))
-    
-  def updatedMoved() : Human = updated(movesRemainingAdded = -1)
+  override def currentToken(gameField : GameField) : HumanToken = {
+  	gameField.findOnePlayerTokenById(currentTokenId) match {
+  	  case humanToken : HumanToken => humanToken
+  	  case _ => null
+  	}
+  } 
   
-  def updatedCycledTokens() : Human = {
-    if(playerTokens.tokenList.size > 1)
-    	updated(this.playerTokens.updatedNextToken)
-    else this
+  override def coins(gameField : GameField) = 
+    gameField.findPlayerTokensById(playerTokenIds).foldLeft(0)((result,token) => 
+    result + token.coins)
+    
+  override def score(gameField : GameField) = 
+    gameField.findPlayerTokensById(playerTokenIds).foldLeft(0)({(result,token) => 
+    result + token.score})
+    
+  def updated(updatedPlayerTokenIds : List[Int],
+    				 updatedMovesRemaining : Int,
+    				 updatedLifes : Int) : Human = {
+    new Human(this.name, updatedPlayerTokenIds, updatedMovesRemaining, 
+        			updatedLifes)
+  }
+  
+  def updated(updatedPlayerTokenIds : List[Int],
+    				 updatedMovesRemaining : Int) : Human = {
+  	updated(updatedPlayerTokenIds, updatedMovesRemaining,
+  	    this.lifes)
   }
   
   def updatedResetMovesRemaining() : Human = {
-    new Human(this.name, this.playerTokens, lifes = this.lifes)
-  }
+    updated(this.playerTokenIds, defaults.humanMoves, this.lifes)
+  }  
 }
 
 case class Zombie(val name : String,
-    						  val playerTokens : PlayerTokens[ZombieToken],
+    						  val playerTokenIds : List[Int],
 									val movesRemaining : Int = defaults.zombieMoves)
     extends Player {
-  def currentToken : ZombieToken = playerTokens.currentToken
-  val coinsCollected = 0
-  val score = 0
+ 
+  override def currentToken(gameField : GameField) : ZombieToken = {
+  	gameField.findOnePlayerTokenById(currentTokenId) match {
+  	  case zombieToken : ZombieToken => zombieToken
+  	  case _ => null
+  	}
+  }  
   
-  def updated(playerTokens : PlayerTokens[ZombieToken] = this.playerTokens,
+  def updated(updatedPlayerTokenIds : List[Int] = this.playerTokenIds,
     				 movesRemainingAdded : Int = 0) : Zombie = {
-    new Zombie(this.name, playerTokens, this.movesRemaining+movesRemainingAdded)
+    new Zombie(this.name, updatedPlayerTokenIds, this.movesRemaining+movesRemainingAdded)
   }
-  
-  def updatedToken(changedToken : ZombieToken) : Zombie =
-    updated(this.playerTokens.updatedWithExistingToken(changedToken))
-  
-  def updatedMoved() : Zombie = updated(movesRemainingAdded = -1)  
-    
-  def updatedCycledTokens() : Zombie = {
-    if(playerTokens.tokenList.size > 1)
-    	updated(playerTokens.updatedNextToken)
-    else this
-  }
-  
+   
   def updatedResetMovesRemaining() : Zombie = {
-    new Zombie(this.name, this.playerTokens)
+    new Zombie(this.name, this.playerTokenIds)
   }  
 }

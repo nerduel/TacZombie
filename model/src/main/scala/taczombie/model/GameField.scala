@@ -1,9 +1,10 @@
 package taczombie.model
 
-import scala.collection.immutable.HashSet
-import scala.collection.immutable.TreeMap
-
 import util.GameHelper._
+
+import scala.collection.immutable.HashSet
+import scala.collection.immutable.HashMap
+import scala.collection.mutable.ListBuffer
 
 class GameField(val id : String,
     						val gameFieldCells : Map[(Int,Int),GameFieldCell],
@@ -11,57 +12,45 @@ class GameField(val id : String,
                 val levelHeight : Int,
     						val humanBase : (Int, Int),
     						val zombieBase : (Int, Int),                
-                val coinsPlaced : Int) {
+                val coinsPlaced : Int,
+                val lastUpdatedGameFieldCells : List[GameFieldCell] = null) {
 
-  /**
-   * This method moves a player's active token to destination coordinates.
-   * @param spawning If a token is spawned it does not credit a real move 
-   * @return Updated Game, List of changed Cells, Updated PlayerMap 
-   */
-  def move(destinationCoords : (Int, Int), 
-        	 players : Players,
-        	 spawning : Boolean = false,
-        	 fakeMove : Boolean = false) 
-    		: (GameField, List[GameFieldCell], Players) = {
-  	
-   
-    val (movingPlayer, movingToken) = { 
-      if(spawning) { 
-      	(players.currentPlayer, players.currentPlayer.currentToken)
-      } else {
-        (players.currentPlayer.updatedMoved(), 
-         players.currentPlayer.currentToken.updatedMoved())
+  def findPlayerTokensById(tokenIds : List[Int]) : List[PlayerToken] = {
+    val playerTokensMap = scala.collection.mutable.HashMap[Int, PlayerToken]();
+    
+    for(gameFieldCellWithPlayerToken <- gameFieldCells.filter(gameFieldCell => {
+                            gameFieldCell._2.containsHumanToken ||
+                            gameFieldCell._2.containsZombieToken})) {
+      for(searchedPlayerToken <- 
+          	gameFieldCellWithPlayerToken._2.gameObjects.filter(gameObject 
+          			=> tokenIds.contains(gameObject.id))) {
+        					playerTokensMap.+=((searchedPlayerToken.id, 
+    				    								searchedPlayerToken.asInstanceOf[PlayerToken]))
       }
     }
+    playerTokensMap.values.toList
+  }
+  
+  def findOnePlayerTokenById(id : Int) : PlayerToken = 
+  		findPlayerTokensById(List[Int](id)).head
+  
+  /**
+   * This method moves a token to destination coordinates.
+   */
+  def move(movingPlayerToken : PlayerToken,
+      		 destinationCoords : (Int, Int),
+      		 commandLog : ListBuffer[String])
+    		: GameField = {
+  	
 
-    // TODO remove debug print 
-    println("moving " + movingToken + " to " + destinationCoords)
-
-    val updatedSourceCell = gameFieldCells.apply(movingToken.coords)
-    																			.remove(movingToken)
-    val (updatedDestinationCell, updatedMovingToken) =
-    	gameFieldCells.apply(destinationCoords).moveHere(movingToken)
+    val updatedSourceCell =    
+    		gameFieldCells.apply(movingPlayerToken.coords).remove(movingPlayerToken)
+    		
+    val updatedDestinationCell =   
+   			gameFieldCells.apply(destinationCoords).moveHere(movingPlayerToken)
     val updatedGameFieldCells = List[GameFieldCell](updatedSourceCell, 
           																					updatedDestinationCell)
-
-    val updatedMovingPlayer = (movingPlayer, updatedMovingToken) match {
-      case (human : Human, updatedHumanToken : HumanToken) => 
-        human.updatedToken(updatedHumanToken)
-      case (zombie : Zombie, updatedZombieToken : ZombieToken) => 
-        zombie.updatedToken(updatedZombieToken)
-      case _ => null // TODO exception
-    }  
-    
-    
-    var finalPlayers : Players = players.updatedExistingPlayer(updatedMovingPlayer)																			
-    finalPlayers = finalPlayers.updatedFromUpdatedGameFieldCell(updatedDestinationCell)
-    
-    // TODO remove debug print 
-    //finalPlayerMap.foreach(player => println(player)) 
-    
-    (this.updated(updatedGameFieldCells),
-     updatedGameFieldCells,
-     finalPlayers)
+    this.updated(updatedGameFieldCells)
   }
   
   // TODO: Check if obsolete
@@ -90,7 +79,8 @@ class GameField(val id : String,
   	    					this.levelHeight,
   	    					this.humanBase,
   	    					this.zombieBase,                
-  	    					this.coinsPlaced)
+  	    					this.coinsPlaced,
+  	    					updatedCells)
   }
 }
 
@@ -102,13 +92,29 @@ class GameFieldCell(val coords : (Int, Int),
   }  
   
   def containsZombieToken() : Boolean = {
-    gameObjects.filter(gameObject =>  
+    gameObjects.filter(gameObject =>
       gameObject.isInstanceOf[ZombieToken]).nonEmpty
   }
   
   def containsHumanToken() : Boolean = {
-    gameObjects.filter(gameObject =>  
+    gameObjects.filter(gameObject =>
       gameObject.isInstanceOf[HumanToken]).nonEmpty
+  }   
+  
+  def containsLivingZombieToken() : Boolean = {
+    gameObjects.filter(gameObject =>
+      gameObject match {
+        case zombieToken : ZombieToken => !zombieToken.dead
+        case _ => false
+      }).nonEmpty
+  }
+  
+  def containsLivingHumanToken() : Boolean = {
+    gameObjects.filter(gameObject =>
+      gameObject match {
+        case humanToken : HumanToken => !humanToken.dead
+        case _ => false
+      }).nonEmpty
   }  
   
   def containsWall() : Boolean = {
@@ -137,7 +143,7 @@ class GameFieldCell(val coords : (Int, Int),
    * Move a PlayerToken to the Cell
    */
   def moveHere (playerToken : PlayerToken) 
-  		: (GameFieldCell, PlayerToken) = {
+  		: GameFieldCell = {
     val zombieList = gameObjects.filter(
         hostObject =>	hostObject.isInstanceOf[ZombieToken])
     
@@ -151,13 +157,14 @@ class GameFieldCell(val coords : (Int, Int),
       	case versatileHostObject : VersatileGameObject => {
       		versatileHostObject isVisitedBy finalPlayerToken match {
       			case (hostObjectResult, playerTokenResult : PlayerToken) => {
-      			  	finalHostObjects = finalHostObjects.-(versatileHostObject)
-      			  	if(hostObjectResult.isInstanceOf[PlayerToken] &&
-      			  	    hostObjectResult.asInstanceOf[PlayerToken].dead == true) {}
-      			  	else if(hostObjectResult != null)
-      			  	  finalHostObjects = finalHostObjects.+(hostObjectResult)
-
-              finalPlayerToken = playerTokenResult
+    			  	finalHostObjects = finalHostObjects.-(versatileHostObject)
+    			  	if(hostObjectResult.isInstanceOf[PlayerToken] &&
+    			  	    hostObjectResult.asInstanceOf[PlayerToken].dead == true) 
+    			  	{} // don't add dead PlayerTokens to the gameFieldCell
+    			  	else if(hostObjectResult != null) {
+    			  	  finalHostObjects = finalHostObjects.+(hostObjectResult)
+  			  	  }
+    			  	finalPlayerToken = playerTokenResult
       			}
       		}
       	}
@@ -167,7 +174,7 @@ class GameFieldCell(val coords : (Int, Int),
     // add final visitorObjectResult 
     finalHostObjects += finalPlayerToken
     
-    (this.updated(finalHostObjects), finalPlayerToken)
+    this.updated(finalHostObjects)
   }
   
   /**

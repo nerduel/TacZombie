@@ -45,7 +45,7 @@ object JsonHelper {
           lastUpdatedGameFieldCells = {for {cell <- g.gameField.gameFieldCells} yield cell._2 }.toList
         case Updated => 
           cmd = "updated"
-          lastUpdatedGameFieldCells = g.lastUpdatedGameFieldCells
+          lastUpdatedGameFieldCells = g.gameField.lastUpdatedGameFieldCells
       }
       
       val gameState = g.gameState.toString
@@ -53,8 +53,8 @@ object JsonHelper {
       var currentPlayerTokenAsChar = ' '
       var lifes = 0
       val movesRemaining = currentPlayer.movesRemaining
-      val coins = currentPlayer.coinsCollected
-      val score = currentPlayer.score
+      val coins = currentPlayer.coins(g.gameField)
+      val score = currentPlayer.score(g.gameField)
       val width = g.gameField.levelWidth
       var powerUp = 0
       val height = g.gameField.levelHeight
@@ -62,7 +62,7 @@ object JsonHelper {
       g.players.currentPlayer match {
         case h: Human =>
           currentPlayerTokenAsChar = 'H'
-          powerUp = h.currentToken.powerupTime
+          powerUp = h.currentToken(g.gameField).powerupTime
           lifes = h.lifes
         case z: Zombie =>
           currentPlayerTokenAsChar = 'Z'
@@ -71,7 +71,7 @@ object JsonHelper {
       // Collect and simplify changed game cells
       
       import taczombie.model.util.CoordinateHelper._
-      val allowedMoves = currentPlayer.currentToken.coords.calculateAllowedMoves(movesRemaining,g)
+      val allowedMoves = currentPlayer.currentToken(g.gameField).coords.calculateAllowedMoves(movesRemaining,g)
       val gameFieldCellsFromAllowedMoves = g.gameField.gameFieldCells.filter(x => allowedMoves.contains(x._1._1, x._1._2))
       
       // Get current gameFieldCells which were highlighted, but now arent highlighted anymore.

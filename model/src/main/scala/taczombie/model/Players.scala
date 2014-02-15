@@ -29,37 +29,6 @@ class Players(val playerList : List[Player]) {
     else null // TODO exception empty list
   }
   
-  def updatedFromUpdatedGameFieldCell(gameFieldCell : GameFieldCell) 
-  	: Players = {
-    var updatedPlayers : Players = this
-    playerList.foreach(player => {
-      player.playerTokens.tokenList.foreach(playerToken => {
-        gameFieldCell.gameObjects.foreach(gameObject =>{
-      	  (player, playerToken, gameObject) match {
-      	    case(human : Human, playerHumanToken : HumanToken, 
-      	        	cellHumanToken : HumanToken) => {
-      	      if(playerHumanToken.id == cellHumanToken.id) {
-      	        println("found same token")
-      	        updatedPlayers = updatedPlayers.updatedExistingPlayer(
-      	            human.updatedToken(cellHumanToken))
-      	      }
-	        	}
-      	    case(zombie : Zombie, playerZombieToken : ZombieToken, 
-      	        	cellZombieToken : ZombieToken) => {
-      	      if(playerZombieToken.id == cellZombieToken.id) {
-      	        println("found same token")
-      	        updatedPlayers = updatedPlayers.updatedExistingPlayer(
-      	            zombie.updatedToken(cellZombieToken))
-      	      }
-	        	}
-      	    case _ =>
-    	  	} 
-      	})
-      })
-    })
-    updatedPlayers
-  }
-  
   def updatedRotatedPlayers() : Players = {
     var finalPlayers = this
     playerList.foreach(player => 

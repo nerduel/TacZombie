@@ -9,6 +9,11 @@ import taczombie.model.MoveDown
 import taczombie.model.MoveRight
 import taczombie.model.MoveLeft
 import taczombie.model.GameState
+import taczombie.model.NextToken
+import taczombie.model.NextPlayer
+import taczombie.model.Restart
+import com.sun.xml.internal.bind.v2.model.annotation.Quick
+import taczombie.model.Quit
 
 object GameController {
 
@@ -37,21 +42,27 @@ object GameController {
 	      currentGame.executeCommand(MoveDown)
 	      
 	    case "nextPlayer" =>
-	      //currentGame.executeCommand(NextPlayer())
-	      currentGame
+	      currentGame.executeCommand(NextPlayer)
 	      
 	    case "switchToken" =>
-	      //currentGame.executeCommand(new switchToken())
+	      currentGame.executeCommand(NextToken)
+	      
+	    case "restartGame" =>
+	      currentGame.executeCommand(Restart)
+	      currentGame
+	      
+	    case "quit" =>
+	      currentGame.executeCommand(Quit)
 	      currentGame
 	      
 	    case "nextGame" => 
 	    	if (currentGame.gameState == GameState.Win)
 	    	  // TODO: GameFactory needs to take old score 
 	    	  // GameFactory.nextLevel(currentGame)
-	    	  GameFactory.newGame(random = false, humans = 1, zombies = 1)
+	    	  GameFactory.newGame(random = false, file = "../model/src/test/scala/taczombie/test/model/TestLevel_correct", humans = 1, zombies = 1)
 	    	else
 	    	  // new Start
-	    	  GameFactory.newGame(random = false, humans = 1, zombies = 1)
+	    	  GameFactory.newGame(random = false, file = "../model/src/test/scala/taczombie/test/model/TestLevel_correct", humans = 1, zombies = 1)
 	  }
 	}
 	

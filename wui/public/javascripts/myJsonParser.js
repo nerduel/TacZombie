@@ -47,19 +47,29 @@ function onMessage(evt) {
 			renewGrid(msg.gameData.levelHeight, msg.gameData.levelWidth);
 			updateView(msg);
 			displayInformation("New Game Loaded.");
+			//msg.log instead of "NewGame Loaded."
 			document.getElementById("gameData").style = "";
 			break;
 			
 		case "updated":
-			renewGrid(msg.gameData.levelHeight, msg.gameData.levelWidth);
 			updateView(msg);
 			displayInformation("Turn of player was valid.");
+			appendToLog(msg.log);
 			break;
 		}
 	} catch (e) {
 		displayError("Received message was no JSON object!");
 	}
 }
+
+function appendToLog(logList) {
+	var logOutput = document.getElementById("log");
+	for ( var i = 0; i < logList.length; i++) {
+		logOutput.value	+= logList[i];
+		logOutput.value	+= "\n";
+	}
+}
+
 
 function renewGrid(height, width) {
 	var contentTable = document.getElementById("grid");
@@ -87,39 +97,42 @@ function displayInformation(msg) {
 }
 
 function updateView(data) {
-	switch (data.gameData.currentPlayer) {
-	case "H":
-		changeElement("cPlayer", "", "Human");
-		break;
-
-	case "Z":
-		changeElement("cPlayer", "", "Zombie");
-		break;
-	}
-
-	propagateState(data.gameData.gameState, data.gameData.score);
-
-	changeElement("cLifes", "", data.gameData.lifes);
-
-	changeElement("cMoves", "", data.gameData.movesRemaining);
-
-	changeElement("cCoins", "", data.gameData.coins);
-
-	changeElement("cScore", "", data.gameData.score);
-
-	switch (data.gameData.powerUp) {
-	case true:
-		changeElement("cZKiller", "", "YES");
-		break;
-
-	case false:
-		changeElement("cZKiller", "", "NO");
-		break;
-	}
-
+	if (data.gameData != null) {
+    	switch (data.gameData.currentPlayer) {
+    	case "H":
+    		changeElement("cPlayer", "", "Human");
+    		break;
+    
+    	case "Z":
+    		changeElement("cPlayer", "", "Zombie");
+    		break;
+    	}
+    
+    	propagateState(data.gameData.gameState, data.gameData.score);
+    
+    	changeElement("cLifes", "", data.gameData.lifes);
+    
+    	changeElement("cMoves", "", data.gameData.movesRemaining);
+    
+    	changeElement("cCoins", "", data.gameData.coins);
+    
+    	changeElement("cScore", "", data.gameData.score);
+    
+    	switch (data.gameData.powerUp) {
+    	case true:
+    		changeElement("cZKiller", "", "YES");
+    		break;
+    
+    	case false:
+    		changeElement("cZKiller", "", "NO");
+    		break;
+    	}
+    }
+	
 	for ( var i in data.cells) {
 		updateCell(data.cells[i]);
 	}
+	
 
 }
 

@@ -1,157 +1,188 @@
 body {
-  color: black; background-color: white;
-  font-size: 100.01%;
-  font-family: Helvetica,Arial,sans-serif;
-  padding-left: 1em;
-  margin-left: 0;
-  margin-top: -1em;
-  overflow: scroll;
+	color: black;
+	background-color: white;
+	font-size: 100.01%;
+	font-family: Helvetica, Arial, sans-serif;
+	padding-left: 1em;
+	margin-left: 0;
+	margin-top: -1em;
+	overflow: scroll;
 }
 
-
 #container {
-  /*
+	/*
   border-left: 1px dashed #FAA;
   border-right: 1px dashed #FAA;
   */
-  margin: 0 auto;
-  width: 1024px;
+	margin: 0 auto;
+	min-width: 1280px;
 }
 
 div#footer {
-    width: 100%;
-    height: 20px;
+	width: 100%;
+	height: 20px;
 }
 
 div#gameField {
-    display: block;
-	  font-size: 0.91em;
-	  float: left; 
-	  margin: 0; padding: 0.1em;
-	  background-color: #DDDDDD;
+	display: block;
+	font-size: 0.91em;
+	float: left;
+	margin: 0;
+	padding: 0.1em;
+	background-color: #DDDDDD;
 }
 
 div#gameField table#grid {
-    border: 1px solid gray;
-    border-spacing: 1px;
+	border: 1px solid gray;
+	border-spacing: 1px;
 }
 
 div#gameField table#grid td {
-	  width: 25px;
-	  height: 25px;
-	  text-align: center;
-	  background-repeat: no-repeat;
-    background-position: center;
+	width: 25px;
+	height: 25px;
+	text-align: center;
+	background-repeat: no-repeat;
+	background-position: center;
 }
 
-
 div#gameField table#grid td.wall {
-	  background-image: URL("/assets/images/wall.png");
-	  background-repeat: repeat;
+	background-image: URL("/assets/images/wall.png");
+	background-repeat: repeat;
 }
 
 div#gameField table#grid td.zombie {
-    background-image: URL("/assets/images/zombie.png");
+	background-image: URL("/assets/images/zombie.png");
 }
 
 div#gameField table#grid td.hZombie {
-    background-image: URL("/assets/images/hZombie.png");
+	background-image: URL("/assets/images/hZombie.png");
 }
 
 div#gameField table#grid td.human {
-    background-image: URL("/assets/images/human.png");
+	background-image: URL("/assets/images/human.png");
 }
 
 div#gameField table#grid td.hHuman {
-    background-image: URL("/assets/images/hHuman.png");
+	background-image: URL("/assets/images/hHuman.png");
 }
 
 div#gameField table#grid td.coin {
-    background-image: URL("/assets/images/coin.png");
+	background-image: URL("/assets/images/coin.png");
 }
 
 div#gameField table#grid td.hCoin {
-    background-image: URL("/assets/images/hCoin.png");
+	background-image: URL("/assets/images/hCoin.png");
 }
 
 div#gameField table#grid td.powerup {
-    background-image: URL("/assets/images/powerup.png");
+	background-image: URL("/assets/images/powerup.png");
 }
 
 div#gameField table#grid td.hPowerup {
-    background-image: URL("/assets/images/hPowerup.png");
+	background-image: URL("/assets/images/hPowerup.png");
 }
 
 div#gameField table#grid td.empty {
-    background-image: URL("/assets/images/empty.png");
+	background-image: URL("/assets/images/empty.png");
 }
 
 div#gameField table#grid td.hEmpty {
-    background-image: URL("/assets/images/hEmpty.png");
+	background-image: URL("/assets/images/hEmpty.png");
+}
+
+div#rightBox {
+	display: inline-block;
+	float: left;
+	margin-left: 2em;
+	padding: 0 0em;
 }
 
 div#gameInfo {
-	 display: inline-block;
-   float: left;
-   margin-left: 2em;
-   padding: 0 0em;
+	display: inline-block;
+	float: left;
+	padding: 0 0em;
 }
 
-div#divider {
-	 padding: 1em 0;
+div#dividerH {
+	padding: 1em 0;
+}
+
+div#dividerV {
+  padding: 0em 2em;
+  float: inherit;
 }
 
 div#gameData {
-    background-color: #DDDDDD;
+	display: block;
+	background-color: #DDDDDD;
 }
 
 div#gameData td.scnd {
-   text-align: center;
+	text-align: center;
 }
 
 div#gameData td {
-	 padding: 0.3em;
+	padding: 0.3em;
+	width: 8em;
 }
 
-div#gameData tr#bottom td{
-	 border-top: 2px solid gray;
+div#gameData tr#bottom td {
+	border-top: 2px solid gray;
 }
 
 div#gameControl {
-  background-color: #DDDDDD;
+	display: block;
+	background-color: #DDDDDD;
 }
 
 div#gameControl th {
-	 text-align: left;
+	text-align: left;
 }
 
 div#gameControl td.scnd {
-   text-align: center;
+	text-align: center;
 }
 
 div#gameControl td {
-   padding: 0.3em;
-   background-repeat: no-repeat;
-   background-position: center;
+	padding: 0.3em;
+	width: 8em;
+	background-repeat: no-repeat;
+	background-position: center;
 }
 
-div#gameControl tr#bottom td{
-   border-top: 2px solid gray;
+div#gameControl tr#bottom td {
+	border-top: 2px solid gray;
 }
 
+div#logger {
+	display: inline-block;
+	float: right;
+	margin-left: 1em;
+	padding: 0 0em;
+}
+
+div#logger p {
+	color: #999999;
+}
+
+div#logger textarea {
+	width: 25em;
+	height: 32.7em;
+}
 
 div#clear {
-    clear: both;
+	clear: both;
 }
+
 input#gameInput {
 	margin-left: 0.1em;
-	margin-top: 1.2em;"
+	margin-top: 1.2em;
 }
 
 #footer {
-    clear: left;
-    margin-top:1em;
-    background:#efefef;
-    text-align:left;
-    padding-left: 0.1em;
+	clear: left;
+	margin-top: 1em;
+	background: #efefef;
+	text-align: left;
+	padding-left: 0.1em;
 }

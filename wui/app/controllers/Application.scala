@@ -12,7 +12,7 @@ import taczombie.model.GameFactory
 
 object Application extends Controller {
 
-  var myGame = GameFactory.newGame(random = false, humans = 1, zombies = 1)
+  var myGame = GameFactory.newGame(random = false, file = "model/src/test/scala/taczombie/test/model/starWars-map")
   
   def index = Action {
     Ok(views.html.index("TacZombie"))
@@ -41,6 +41,8 @@ object Application extends Controller {
         }
         else {
 	        val game = GameController.evaluateCommand(msg, myGame)
+	        
+	        println(game.toJson(Updated))
 	        
 	        outchannels("lobby").foreach(_.push(game.toJson(Updated)))
 	        

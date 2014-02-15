@@ -34,7 +34,7 @@ class GameField(val id : String,
       }
     }
 
-    // TODO debug print 
+    // TODO remove debug print 
     println("moving " + movingToken + " to " + destinationCoords)
 
     val updatedSourceCell = gameFieldCells.apply(movingToken.coords)
@@ -44,18 +44,19 @@ class GameField(val id : String,
     val updatedGameFieldCells = List[GameFieldCell](updatedSourceCell, 
           																					updatedDestinationCell)
 
-    val updatedMovingPlayer = movingPlayer match {
-      case human : Human => 
-        human.updatedToken(updatedMovingToken.asInstanceOf[HumanToken])
-      case zombie : Zombie => 
-        zombie.updatedToken(updatedMovingToken.asInstanceOf[ZombieToken])
+    val updatedMovingPlayer = (movingPlayer, updatedMovingToken) match {
+      case (human : Human, updatedHumanToken : HumanToken) => 
+        human.updatedToken(updatedHumanToken)
+      case (zombie : Zombie, updatedZombieToken : ZombieToken) => 
+        zombie.updatedToken(updatedZombieToken)
+      case _ => null // TODO exception
     }  
     
     
     var finalPlayers : Players = players.updatedExistingPlayer(updatedMovingPlayer)																			
     finalPlayers = finalPlayers.updatedFromUpdatedGameFieldCell(updatedDestinationCell)
     
-    // TODO debug print 
+    // TODO remove debug print 
     //finalPlayerMap.foreach(player => println(player)) 
     
     (this.updated(updatedGameFieldCells),

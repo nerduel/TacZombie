@@ -43,12 +43,11 @@ class Game(val id : Int,
     println("collected coins for player " + player.name + " : " + player.coinsCollected)
  
     // TODO check for lifesRemaining for token
-      
     // TODO check for movesRemaining for player
 	  
     if (player.movesRemaining == 0) {
       println("switching players")
-      updatedPlayers = updatedPlayers.updatedRotatedPlayers
+      updatedPlayers = updatedPlayers.updatedRotatedPlayers()
     } else {
       println("remaining moves " + player.movesRemaining)
 //      println("remaining moves: " + player.movesRemaining + " -> switching tokens")
@@ -57,11 +56,6 @@ class Game(val id : Int,
     }
     
 	  // TODO check if all HumanTokens are dead
-//    println(updatedPlayers)
-//    players = players
-//    println(updatedPlayerMap)
-//    
-    
     // TODO cycle player  
       
     new Game(id, updatedGameField, updatedPlayers, 

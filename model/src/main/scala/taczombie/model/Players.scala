@@ -63,7 +63,7 @@ class Players(val playerList : List[Player]) {
   def updatedRotatedPlayers() : Players = {
     var finalPlayers = this
     playerList.foreach(player => 
-      finalPlayers = finalPlayers.updatedExistingPlayer(player.updatedResetMovesRemaining))
-    new Players(playerList.tail ::: playerList.head :: Nil)
+      finalPlayers = finalPlayers.updatedExistingPlayer(player.updatedResetMovesRemaining()))
+    new Players(finalPlayers.playerList.tail ::: finalPlayers.playerList.head :: Nil)
   }
 }

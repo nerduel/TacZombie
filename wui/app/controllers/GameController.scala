@@ -30,29 +30,29 @@ object GameController {
 	def evaluateCommand(cmd : String, currentGame : Game) : Game = {
 	  cmd match {
 	    case "moveLeft" =>
-      	  currentGame.executeCommand(MoveLeft)
+      	 currentGame.executeCommand(MoveLeft)._1
       	  
 	    case "moveRight" =>
-	      currentGame.executeCommand(MoveRight)
+	      currentGame.executeCommand(MoveRight)._1
 	      
 	    case "moveUp" =>
-	      currentGame.executeCommand(MoveUp)
+	      currentGame.executeCommand(MoveUp)._1
 	      
 	    case "moveDown" =>
-	      currentGame.executeCommand(MoveDown)
+	      currentGame.executeCommand(MoveDown)._1
 	      
 	    case "nextPlayer" =>
-	      currentGame.executeCommand(NextPlayer)
+	      currentGame.executeCommand(NextPlayer)._1
 	      
 	    case "switchToken" =>
-	      currentGame.executeCommand(NextToken)
+	      currentGame.executeCommand(NextToken)._1
 	      
 	    case "restartGame" =>
-	      currentGame.executeCommand(Restart)
+	      currentGame.executeCommand(Restart)._1
 	      currentGame
 	      
 	    case "quit" =>
-	      currentGame.executeCommand(Quit)
+	      currentGame.executeCommand(Quit)._1
 	      currentGame
 	      
 	    case "nextGame" => 

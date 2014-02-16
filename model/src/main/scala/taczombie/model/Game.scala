@@ -4,6 +4,7 @@ import GameState.GameState
 import util.CoordinateHelper.intIntTuple2Wrapper
 import scala.collection.mutable.ListBuffer
 import taczombie.model.util.Logger
+import java.util.Calendar
 
 object defaults {
   val humanLifes = 3
@@ -29,7 +30,7 @@ object GameMessages {
   def gameOver = "Game Over!"
   def tokenDied = "You ran into death! Please switch players."
   def deadTokenSelected = "Your last selected token is dead. Please use \"respawn token\"" +
-  												" or \"respawn token\" accordingly." 
+  												" or switch players." 
 }
 
 class Game(val id : Int,
@@ -39,11 +40,15 @@ class Game(val id : Int,
            val lastGameMessage : String = GameMessages.newGame,
            val mergeLog : Logger = null) extends Logger {
   
+  var startTime : Long = 0
+  
   if(mergeLog != null)
     logger.merge(mergeLog)
   
 	def executeCommand(gameCommand : GameCommand) 
 			: Game = {
+    
+    startTime = Calendar.getInstance().getTimeInMillis()
 	  
 	  logger.init("Executing command" + gameCommand)
 	  var updatedGameField : GameField = null
@@ -223,6 +228,9 @@ class Game(val id : Int,
 	    								newPlayers : Players = this.players,
 	    								newGameState : GameState = this.gameState,
 	    								newGameMessage : String = GameMessages.noMsg) : Game = {
+	  logger += "Execution time:  " + 
+    	  					 (Calendar.getInstance().getTimeInMillis() - startTime) +
+    	  					" ms"
 	  new Game(id, newGameField, 
         		 newPlayers, newGameState, newGameMessage, this)
 	}

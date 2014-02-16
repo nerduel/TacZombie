@@ -14,6 +14,8 @@ object defaults {
   
   val humanName = "Pacman"
   val zombieName = "Zombie"
+  
+  val spawnFreeze = 1 
     
   val killScore = 3
 }
@@ -21,8 +23,8 @@ object defaults {
 object GameMessages {
   def noMsg = "Chase them!"
   def newGame = "New Game is ready. Have fun!"
-  def frozenToken(rounds : Int) = "You're token is frozen for " + rounds + 
-  	"rounds. If you have more Tokens switch to them, otherwise switch players!"
+  def frozenToken(rounds : Int) = "This token is frozen for " + rounds + 
+  	" rounds. If you have more Tokens switch to them, otherwise switch players!"
   def wall = "*OUCH* You ran against a wall..."
     
   def noRemainingMoves = "You have no moves remaining. Please switch players."
@@ -198,7 +200,11 @@ class Game(val id : Int,
   	  	if(currentToken.dead) {
   	  		updatedGameField = gameField.respawn(currentToken.id)
   	  		updatedGameState = GameState.InGame
-  	  		updatedGameMessage = GameMessages.noMsg
+  	  		if(defaults.spawnFreeze > 0)
+  	  			updatedGameMessage = GameMessages.frozenToken(defaults.spawnFreeze)
+  	  		else
+  	  		  updatedGameMessage = GameMessages.noMsg
+  	  		  
   	  		updatedPlayers = players.updatedExistingPlayer(
   	  		    currentPlayer.updatedDecreasedLifes.updatedDecreasedLifes)
   	  		

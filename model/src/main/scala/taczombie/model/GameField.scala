@@ -46,10 +46,12 @@ class GameField(val id : String,
                             gameFieldCell._2.containsLivingHumanToken ||
                             gameFieldCell._2.containsLivingZombieToken})) {
       var tmpGameFieldCell = gameFieldCellWithPlayerToken._2
-      for (token <- gameFieldCellWithPlayerToken._2.gameObjects) {
-        token match {
+      for (playersToken <- gameFieldCellWithPlayerToken._2.gameObjects.filter
+          								(token => player.playerTokenIds.contains(token.id))) {
+        playersToken match {
           case playerToken : PlayerToken =>
-          	tmpGameFieldCell = tmpGameFieldCell.updatedWithReplacement(playerToken.updatedDecrementCounters)
+          	tmpGameFieldCell = tmpGameFieldCell.updatedWithReplacement(
+          	    													playerToken.updatedDecrementCounters)
           case _ => // don't touch other tokens
         }
       }

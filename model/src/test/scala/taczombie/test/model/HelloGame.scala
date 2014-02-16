@@ -39,24 +39,26 @@ object HelloGame {
 	  var game =  GameFactory.newGame(false, humans = 1, zombies = 1)
 	  
   	printGameField(game.gameField)
-  	  
+
+  	// human
 		game = game.executeCommand(MoveLeft)
 		game = game.executeCommand(MoveLeft)
 		game = game.executeCommand(MoveLeft)
 		game = game.executeCommand(MoveLeft)
+		
+		// zombie
+		game = game.executeCommand(MoveRight)
+		game = game.executeCommand(MoveRight)
+		
+		// human
 		game = game.executeCommand(MoveDown)
 		game = game.executeCommand(MoveDown)
 		game = game.executeCommand(MoveRight)
 		game = game.executeCommand(MoveRight)
 		game = game.executeCommand(MoveRight)
 		game = game.executeCommand(MoveRight)
-		game = game.executeCommand(MoveRight)
-		game = game.executeCommand(MoveRight)
-		game = game.executeCommand(MoveRight)
-		game = game.executeCommand(MoveRight)
-		game = game.executeCommand(MoveRight)
-		game = game.executeCommand(MoveRight)
-		game = game.executeCommand(MoveRight)
+		
+		// zombie
 		
 		printGameField(game.gameField)
 	}

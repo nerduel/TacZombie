@@ -94,8 +94,8 @@ case class HumanToken(id : Int,
       if (newFrozenTime < 0) 0
       else newFrozenTime
     
-    new HumanToken(this.id, newCoords, newCoins, checkedNewFrozenTime,
-        					 newScore, checkedNewPowerUpTime, dead)
+    new HumanToken(this.id, newCoords, newCoins, newScore, 
+        checkedNewPowerUpTime, checkedNewFrozenTime, dead)
   }
   
   

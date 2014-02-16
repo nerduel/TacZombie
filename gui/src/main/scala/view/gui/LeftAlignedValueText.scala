@@ -1,23 +1,21 @@
 package view.gui
 
-import scala.swing.Alignment
-import scala.swing.FlowPanel
-import scala.swing.Label
+import scala.swing._
 
-class LeftAlignedValueText(text: String, value: String) extends FlowPanel {
+class LeftAlignedValueText(text: String, value: String) extends BorderPanel {
 
-  private var labelText = new Label(text) {
-    horizontalAlignment = Alignment.Left
+  private var labelText = new Label(text.padTo(18, ' ')) {
+    horizontalTextPosition = Alignment.Left
   }
 
-  private var labelValue = new Label(value) {
-    horizontalAlignment = Alignment.Left
+  private var labelValue = new Label(value.reverse.padTo(5, ' ').reverse) {
+    horizontalTextPosition = Alignment.Right
   }
 
   def update(value: String) {
-    labelValue.text = value
+    labelValue.text = value.reverse.padTo(5, ' ').reverse
   }
 
-  contents += labelText
-  contents += labelValue
+  add(labelText, BorderPanel.Position.West)
+  add(labelValue, BorderPanel.Position.East)
 }

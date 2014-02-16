@@ -71,6 +71,16 @@ div#gameField table#grid td.hHuman {
 	background-size: 25px 25px;
 }
 
+div#gameField table#grid td.humanPowerup {
+  background-image: URL("/assets/images/humanPowerup.png");
+  background-size: 25px 25px;
+}
+
+div#gameField table#grid td.hHumanPowerup {
+	background-image: URL("/assets/images/hHumanPowerup.png");
+  background-size: 25px 25px;
+}
+
 div#gameField table#grid td.coin {
 	background-image: URL("/assets/images/coin.png");
 }

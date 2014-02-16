@@ -2,9 +2,9 @@ package taczombie.model
 
 import scala.collection.immutable.HashMap
 import scala.collection.mutable.ListBuffer
-
 import taczombie.model.util.Logger
 import util.GameHelper._
+import scala.util.Random
 
 class GameField(val id : String,
     						val gameFieldCells : Map[(Int,Int),GameFieldCell],
@@ -13,8 +13,12 @@ class GameField(val id : String,
     						val humanBase : (Int, Int),
     						val zombieBase : (Int, Int),                
                 val coinsPlaced : Int,
-                val lastUpdatedGameFieldCells : List[GameFieldCell] = null)
+                val lastUpdatedGameFieldCells : List[GameFieldCell] = null,
+                val mergeLog : Logger = null)
                 extends Logger {
+  
+  if(mergeLog != null)
+    logger merge mergeLog
 
   def findPlayerTokensById(tokenIds : List[Int]) : List[PlayerToken] = {
     val playerTokensMap = scala.collection.mutable.HashMap[Int, PlayerToken]();
@@ -88,6 +92,48 @@ class GameField(val id : String,
     this.updated(updatedGameFieldCells)
   }
   
+  /**
+   * Respawn a dead token on a random empty spot
+   */
+  def respawn(tokenId : Int) : GameField = {
+    val updatedGameFieldCells = ListBuffer[GameFieldCell]()
+        
+    val respawnToken = findOnePlayerTokenById(tokenId)
+
+    val updatedSourceCell = gameFieldCells.apply(respawnToken.coords)
+    																			.remove(respawnToken)
+ 
+    val updatedRespawnToken = respawnToken.updated(
+                                newCoords = getRandomSpawnCoords, 
+                                newPowerupTime = 0, 
+                                newFrozenTime = 1, 
+                                newDead = false)
+       
+    updatedGameFieldCells += updatedSourceCell
+    updatedGameFieldCells += gameFieldCells.apply(updatedRespawnToken.coords)
+    																			 .addHere(updatedRespawnToken)
+    
+    logger += "Respawned " + updatedRespawnToken + 
+    					" to " + updatedRespawnToken.coords
+    					
+    updated(updatedGameFieldCells.toList)
+  }
+  
+  /**
+   * Find a random empty cell
+   */
+  private def getRandomSpawnCoords() : (Int, Int) = {
+    var randomCoords : (Int, Int) = null    
+    val rand = new Random(System.currentTimeMillis());
+    
+    do 
+      randomCoords = (rand.nextInt(levelHeight), rand.nextInt(levelWidth))
+    while 
+      (!gameFieldCells.apply(randomCoords).isEmpty)
+      
+    randomCoords
+  }
+  
   private def isValid(pos : (Int, Int)) = {
       if ((pos._1 < levelHeight) && (pos._1 >= 0) &&
           (pos._2 < levelWidth) && (pos._2 >= 0))
@@ -112,11 +158,8 @@ class GameField(val id : String,
   	    					this.humanBase,
   	    					this.zombieBase,                
   	    					this.coinsPlaced,
-  	    					updatedCells)
+  	    					updatedCells,
+  	    					this)
   }
-  
-  
+
 }
-
-
-

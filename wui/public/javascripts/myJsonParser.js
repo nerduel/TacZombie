@@ -68,6 +68,7 @@ function appendToLog(logList) {
 		logOutput.value	+= logList[i];
 		logOutput.value	+= "\n";
 	}
+	logOutput.scrollTop = logOutput.scrollHeight
 }
 
 

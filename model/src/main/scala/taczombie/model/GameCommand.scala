@@ -2,13 +2,15 @@ package taczombie.model
 
 trait GameCommand
 
-trait Move extends GameCommand
-case object MoveUp extends Move
-case object MoveDown extends Move
-case object MoveLeft extends Move
-case object MoveRight extends Move
-
-case object NextToken extends GameCommand
-case object NextPlayer extends GameCommand
 case object Restart extends GameCommand
-case object Quit extends GameCommand
+
+trait InGameCmd extends GameCommand
+trait MoveCmd extends InGameCmd
+case object MoveUp extends MoveCmd
+case object MoveDown extends MoveCmd
+case object MoveLeft extends MoveCmd
+case object MoveRight extends MoveCmd
+
+trait SwitchCmd extends InGameCmd
+case object NextToken extends SwitchCmd
+case object NextPlayer extends SwitchCmd

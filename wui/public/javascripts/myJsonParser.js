@@ -46,6 +46,7 @@ function onMessage(evt) {
 		case "all":
 			renewGrid(msg.gameData.levelHeight, msg.gameData.levelWidth);
 			updateView(msg);
+			changeElement("log", "", "");
 			displayInformation(msg.gameMessage);
 			document.getElementById("gameData").style = "";
 			break;
@@ -255,10 +256,11 @@ function updateCell(cell) {
 
 function handleKeyEvent(evt) {
 	var left = 65;	// a
+	var right = 68; // d
 	var switchToken = 71; // g
 	var nextPlayer = 72; // h
 	var nextGame = 78; // n
-	var right = 68; // d
+	var restartGame = 82; // r
 	var down = 83; // s
 	var up = 87; // w
 
@@ -298,6 +300,11 @@ function handleKeyEvent(evt) {
 	case nextGame:
 		doSend("nextGame");
 		textBox.value = "nextGame";
+		break;
+		
+	case restartGame:
+		doSend("restartGame");
+		textBox.value = "restartGame";
 		break;
 	}
 }

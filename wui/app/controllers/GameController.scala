@@ -12,6 +12,7 @@ import taczombie.model.NextPlayer
 import taczombie.model.NextToken
 import taczombie.model.Restart
 import taczombie.model.util.LevelCreator
+import scala.language.implicitConversions
 
 object GameController {
 

@@ -11,11 +11,20 @@ trait Player {
 	
   def coins(gameField : GameField) : Int = 0
   def score(gameField : GameField) : Int = 0
+  def lifes : Int
   
   def currentToken(gameField : GameField) : PlayerToken
   
+  def deadTokens(gameField : GameField) : Int = {
+	  gameField.findPlayerTokensById(playerTokenIds)
+	  				 .filter(token => token.dead).size
+	}
+	
+	def totalTokens = playerTokenIds.size
+  
   def updated(updatedPlayerTokenIds : List[Int] = playerTokenIds,
-    				 updatedMovesRemaining : Int = this.movesRemaining) : Player				 
+    				 updatedMovesRemaining : Int = this.movesRemaining,
+    				 newLifes : Int = lifes) : Player				 
     				 
   def updatedMoved() : Player = updated(updatedMovesRemaining = this.movesRemaining-1)
   def updatedCycledTokens() : Player = {
@@ -23,6 +32,8 @@ trait Player {
     	updated(playerTokenIds.tail ::: playerTokenIds.head :: Nil)
     else this
 	}
+	
+	def updatedDecreasedLifes() : Player = updated(newLifes = lifes-1)
 	
   def updatedResetMovesRemaining() : Player
 }
@@ -48,7 +59,7 @@ case class Human(val name : String,
     gameField.findPlayerTokensById(playerTokenIds).foldLeft(0)({(result,token) => 
     result + token.score})
     
-  def updated(newPlayerTokenIds : List[Int],
+  override def updated(newPlayerTokenIds : List[Int],
     				 newMovesRemaining : Int,
     				 newLifes : Int) : Human = {
     new Human(this.name, newPlayerTokenIds, newMovesRemaining, 
@@ -70,7 +81,9 @@ case class Zombie(val name : String,
     						  val playerTokenIds : List[Int],
 									val movesRemaining : Int = defaults.zombieMoves)
     extends Player {
- 
+  
+  val lifes = 0
+  
   override def currentToken(gameField : GameField) : ZombieToken = {
   	gameField.findOnePlayerTokenById(currentTokenId) match {
   	  case zombieToken : ZombieToken => zombieToken
@@ -79,7 +92,8 @@ case class Zombie(val name : String,
   }  
   
   def updated(newPlayerTokenIds : List[Int] = this.playerTokenIds,
-    				 newMovesRemaining : Int = 0) : Zombie = {
+    				 newMovesRemaining : Int = 0,
+    				 newLifes : Int = lifes) : Zombie = {
     new Zombie(this.name, newPlayerTokenIds, newMovesRemaining)
   }
    

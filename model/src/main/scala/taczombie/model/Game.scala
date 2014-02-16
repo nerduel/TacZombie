@@ -193,14 +193,20 @@ class Game(val id : Int,
             					 newGameMessage = updatedGameMessage)
   		}
   	      							
-//  	  case (RespawnToken, GameState.NeedTokenSwitch) => {
-//        // check if next player's currentToken is dead
-//  	  	if(currentToken.dead) {
-//  	  	  
-//  	  	}
-//  	  	
-//  	  	this
-//  	  }
+  	  case (RespawnToken, GameState.NeedTokenSwitch) => {
+        // check if next player's currentToken is dead
+  	  	if(currentToken.dead) {
+  	  		updatedGameField = gameField.respawn(currentToken.id)
+  	  		updatedGameState = GameState.InGame
+  	  		updatedGameMessage = GameMessages.noMsg
+  	  		updatedPlayers = players.updatedExistingPlayer(
+  	  		    currentPlayer.updatedDecreasedLifes.updatedDecreasedLifes)
+  	  		
+    	  	return updated(newGameField = updatedGameField, 
+    	  	    					 newGameState = updatedGameState,
+    	  	    					 newGameMessage = updatedGameMessage)  	  		
+  	  	} else this
+  	  }
 
   	  case (NextToken, GameState.NeedPlayerSwitch | 
   	      						 GameState.InGame |

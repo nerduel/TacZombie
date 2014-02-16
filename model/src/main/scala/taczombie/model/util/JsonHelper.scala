@@ -54,8 +54,8 @@ object JsonHelper {
       val currentPlayer = g.players.currentPlayer
       val frozenTime = currentPlayer.currentToken(g.gameField).frozenTime
       // TODO: uncomment when value is implemented in currentPlayer object
-//      val deadToken = currentPlayer.deadTokens
-//      val totalToken = currentPlayer.totalTokens
+      val deadTokens = currentPlayer.deadTokens(g.gameField)
+      val totalTokens = currentPlayer.totalTokens
       var currentPlayerTokenAsChar = ' '
       var lifes = 0
       val movesRemaining = currentPlayer.movesRemaining

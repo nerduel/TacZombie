@@ -2,18 +2,17 @@ package controllers
 
 import play.api.libs.json.JsValue
 import taczombie.model.Game
-import taczombie.model.util.LevelCreator
 import taczombie.model.GameFactory
-import taczombie.model.MoveUp
-import taczombie.model.MoveDown
-import taczombie.model.MoveRight
-import taczombie.model.MoveLeft
 import taczombie.model.GameState
-import taczombie.model.NextToken
+import taczombie.model.MoveDown
+import taczombie.model.MoveLeft
+import taczombie.model.MoveRight
+import taczombie.model.MoveUp
 import taczombie.model.NextPlayer
-import taczombie.model.Restart
-import com.sun.xml.internal.bind.v2.model.annotation.Quick
+import taczombie.model.NextToken
 import taczombie.model.Quit
+import taczombie.model.Restart
+import taczombie.model.util.LevelCreator
 
 object GameController {
 
@@ -30,29 +29,29 @@ object GameController {
 	def evaluateCommand(cmd : String, currentGame : Game) : Game = {
 	  cmd match {
 	    case "moveLeft" =>
-      	 currentGame.executeCommand(MoveLeft)._1
+      	 currentGame.executeCommand(MoveLeft)
       	  
 	    case "moveRight" =>
-	      currentGame.executeCommand(MoveRight)._1
+	      currentGame.executeCommand(MoveRight)
 	      
 	    case "moveUp" =>
-	      currentGame.executeCommand(MoveUp)._1
+	      currentGame.executeCommand(MoveUp)
 	      
 	    case "moveDown" =>
-	      currentGame.executeCommand(MoveDown)._1
+	      currentGame.executeCommand(MoveDown)
 	      
 	    case "nextPlayer" =>
-	      currentGame.executeCommand(NextPlayer)._1
+	      currentGame.executeCommand(NextPlayer)
 	      
 	    case "switchToken" =>
-	      currentGame.executeCommand(NextToken)._1
+	      currentGame.executeCommand(NextToken)
 	      
 	    case "restartGame" =>
-	      currentGame.executeCommand(Restart)._1
+	      currentGame.executeCommand(Restart)
 	      currentGame
 	      
 	    case "quit" =>
-	      currentGame.executeCommand(Quit)._1
+	      currentGame.executeCommand(Quit)
 	      currentGame
 	      
 	    case "nextGame" => 

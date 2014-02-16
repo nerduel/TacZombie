@@ -36,30 +36,28 @@ object HelloGame {
   }
 
 	def main(args: Array[String]) {	  
-	  var gameResultTuple : Tuple2[Game, List[String]] = 
-	    (GameFactory.newGame(false, humans = 1, zombies = 1), null)
+	  var game =  GameFactory.newGame(false, humans = 1, zombies = 1)
 	  
-  	printGameField(gameResultTuple._1.gameField)
-  	
+  	printGameField(game.gameField)
   	  
-		gameResultTuple = gameResultTuple._1.executeCommand(MoveLeft)
-		gameResultTuple = gameResultTuple._1.executeCommand(MoveLeft)
-		gameResultTuple = gameResultTuple._1.executeCommand(MoveLeft)
-		gameResultTuple = gameResultTuple._1.executeCommand(MoveLeft)
-		gameResultTuple = gameResultTuple._1.executeCommand(MoveDown)
-		gameResultTuple = gameResultTuple._1.executeCommand(MoveDown)
-		gameResultTuple = gameResultTuple._1.executeCommand(MoveRight)
-		gameResultTuple = gameResultTuple._1.executeCommand(MoveRight)
-		gameResultTuple = gameResultTuple._1.executeCommand(MoveRight)
-		gameResultTuple = gameResultTuple._1.executeCommand(MoveRight)
-		gameResultTuple = gameResultTuple._1.executeCommand(MoveRight)
-		gameResultTuple = gameResultTuple._1.executeCommand(MoveRight)
-		gameResultTuple = gameResultTuple._1.executeCommand(MoveRight)
-		gameResultTuple = gameResultTuple._1.executeCommand(MoveRight)
-		gameResultTuple = gameResultTuple._1.executeCommand(MoveRight)
-		gameResultTuple = gameResultTuple._1.executeCommand(MoveRight)
-		gameResultTuple = gameResultTuple._1.executeCommand(MoveRight)
+		game = game.executeCommand(MoveLeft)
+		game = game.executeCommand(MoveLeft)
+		game = game.executeCommand(MoveLeft)
+		game = game.executeCommand(MoveLeft)
+		game = game.executeCommand(MoveDown)
+		game = game.executeCommand(MoveDown)
+		game = game.executeCommand(MoveRight)
+		game = game.executeCommand(MoveRight)
+		game = game.executeCommand(MoveRight)
+		game = game.executeCommand(MoveRight)
+		game = game.executeCommand(MoveRight)
+		game = game.executeCommand(MoveRight)
+		game = game.executeCommand(MoveRight)
+		game = game.executeCommand(MoveRight)
+		game = game.executeCommand(MoveRight)
+		game = game.executeCommand(MoveRight)
+		game = game.executeCommand(MoveRight)
 		
-		printGameField( gameResultTuple._1.gameField)
+		printGameField(game.gameField)
 	}
 }

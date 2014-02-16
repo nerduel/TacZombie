@@ -22,7 +22,7 @@ class Game(val id : Int,
            val gameState : GameState = GameState.InGame) extends Logger {
   
 	def executeCommand(gameCommand : GameCommand) 
-			: (Game, List[String]) = {
+			: Game = {
 	  
 	  logger.init("Executing command" + gameCommand)
 	  var updatedGameField : GameField = null
@@ -39,7 +39,7 @@ class Game(val id : Int,
 	      // only move if inGame
 	      if(gameState != GameState.InGame) {
 	        logger.+=("Illegal GameCommand + " + moveCmd +  " for GameState " + updatedGameState)
-	        return (this, logger.get)
+	        return this
 	      }
 	      
 	      
@@ -56,6 +56,10 @@ class Game(val id : Int,
         	logger.+=("Current token is frozen for " + currentToken.frozenTime
         	    + " rounds.")
         	currentTokenIsMovable = false
+        	
+          // decrease current players powerup if it's a human
+          // decrease current player's token's freezetimes
+          updatedGameField = gameField.updatedDecrementedCounters(currentPlayer)
         }
 	      
 	      if(currentTokenIsMovable) {
@@ -69,7 +73,7 @@ class Game(val id : Int,
   	      // ignore requests to walk into a wall    
           if(gameField.gameFieldCells.apply(destinationCoords).containsWall) {
             logger.+=("Illegal move to + " + destinationCoords + ". IT'S A WALL!")
-          	return (this, logger.get)
+          	return this
           }        
       
           // process the actual move. dead tokens will have .dead = true
@@ -112,11 +116,17 @@ class Game(val id : Int,
 	  if(updatedPlayers == null) updatedPlayers = players
 	  if(updatedGameState == null) updatedGameState = gameState	  
 	  
-    (new Game(id, updatedGameField, 
-        			updatedPlayers, updatedGameState),
-    logger.get)
+    updated(updatedGameField, updatedPlayers, updatedGameState)
 	}
 	
+	private def updated(newUpdatedGameField : GameField,
+	    								newPlayers : Players,
+	    								newGameState : GameState) : Game = {
+	  val updatedGame = new Game(id, newUpdatedGameField, 
+        			newPlayers, newGameState)
+	  updatedGame.logger.merge(this)
+	  updatedGame
+	}
 	
 	//private def cycleTokenMap(tokenMap : TreeMap[Int,PlayerToken]) : Player
 }

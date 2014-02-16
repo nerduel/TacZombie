@@ -50,10 +50,6 @@ object GameController {
 	      currentGame.executeCommand(Restart)
 	      currentGame
 	      
-	    case "quit" =>
-	      currentGame.executeCommand(Quit)
-	      currentGame
-	      
 	    case "nextGame" => 
 	    	if (currentGame.gameState == GameState.Win)
 	    	  // TODO: GameFactory needs to take old score 

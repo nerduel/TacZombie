@@ -170,6 +170,9 @@ function updateView(data) {
 		}
 
 		changeElement("cMoves", "", data.gameData.movesRemaining);
+		// TODO: uncomment when value is implemented in Json format
+//		changeElement("cDTokens", "", data.gameData.deadTokens);
+//		changeElement("cTTokens", "", data.gameData.totalTokens);
 		propagateState(data.gameData.gameState, data.gameData.score);
 	}
 

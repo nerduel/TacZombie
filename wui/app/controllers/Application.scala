@@ -42,8 +42,6 @@ object Application extends Controller {
         else {
 	        val game = GameController.evaluateCommand(msg, myGame)
 	        
-	        println(game.toJson(Updated))
-	        
 	        outchannels("lobby").foreach(_.push(game.toJson(Updated)))
 	        
 	        myGame = game

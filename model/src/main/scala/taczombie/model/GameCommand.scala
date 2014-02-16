@@ -14,3 +14,5 @@ case object MoveRight extends MoveCmd
 trait SwitchCmd extends InGameCmd
 case object NextToken extends SwitchCmd
 case object NextPlayer extends SwitchCmd
+
+case object RespawnToken extends InGameCmd

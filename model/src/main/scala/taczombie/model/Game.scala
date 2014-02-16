@@ -25,13 +25,19 @@ object GameMessages {
   def wall = "*OUCH* You ran against a wall..."
     
   def noRemainingMoves = "You have no moves remaining. Please switch players."
+  def won = "All coins collected! We have a winner"
+  def gameOver = "Game Over!"
 }
 
 class Game(val id : Int,
     	   	 val gameField : GameField,
            val players : Players, // first player is current player!
            val gameState : GameState = GameState.InGame,
-           val lastGameMessage : String = GameMessages.newGame) extends Logger {
+           val lastGameMessage : String = GameMessages.newGame,
+           val mergeLog : Logger = null) extends Logger {
+  
+  if(mergeLog != null)
+    logger.merge(mergeLog)
   
 	def executeCommand(gameCommand : GameCommand) 
 			: Game = {
@@ -81,13 +87,6 @@ class Game(val id : Int,
         updatedGameField = 
           gameField.move(currentToken, destinationCoords)
         logger.merge(gameField)
-                  	     
-	      // check if the player has collected all the coins
-	      if(currentPlayer.coins(updatedGameField) 
-	      		== gameField.coinsPlaced) {
-	      	logger.+=("All coins collected! We have a winner")
-	      	updatedGameState = GameState.Win
-	      }
         
         // decrease player's remaining moves
         updatedPlayer = currentPlayer.updatedMoved
@@ -97,18 +96,52 @@ class Game(val id : Int,
         // decrease current player's token's freezetimes
         updatedGameField = updatedGameField.updatedDecrementedCounters(updatedPlayer)
         
+	      // check if the player has collected all the coins
+	      if(updatedPlayer.coins(updatedGameField) 
+	      		== gameField.coinsPlaced) {
+	        updatedGameMessage = GameMessages.won
+	      	logger.+=(updatedGameMessage)
+	      	return updated(updatedGameField, updatedPlayers, GameState.Win, updatedGameMessage)
+	      }
         
+        // check if the game is lost
+        val humanLifes = updatedPlayers.playerList.foldLeft(0){(sum, player) => 
+          player match { 
+            case human : Human => sum + human.lifes
+            case _ => sum 
+          }
+        }
+
+        if(humanLifes == 0) {
+          if(updatedGameField.findHumanTokens
+          									 .filter(hT => hT.dead).size == 0) {
+            updatedGameMessage = GameMessages.gameOver
+            logger.+=(updatedGameMessage)
+            return updated(updatedGameField, updatedPlayers, 
+                					 GameState.GameOver, updatedGameMessage)
+				  }
+        }
+
+
+        // check if current token is dead
+        if(updatedPlayer.currentToken(updatedGameField).dead)
+        currentPlayer match {
+          case human : Human =>
+            
+          case zombie : Zombie =>
+        }
+              
 	      // check for movesRemaining for player
         logger.+=("Player " + updatedPlayer.name + " can move "
               + updatedPlayer.movesRemaining + " more times.")
         if (updatedPlayer.movesRemaining == 0) {
           updatedGameMessage = GameMessages.noRemainingMoves
           logger.+=(updatedGameMessage)
-          updatedGameState = GameState.NeedPlayerSwitch
+          return updated(newGameState = GameState.NeedPlayerSwitch,
+              					 newGameMessage = updatedGameMessage)
         }
-
+        
         // TODO check if all HumanTokens are dead
-    	  logger.print
     	  
     	  if(updatedGameField == null) updatedGameField = gameField
     	  if(updatedPlayers == null) updatedPlayers = players
@@ -135,8 +168,6 @@ class Game(val id : Int,
   		  this
   		  // TODO
   		}
-  	    
- 
     	    
   	  case (gameCmd : GameCommand, _) => {
   	    updatedGameMessage = "Unsupported GameCommand " +
@@ -152,10 +183,8 @@ class Game(val id : Int,
 	    								newPlayers : Players = this.players,
 	    								newGameState : GameState = this.gameState,
 	    								newGameMessage : String = GameMessages.noMsg) : Game = {
-	  val updatedGame = new Game(id, newUpdatedGameField, 
-        			newPlayers, newGameState, newGameMessage)
-	  updatedGame.logger.merge(this)
-	  updatedGame
+	  new Game(id, newUpdatedGameField, 
+        		 newPlayers, newGameState, newGameMessage, this)
 	}
 	
 	//private def cycleTokenMap(tokenMap : TreeMap[Int,PlayerToken]) : Player

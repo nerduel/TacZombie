@@ -8,6 +8,7 @@ trait Player {
   val movesRemaining : Int
 	
 	def currentTokenId = playerTokenIds.head
+	
   def coins(gameField : GameField) : Int = 0
   def score(gameField : GameField) : Int = 0
   

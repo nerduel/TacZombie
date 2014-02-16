@@ -20,7 +20,10 @@ trait Logger {
   		
   	def get : List[String] = data.toList
   	
-  	def merge(l : Logger) = data.++=(l.logger.get)
+  	def merge(l : Logger) = {
+  	  data.++=(l.logger.get)
+  	  l
+  	}
   	
   	def print = {
   	  if(data.size > 0) {

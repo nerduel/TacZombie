@@ -1,10 +1,10 @@
 package taczombie.model
 
-import util.GameHelper._
-import scala.collection.immutable.HashSet
 import scala.collection.immutable.HashMap
 import scala.collection.mutable.ListBuffer
+
 import taczombie.model.util.Logger
+import util.GameHelper._
 
 class GameField(val id : String,
     						val gameFieldCells : Map[(Int,Int),GameFieldCell],
@@ -33,8 +33,15 @@ class GameField(val id : String,
   }
   
   def findOnePlayerTokenById(id : Int) : PlayerToken = 
-  		findPlayerTokensById(List[Int](id)).head
+  	findPlayerTokensById(List[Int](id)).head
   
+  type A <: GameObject	
+  	
+  def findHumanTokens : List[HumanToken] = {
+    gameFieldCells.foldLeft(List[HumanToken]())({(resultList, cell) =>
+      resultList ++ cell._2.gameObjects.collect({case go : HumanToken => go})
+    })
+  }
   	
   /*
    * This method decreases the current players token's values

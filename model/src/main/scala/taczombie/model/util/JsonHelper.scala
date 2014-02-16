@@ -16,11 +16,13 @@ object JsonHelper {
   case class GameData(gameState: String, currentPlayer: Char,
     lifes: Int, movesRemaining: Int, coins: Int,
     score: Int, powerUp: Int, levelWidth: Int,
-    levelHeight: Int, frozenTime: Int)
+    levelHeight: Int, frozenTime: Int/*, deadTokens: Int, totalTokens: Int*/)
 
   case class Cell(x: Int, y: Int, token: Char, isHiglighted: Boolean)
   
   object GameDataJsonProtocol extends DefaultJsonProtocol {
+    // TODO: uncomment when gameDataFormat holds deadTokens and totalTokens
+    //implicit val GameDataFormat = jsonFormat12(GameData)
     implicit val GameDataFormat = jsonFormat10(GameData)
     implicit val CellFormat = jsonFormat4(Cell)
     implicit val DataFormat = jsonFormat5(Data)
@@ -51,6 +53,9 @@ object JsonHelper {
       val gameState = g.gameState.toString
       val currentPlayer = g.players.currentPlayer
       val frozenTime = currentPlayer.currentToken(g.gameField).frozenTime
+      // TODO: uncomment when value is implemented in currentPlayer object
+//      val deadToken = currentPlayer.deadTokens
+//      val totalToken = currentPlayer.totalTokens
       var currentPlayerTokenAsChar = ' '
       var lifes = 0
       val movesRemaining = currentPlayer.movesRemaining

@@ -103,7 +103,7 @@ function updateView(data) {
 		switch (data.gameData.currentPlayer) {
 		case "H":
 			changeElement("cPlayer", "", "Human");
-			
+
 			var tRow = document.createElement("tr");
 			var tDesk1 = document.createElement("td");
 			var tDesk2 = document.createElement("td");
@@ -113,7 +113,6 @@ function updateView(data) {
 			tRow.appendChild(tDesk1);
 			tRow.appendChild(tDesk2);
 			gameData.appendChild(tRow);
-			
 
 			tRow = document.createElement("tr");
 			tDesk1 = document.createElement("td");
@@ -124,7 +123,7 @@ function updateView(data) {
 			tRow.appendChild(tDesk1);
 			tRow.appendChild(tDesk2);
 			gameData.appendChild(tRow);
-			
+
 			tRow = document.createElement("tr");
 			tDesk1 = document.createElement("td");
 			tDesk2 = document.createElement("td");
@@ -134,7 +133,7 @@ function updateView(data) {
 			tRow.appendChild(tDesk1);
 			tRow.appendChild(tDesk2);
 			gameData.appendChild(tRow);
-			
+
 			tRow = document.createElement("tr");
 			tDesk1 = document.createElement("td");
 			tDesk2 = document.createElement("td");
@@ -144,7 +143,7 @@ function updateView(data) {
 			tRow.appendChild(tDesk1);
 			tRow.appendChild(tDesk2);
 			gameData.appendChild(tRow);
-			
+
 			tRow = document.createElement("tr");
 			tDesk1 = document.createElement("td");
 			tDesk2 = document.createElement("td");
@@ -169,13 +168,16 @@ function updateView(data) {
 			gameData.appendChild(tRow);
 			break;
 		}
-		
+
 		changeElement("cMoves", "", data.gameData.movesRemaining);
+		// TODO: uncomment when value is implemented in Json format
+//		changeElement("cDTokens", "", data.gameData.deadTokens);
+//		changeElement("cTTokens", "", data.gameData.totalTokens);
 		propagateState(data.gameData.gameState, data.gameData.score);
 	}
 
 	for ( var i in data.cells) {
-		updateCell(data.cells[i]);
+		updateCell(data, i);
 	}
 }
 
@@ -183,7 +185,7 @@ function clearGameData(obj) {
 	var tableRows = obj.getElementsByTagName("tr");
 	var rowCount = tableRows.length;
 
-	for (var x = rowCount - 1; x > 1; x--) {
+	for ( var x = rowCount - 1; x > 1; x--) {
 		obj.removeChild(tableRows[x]);
 	}
 }
@@ -207,16 +209,41 @@ function changeElement(id, style, content) {
 	toChange.innerHTML = content;
 }
 
-function updateCell(cell) {
+function updateCell(data, i) {
+	cell = data.cells[i];
 	var cellId = (cell.x + "," + cell.y).toString();
 	var cellNode = document.getElementById(cellId);
 
 	switch (cell.token) {
 	case 'H':
-		if (cell.isHiglighted == true)
-			cellNode.className = "hHuman";
-		else
-			cellNode.className = "human";
+		if (cell.isHiglighted == true) {
+			if (data.gameData.powerUp == 0)
+				cellNode.className = "hHuman";
+			else
+				cellNode.className = "hHumanPowerup";
+		} else {
+			if (data.gameData.currentPlayer == "H") {
+    			if (data.gameData.powerUp == 0)
+    				cellNode.className = "human";
+    			else
+    				cellNode.className = "humanPowerup";
+			}
+			else {
+				switch (cellNode.className) {
+				case 'hHumanPowerup':
+				case 'humanPowerup':
+					cellNode.className = "humanPowerup";
+					break;
+					
+				case 'hHuman':
+				case 'human':
+					cellNode.className = "human";
+					break;
+				}
+			}
+			
+			
+		}
 		break;
 
 	case 'Z':
@@ -255,7 +282,7 @@ function updateCell(cell) {
 }
 
 function handleKeyEvent(evt) {
-	var left = 65;	// a
+	var left = 65; // a
 	var right = 68; // d
 	var switchToken = 71; // g
 	var nextPlayer = 72; // h
@@ -301,7 +328,7 @@ function handleKeyEvent(evt) {
 		doSend("nextGame");
 		textBox.value = "nextGame";
 		break;
-		
+
 	case restartGame:
 		doSend("restartGame");
 		textBox.value = "restartGame";

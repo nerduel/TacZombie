@@ -21,7 +21,8 @@ object GameMessages {
   def noMsg = "No message for you."
   def newGame = "New Game is ready. Have fun!"
   def frozenToken(rounds : Int) = "You're token is frozen for " + rounds + 
-  	"rounds. If you have more Tokens switch to them, else end the round."   
+  	"rounds. If you have more Tokens switch to them, else end the round."
+  def wall = "*OUCH* You ran against a wall..."
 }
 
 class Game(val id : Int,
@@ -85,7 +86,7 @@ class Game(val id : Int,
   	      // ignore requests to walk into a wall    
           if(gameField.gameFieldCells.apply(destinationCoords).containsWall) {
             logger.+=("Illegal move to + " + destinationCoords + ". IT'S A WALL!")
-          	return this
+          	return updated(gameField, players, gameState, GameMessages.wall)
           }        
       
           // process the actual move. dead tokens will have .dead = true

@@ -76,8 +76,11 @@ class GameFieldCell(val coords : (Int, Int),
       hostObject match {
         // PlayerToken acts on every versatile object in Cell
       	case versatileHostObject : VersatileGameObject => {
+      	  logger += (versatileHostObject + " visitedBy " + finalPlayerToken, true)
       		versatileHostObject isVisitedBy finalPlayerToken match {
       			case (hostObjectResult, playerTokenResult : PlayerToken) => {
+      			  logger += ("Result: " + hostObjectResult + " and " + playerTokenResult, true)
+      			  
       			  // Delete the old object from the cell
     			  	finalHostObjects.-=(versatileHostObject)
     			  	

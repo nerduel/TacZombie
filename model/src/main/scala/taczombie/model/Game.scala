@@ -3,6 +3,7 @@ package taczombie.model
 import GameState.GameState
 import util.CoordinateHelper.intIntTuple2Wrapper
 import scala.collection.mutable.ListBuffer
+import taczombie.model.util.Logger
 
 object defaults {
   val humanMoves = 4
@@ -18,12 +19,12 @@ object defaults {
 class Game(val id : Int,
     	   	 val gameField : GameField,
            val players : Players, // first player is current player!
-           val gameState : GameState = GameState.InGame) {
+           val gameState : GameState = GameState.InGame) extends Logger {
   
 	def executeCommand(gameCommand : GameCommand) 
 			: (Game, List[String]) = {
 	  
-	  val commandLog = ListBuffer[String]("Executing command" + gameCommand)
+	  logger.init("Executing command" + gameCommand)
 	  var updatedGameField : GameField = null
 	  var updatedPlayer : Player = null
 	  var updatedPlayers : Players = null
@@ -37,19 +38,22 @@ class Game(val id : Int,
 	      
 	      // only move if inGame
 	      if(gameState != GameState.InGame) {
-	        commandLog.+=:("\n\tIllegal GameCommand + " + moveCmd +  " for GameState " + updatedGameState)
-	        (this, commandLog)
+	        logger.+=("Illegal GameCommand + " + moveCmd +  " for GameState " + updatedGameState)
+	        return (this, logger.get)
 	      }
+	      
 	      
 	      val currentPlayer = players.currentPlayer
 	      val currentToken = gameField.findOnePlayerTokenById(currentPlayer.currentTokenId)      
 	      val currentTokenCoords = currentToken.coords
 	      
+	      // TODO check if tokens can be respawned
+	      
 	      var currentTokenIsMovable = true
 	      
 	      // check if token is frozen
         if(currentToken.frozenTime > 0) {
-        	commandLog.+=("\n\tCurrent token is frozen for " + currentToken.frozenTime
+        	logger.+=("Current token is frozen for " + currentToken.frozenTime
         	    + " rounds.")
         	currentTokenIsMovable = false
         }
@@ -64,34 +68,36 @@ class Game(val id : Int,
   	      
   	      // ignore requests to walk into a wall    
           if(gameField.gameFieldCells.apply(destinationCoords).containsWall) {
-            commandLog.+=("\n\tIllegal move to + " + destinationCoords + ". IT'S A WALL!")
-          	return (this, commandLog.toList)
+            logger.+=("Illegal move to + " + destinationCoords + ". IT'S A WALL!")
+          	return (this, logger.get)
           }        
       
           // process the actual move. dead tokens will have .dead = true
-          commandLog.+=("\n\tMoving " + currentToken.id + " to " + destinationCoords)
           updatedGameField = 
-            gameField.move(currentToken, destinationCoords, commandLog)
+            gameField.move(currentToken, destinationCoords)
+          logger.merge(gameField)
                     	     
   	      // check if the player has collected all the coins
   	      if(currentPlayer.coins(updatedGameField) 
   	      		== gameField.coinsPlaced) {
-  	      	commandLog.+=("\n\tAll coins collected! We have a winner")
+  	      	logger.+=("All coins collected! We have a winner")
   	      	updatedGameState = GameState.Win
   	      }
           
           // decrease player's remaining moves
           updatedPlayer = currentPlayer.updatedMoved
           updatedPlayers = players.updatedExistingPlayer(updatedPlayer)
+
+          // decrease current players powerup if it's a human
+          // decrease current player's token's freezetimes
+          updatedGameField = updatedGameField.updatedDecrementedCounters(updatedPlayer)
           
-          // TODO decrease current player's token's freezetimes
-          // TODO decrease current players powerup if it's a human
-  	      // TODO check for lifesRemaining for player
           
   	      // check for movesRemaining for player
+          logger.+=("Player " + updatedPlayer.name + " can move "
+                + updatedPlayer.movesRemaining + " more times.")
           if (updatedPlayer.movesRemaining == 0) {
-            commandLog.+=("\n\tPlayer " + updatedPlayer.name 
-                + " has reached moves. Switching..:")
+            logger.+=("Switching players...")
             updatedPlayers = updatedPlayers.updatedRotatedPlayers()
           }
 
@@ -99,7 +105,7 @@ class Game(val id : Int,
 
 	      } // if(currentTokenIsMovable)
 	  }
-	  println(commandLog)
+	  logger.print
 	  
 	  
 	  if(updatedGameField == null) updatedGameField = gameField
@@ -108,7 +114,7 @@ class Game(val id : Int,
 	  
     (new Game(id, updatedGameField, 
         			updatedPlayers, updatedGameState),
-    commandLog.toList)
+    logger.get)
 	}
 	
 	

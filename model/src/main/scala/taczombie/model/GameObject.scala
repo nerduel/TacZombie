@@ -1,6 +1,8 @@
 package taczombie.model
 
-trait GameObject {
+import taczombie.model.util.Logger
+
+trait GameObject extends Logger {
   val id : Int
   val coords : (Int, Int)
 
@@ -62,7 +64,7 @@ trait PlayerToken extends VersatileGameObject {
       				newFrozenTime : Int = this.frozenTime,
       				newDead : Boolean = this.dead) : PlayerToken
   
-  def updatedMoved() : PlayerToken
+  def updatedDecrementCounters() : PlayerToken
 }
 
 case class HumanToken(id : Int, 
@@ -84,27 +86,24 @@ case class HumanToken(id : Int,
       				newFrozenTime : Int = this.frozenTime,
       				newDead : Boolean = this.dead) = {    
     // checks
-    val checkedNewPowerUpTime = { var tmp = newPowerupTime
-      if (tmp < 0) 0
-      else tmp
-    }
-    val checkedNewFrozenTime = { var tmp = newFrozenTime
-      if (tmp < 0) 0
-      else tmp
-    }
+    val checkedNewPowerUpTime = 
+      if (newPowerupTime < 0) 0
+      else newPowerupTime
     
-    new HumanToken(this.id, newCoords, newCoins, 
-        					 checkedNewFrozenTime,
-        					 newScore, checkedNewPowerUpTime,
-        					 dead)
+    val checkedNewFrozenTime =
+      if (newFrozenTime < 0) 0
+      else newFrozenTime
+    
+    new HumanToken(this.id, newCoords, newCoins, checkedNewFrozenTime,
+        					 newScore, checkedNewPowerUpTime, dead)
   }
   
   
-  def updatedMoved() = updated(newPowerupTime = 
-    this.powerupTime-1, newFrozenTime = this.frozenTime-1)
-  def updated(frozenTime : Int) : HumanToken = 
-    updated(newFrozenTime = frozenTime)
-      
+  def updatedDecrementCounters() : HumanToken = {
+    updated(newPowerupTime = this.powerupTime-1,
+        		newFrozenTime = this.frozenTime-1)
+  }  
+    
   def isVisitedBy (versatileGameObject : VersatileGameObject) = { 
     versatileGameObject match {
       case zombieToken : ZombieToken => {
@@ -133,16 +132,23 @@ case class ZombieToken(id : Int,
   def score = 0
   def powerupTime = 0
   
-  def updatedMoved() = updated(newFrozenTime = this.frozenTime - 1)
-  
   def updated(newCoords : (Int,Int) = this.coords,
       				newCoins : Int = this.coins,
       				newScore : Int = this.score, 
       				newPowerupTime : Int = this.powerupTime,
       				newFrozenTime : Int = this.frozenTime,
       				newDead : Boolean = this.dead) : ZombieToken = {
-  	new ZombieToken(this.id, newCoords, newFrozenTime, newDead)
+    
+    val checkedNewFrozenTime =
+      if (newFrozenTime < 0) 0
+      else newFrozenTime
+    
+  	new ZombieToken(this.id, newCoords, checkedNewFrozenTime, newDead)
   }
+  
+  def updatedDecrementCounters() : ZombieToken = {
+    updated(newFrozenTime = this.frozenTime-1)
+  }    
   
   def isVisitedBy (versatileGameObject : VersatileGameObject) = 
     versatileGameObject match {

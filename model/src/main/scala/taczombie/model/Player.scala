@@ -14,9 +14,9 @@ trait Player {
   def currentToken(gameField : GameField) : PlayerToken
   
   def updated(updatedPlayerTokenIds : List[Int] = playerTokenIds,
-    				 upodatedMovesRemaining : Int = this.movesRemaining) : Player				 
+    				 updatedMovesRemaining : Int = this.movesRemaining) : Player				 
     				 
-  def updatedMoved() : Player = updated(upodatedMovesRemaining = this.movesRemaining-1)
+  def updatedMoved() : Player = updated(updatedMovesRemaining = this.movesRemaining-1)
   def updatedCycledTokens() : Player = {
     if(playerTokenIds.size > 1)
     	updated(playerTokenIds.tail ::: playerTokenIds.head :: Nil)
@@ -47,16 +47,16 @@ case class Human(val name : String,
     gameField.findPlayerTokensById(playerTokenIds).foldLeft(0)({(result,token) => 
     result + token.score})
     
-  def updated(updatedPlayerTokenIds : List[Int],
-    				 updatedMovesRemaining : Int,
-    				 updatedLifes : Int) : Human = {
-    new Human(this.name, updatedPlayerTokenIds, updatedMovesRemaining, 
-        			updatedLifes)
+  def updated(newPlayerTokenIds : List[Int],
+    				 newMovesRemaining : Int,
+    				 newLifes : Int) : Human = {
+    new Human(this.name, newPlayerTokenIds, newMovesRemaining, 
+        			newLifes)
   }
   
-  def updated(updatedPlayerTokenIds : List[Int],
-    				 updatedMovesRemaining : Int) : Human = {
-  	updated(updatedPlayerTokenIds, updatedMovesRemaining,
+  def updated(newPlayerTokenIds : List[Int],
+    				 newMovesRemaining : Int) : Human = {
+  	updated(newPlayerTokenIds, newMovesRemaining,
   	    this.lifes)
   }
   
@@ -77,9 +77,9 @@ case class Zombie(val name : String,
   	}
   }  
   
-  def updated(updatedPlayerTokenIds : List[Int] = this.playerTokenIds,
-    				 movesRemainingAdded : Int = 0) : Zombie = {
-    new Zombie(this.name, updatedPlayerTokenIds, this.movesRemaining+movesRemainingAdded)
+  def updated(newPlayerTokenIds : List[Int] = this.playerTokenIds,
+    				 newMovesRemaining : Int = 0) : Zombie = {
+    new Zombie(this.name, newPlayerTokenIds, newMovesRemaining)
   }
    
   def updatedResetMovesRemaining() : Zombie = {

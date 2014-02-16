@@ -11,19 +11,19 @@ import taczombie.model.Zombie
 
 object JsonHelper {
 
-  case class Data(cmd: String, gameData: JsValue, cells: JsValue, log: List[String])
+  case class Data(cmd: String, gameMessage: String, gameData: JsValue, cells: JsValue, log: List[String])
 
   case class GameData(gameState: String, currentPlayer: Char,
     lifes: Int, movesRemaining: Int, coins: Int,
     score: Int, powerUp: Int, levelWidth: Int,
-    levelHeight: Int)
+    levelHeight: Int, frozenTime: Int)
 
   case class Cell(x: Int, y: Int, token: Char, isHiglighted: Boolean)
   
   object GameDataJsonProtocol extends DefaultJsonProtocol {
-    implicit val GameDataFormat = jsonFormat9(GameData)
+    implicit val GameDataFormat = jsonFormat10(GameData)
     implicit val CellFormat = jsonFormat4(Cell)
-    implicit val DataFormat = jsonFormat4(Data)
+    implicit val DataFormat = jsonFormat5(Data)
   }
   
   trait Type
@@ -50,6 +50,7 @@ object JsonHelper {
       
       val gameState = g.gameState.toString
       val currentPlayer = g.players.currentPlayer
+      val frozenTime = currentPlayer.currentToken(g.gameField).frozenTime
       var currentPlayerTokenAsChar = ' '
       var lifes = 0
       val movesRemaining = currentPlayer.movesRemaining
@@ -59,7 +60,7 @@ object JsonHelper {
       var powerUp = 0
       val height = g.gameField.levelHeight
 
-      g.players.currentPlayer match {
+      currentPlayer match {
         case h: Human =>
           currentPlayerTokenAsChar = 'H'
           powerUp = h.currentToken(g.gameField).powerupTime
@@ -107,9 +108,10 @@ object JsonHelper {
       
       import GameDataJsonProtocol._
 
-      val gameData = GameData(gameState, currentPlayerTokenAsChar, lifes, movesRemaining, coins, score, powerUp, width, height)
+      val gameData = GameData(gameState, currentPlayerTokenAsChar, lifes,
+          movesRemaining, coins, score, powerUp, width, height, frozenTime)
       val gameDataJson = gameData.toJson
-      val data = Data(cmd.toString(), gameDataJson, cells.toJson, logList)
+      val data = Data(cmd.toString(), g.lastGameMessage, gameDataJson, cells.toJson, logList)
 
       data.toJson.toString
     }

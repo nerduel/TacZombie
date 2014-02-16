@@ -49,7 +49,7 @@ function onMessage(evt) {
 			displayInformation(msg.gameMessage);
 			document.getElementById("gameData").style = "";
 			break;
-			
+
 		case "updated":
 			updateView(msg);
 			displayInformation(msg.gameMessage);
@@ -57,19 +57,18 @@ function onMessage(evt) {
 			break;
 		}
 	} catch (e) {
-		displayError("Received message was no JSON object!");
+		displayError(e);
 	}
 }
 
 function appendToLog(logList) {
 	var logOutput = document.getElementById("log");
 	for ( var i = 0; i < logList.length; i++) {
-		logOutput.value	+= logList[i];
-		logOutput.value	+= "\n";
+		logOutput.value += logList[i];
+		logOutput.value += "\n";
 	}
 	logOutput.scrollTop = logOutput.scrollHeight
 }
-
 
 function renewGrid(height, width) {
 	var contentTable = document.getElementById("grid");
@@ -97,44 +96,96 @@ function displayInformation(msg) {
 
 function updateView(data) {
 	if (data.gameData != null) {
-    	switch (data.gameData.currentPlayer) {
-    	case "H":
-    		changeElement("cPlayer", "", "Human");
-    		break;
-    
-    	case "Z":
-    		changeElement("cPlayer", "", "Zombie");
-    		break;
-    	}
-    
-    	propagateState(data.gameData.gameState, data.gameData.score);
-    
-    	changeElement("cLifes", "", data.gameData.lifes);
-    
-    	changeElement("cMoves", "", data.gameData.movesRemaining);
-    
-    	changeElement("cCoins", "", data.gameData.coins);
-    
-    	changeElement("cScore", "", data.gameData.score);
-    
-    	switch (data.gameData.powerUp) {
-    	case 0:
-    		changeElement("cZKiller", "", "NO");
-    		break;
-    
-    	default:
-    		changeElement("cZKiller", "", "YES");
-    		break;
-    	}
-    }
-	
+		var gameData = document.getElementById("gState");
+		clearGameData(gameData)
+
+		switch (data.gameData.currentPlayer) {
+		case "H":
+			changeElement("cPlayer", "", "Human");
+			
+			var tRow = document.createElement("tr");
+			var tDesk1 = document.createElement("td");
+			var tDesk2 = document.createElement("td");
+			tDesk2.className = "scnd";
+			tDesk1.innerHTML = "Lifes:";
+			tDesk2.innerHTML = data.gameData.lifes;
+			tRow.appendChild(tDesk1);
+			tRow.appendChild(tDesk2);
+			gameData.appendChild(tRow);
+			
+
+			tRow = document.createElement("tr");
+			tDesk1 = document.createElement("td");
+			tDesk2 = document.createElement("td");
+			tDesk2.className = "scnd";
+			tDesk1.innerHTML = "Coins collected:";
+			tDesk2.innerHTML = data.gameData.coins;
+			tRow.appendChild(tDesk1);
+			tRow.appendChild(tDesk2);
+			gameData.appendChild(tRow);
+			
+			tRow = document.createElement("tr");
+			tDesk1 = document.createElement("td");
+			tDesk2 = document.createElement("td");
+			tDesk2.className = "scnd";
+			tDesk1.innerHTML = "Score:";
+			tDesk2.innerHTML = data.gameData.score;
+			tRow.appendChild(tDesk1);
+			tRow.appendChild(tDesk2);
+			gameData.appendChild(tRow);
+			
+			tRow = document.createElement("tr");
+			tDesk1 = document.createElement("td");
+			tDesk2 = document.createElement("td");
+			tDesk2.className = "scnd";
+			tDesk1.innerHTML = "Powerup time:";
+			tDesk2.innerHTML = data.gameData.powerUp;
+			tRow.appendChild(tDesk1);
+			tRow.appendChild(tDesk2);
+			gameData.appendChild(tRow);
+			
+			tRow = document.createElement("tr");
+			tDesk1 = document.createElement("td");
+			tDesk2 = document.createElement("td");
+			tDesk2.className = "scnd";
+			tDesk1.innerHTML = "Frozen time";
+			tDesk2.innerHTML = data.gameData.frozenTime;
+			tRow.appendChild(tDesk1);
+			tRow.appendChild(tDesk2);
+			gameData.appendChild(tRow);
+			break;
+
+		case "Z":
+			changeElement("cPlayer", "", "Zombie");
+			var tRow = document.createElement("tr");
+			var tDesk1 = document.createElement("td");
+			var tDesk2 = document.createElement("td");
+			tDesk2.className = "scnd";
+			tDesk1.innerHTML = "Frozen time";
+			tDesk2.innerHTML = data.gameData.frozenTime;
+			tRow.appendChild(tDesk1);
+			tRow.appendChild(tDesk2);
+			gameData.appendChild(tRow);
+			break;
+		}
+		
+		changeElement("cMoves", "", data.gameData.movesRemaining);
+		propagateState(data.gameData.gameState, data.gameData.score);
+	}
+
 	for ( var i in data.cells) {
 		updateCell(data.cells[i]);
 	}
-	
-
 }
 
+function clearGameData(obj) {
+	var tableRows = obj.getElementsByTagName("tr");
+	var rowCount = tableRows.length;
+
+	for (var x = rowCount - 1; x > 1; x--) {
+		obj.removeChild(tableRows[x]);
+	}
+}
 
 function propagateState(state, score) {
 	switch (state) {
@@ -149,13 +200,11 @@ function propagateState(state, score) {
 	}
 }
 
-
 function changeElement(id, style, content) {
 	var toChange = document.getElementById(id);
 	toChange.style = style;
 	toChange.innerHTML = content;
 }
-
 
 function updateCell(cell) {
 	var cellId = (cell.x + "," + cell.y).toString();
@@ -204,35 +253,34 @@ function updateCell(cell) {
 	}
 }
 
-function handleKeyEvent(evt)
-{
-	var switchToken = 9; // tab
-	var nextPlayer = 13; // enter|return
-	var leftArrow = 37;
-	var upArrow = 38;
-	var rightArrow = 39;
-	var downArrow = 40;
+function handleKeyEvent(evt) {
+	var left = 65;	// a
+	var switchToken = 71; // g
+	var nextPlayer = 72; // h
 	var nextGame = 78; // n
+	var right = 68; // d
+	var down = 83; // s
+	var up = 87; // w
 
 	var textBox = document.getElementById("userInput");
 	var charCode = (evt.which) ? evt.which : evt.keyCode;
 	switch (charCode) {
-	case leftArrow:
+	case left:
 		doSend("moveLeft");
 		textBox.value = "left";
 		break;
 
-	case upArrow:
+	case up:
 		doSend("moveUp");
 		textBox.value = "up";
 		break;
 
-	case rightArrow:
+	case right:
 		doSend("moveRight");
 		textBox.value = "right";
 		break;
 
-	case downArrow:
+	case down:
 		doSend("moveDown");
 		textBox.value = "down";
 		break;
@@ -254,7 +302,6 @@ function handleKeyEvent(evt)
 	}
 }
 
-function doSend(command) 
-{
+function doSend(command) {
 	websocket.send(command);
 }

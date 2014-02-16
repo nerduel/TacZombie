@@ -32,17 +32,20 @@ class Tui(model: ViewModel, controller: Communication) extends Observer {
           controller.moveRight
         case 'q' :: Nil =>
           controller.disconnect
-          exit(0)
+          sys.exit(0)
         case 'n' :: Nil =>
-          controller.newGame
+          controller.nextGame
+        case 'r' :: Nil =>
+          controller.restartGame
         case 'g' :: Nil =>
           controller.switchToken
         case 'h' :: Nil =>
           controller.nextPlayer
         case _ =>
-          println("Invalid Input!")
+          printGameField
+          println
+          println(Console.RED_B + "Invalid Input!" + Console.RESET)
           printHelp
-
       }
     }
   }
@@ -52,11 +55,13 @@ class Tui(model: ViewModel, controller: Communication) extends Observer {
 
     println("\nWelcome to TacZombie!")
     update
-    printHelp
   }
 
   def update {
     printGameField
+    println
+    println(Console.GREEN_B + model.gameMessage + Console.RESET)
+    printHelp
   }
 
   def printHelp {
@@ -64,7 +69,8 @@ class Tui(model: ViewModel, controller: Communication) extends Observer {
     println("Move Player: <a>, <w>, <s>, <d>")
     println("Switch Token: <g>")
     println("Next Player: <h>")
-    println("New Game: <n>")
+    println("Next Game: <n>")
+    println("Restart Game: <r>")
     println("Quit Game: <q>")
     println("------------------------------")
   }
@@ -87,13 +93,15 @@ class Tui(model: ViewModel, controller: Communication) extends Observer {
       }
       
       x match {
-        case 0 => print("\t Current player:\t" + getTokenName(model.currentPlayerTokenAsChar) + '\n')
-        case 1 => print("\t Current lifes:\t\t" + model.lifes + '\n')
-        case 2 => print("\t Current coins:\t\t" + model.coins + '\n')
-        case 3 => print("\t Score:\t\t\t" + model.score + '\n')
-        case 4 => print("\t Zombiekiller:\t\t" + model.powerUp + '\n')
-        case 5 => print("\t ------------------------\n")
-        case 6 => print("\t Moves remaining:\t" + model.movesRemaining + '\n')
+        case 0 => print("\t Moves remaining:\t" + model.movesRemaining + '\n')
+        case 1 => print("\t -----------------------------\n")
+        case 2 => print("\t Current player:\t" + getTokenName(model.currentPlayerTokenAsChar) + '\n')
+        case 3 if model.currentPlayerTokenAsChar == 'H' => print("\t Lifes:\t\t\t" + model.lifes + '\n')
+        case 3 if model.currentPlayerTokenAsChar == 'Z' => print("\t Frozen Time:\t\t" + model.frozenTime + '\n')
+        case 4 if model.currentPlayerTokenAsChar == 'H' => print("\t Coins collected:\t" + model.coins + '\n')
+        case 5 if model.currentPlayerTokenAsChar == 'H' => print("\t Score:\t\t\t" + model.score + '\n')
+        case 6 if model.currentPlayerTokenAsChar == 'H' => print("\t Powerup time:\t\t" + model.powerUp + '\n')
+        case 7 if model.currentPlayerTokenAsChar == 'H' => print("\t Frozen Time:\t\t" + model.frozenTime + '\n')
         case _ => print('\n')
       }
     }

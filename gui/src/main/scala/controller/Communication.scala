@@ -38,9 +38,10 @@ class Communication(model: ViewModel) {
   def moveDown = send("moveDown")
   def moveLeft = send("moveLeft")
   def moveRight = send("moveRight")
-  def newGame = send("newGame")
+  def nextGame = send("nextGame")
   def switchToken = send("switchToken")
   def nextPlayer = send("nextPlayer")
+  def restartGame = send("restartGame")
   def disconnect = {
     wsFactory.shutdownAll
   }

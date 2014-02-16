@@ -26,6 +26,9 @@ class ViewModel extends Observable {
   var levelWidth = 0
   var levelHeight = 0
   var cells = SortedMap[(Int, Int), (Char, Boolean)]()
+  var frozenTime = 0
+  var log = List[String]()
+  var gameMessage = " "
 
   def toObject(json: JsValue) {
     val data: Data = json.convertTo[Data]
@@ -34,6 +37,7 @@ class ViewModel extends Observable {
     updatedCells.foreach { x =>
       cells += (x.x, x.y) -> (x.token, x.isHiglighted)
     }
+    
     cmd = data.cmd
     gameState = gameData.gameState.toString()
     currentPlayerTokenAsChar = gameData.currentPlayer
@@ -43,6 +47,10 @@ class ViewModel extends Observable {
     powerUp = gameData.powerUp
     levelWidth = gameData.levelWidth
     levelHeight = gameData.levelHeight
+    frozenTime = gameData.frozenTime
+    log = data.log
+    gameMessage = data.gameMessage
+    
     if (cmd == "all")
       receivedAll = true
 

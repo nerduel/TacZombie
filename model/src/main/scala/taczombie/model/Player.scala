@@ -29,7 +29,7 @@ trait Player {
 case class Human(val name : String,
     						 val playerTokenIds : List[Int],
     						 val movesRemaining : Int = defaults.humanMoves,
-    						 val lifes : Int = defaults.lifes)
+    						 val lifes : Int = defaults.humanLifes)
     extends Player  {
   
   override def currentToken(gameField : GameField) : HumanToken = {

@@ -118,8 +118,8 @@ object JsonHelper {
       val char: Char = {
           if (gameFieldCell == null) 'N'
           else if (gameFieldCell.containsWall) 'W'
-          else if (gameFieldCell.containsZombieToken) 'Z'
-          else if (gameFieldCell.containsHumanToken) 'H'
+          else if (gameFieldCell.containsLivingZombieToken) 'Z'
+          else if (gameFieldCell.containsLivingHumanToken) 'H'
           else if (gameFieldCell.containsCoin) 'C'
           else if (gameFieldCell.containsPowerup) 'P'
           else 'N'

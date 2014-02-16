@@ -6,8 +6,9 @@ import scala.collection.mutable.ListBuffer
 import taczombie.model.util.Logger
 
 object defaults {
+  val humanLifes = 3
+  
   val humanMoves = 4
-  val lifes = 3
   val zombieMoves = 2
   
   val humanName = "Pacman"
@@ -16,10 +17,18 @@ object defaults {
   val killScore = 3
 }
 
+object GameMessages {
+  def noMsg = "No message for you."
+  def newGame = "New Game is ready. Have fun!"
+  def frozenToken(rounds : Int) = "You're token is frozen for " + rounds + 
+  	"rounds. If you have more Tokens switch to them, else end the round."   
+}
+
 class Game(val id : Int,
     	   	 val gameField : GameField,
            val players : Players, // first player is current player!
-           val gameState : GameState = GameState.InGame) extends Logger {
+           val gameState : GameState = GameState.InGame,
+           val lastGameMessage : String = GameMessages.newGame) extends Logger {
   
 	def executeCommand(gameCommand : GameCommand) 
 			: Game = {
@@ -29,6 +38,7 @@ class Game(val id : Int,
 	  var updatedPlayer : Player = null
 	  var updatedPlayers : Players = null
 	  var updatedGameState : GameState = null
+	  var newGameMessage : String = null
 	  
 	  gameCommand match {
  	    // TODO nextGame
@@ -56,6 +66,8 @@ class Game(val id : Int,
         	logger.+=("Current token is frozen for " + currentToken.frozenTime
         	    + " rounds.")
         	currentTokenIsMovable = false
+        	
+        	newGameMessage = GameMessages.frozenToken(currentToken.frozenTime)
         	
           // decrease current players powerup if it's a human
           // decrease current player's token's freezetimes
@@ -115,15 +127,17 @@ class Game(val id : Int,
 	  if(updatedGameField == null) updatedGameField = gameField
 	  if(updatedPlayers == null) updatedPlayers = players
 	  if(updatedGameState == null) updatedGameState = gameState	  
+	  if(newGameMessage == null) newGameMessage = GameMessages.noMsg
 	  
-    updated(updatedGameField, updatedPlayers, updatedGameState)
+    updated(updatedGameField, updatedPlayers, updatedGameState, newGameMessage)
 	}
 	
 	private def updated(newUpdatedGameField : GameField,
 	    								newPlayers : Players,
-	    								newGameState : GameState) : Game = {
+	    								newGameState : GameState,
+	    								newGameMessage : String) : Game = {
 	  val updatedGame = new Game(id, newUpdatedGameField, 
-        			newPlayers, newGameState)
+        			newPlayers, newGameState, newGameMessage)
 	  updatedGame.logger.merge(this)
 	  updatedGame
 	}

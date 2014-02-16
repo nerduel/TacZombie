@@ -27,9 +27,12 @@ case class Coin(id : Int,
                 extends Collectable {
   def isVisitedBy (versatileGameObject : VersatileGameObject) = 
     versatileGameObject match {
-      case humanToken : HumanToken => 
+      case humanToken : HumanToken => {
+        logger.+=("human collected coin", true)
         (null, humanToken.updated(newCoins = 
-          humanToken.coins + 1, newScore = humanToken.score+1))
+          humanToken.coins + 1, newScore = humanToken.score+1))  
+      }
+          
       case zombieToken : ZombieToken => (this, zombieToken)
   }
 }
@@ -49,20 +52,22 @@ case class Powerup(id : Int,
 
 trait PlayerToken extends VersatileGameObject {
   val id : Int
+ 
+  def coins : Int
+  def score : Int
+  def powerupTime : Int
+  
   val frozenTime : Int
   require(frozenTime >= 0)
   
   val dead : Boolean
   
-  def coins : Int
-  def score : Int
-  
   def updated(newCoords : (Int,Int) = coords,
       				newCoins : Int = coins,
       				newScore : Int = score, 
-      				newPowerupTime : Int = 0,
-      				newFrozenTime : Int = this.frozenTime,
-      				newDead : Boolean = this.dead) : PlayerToken
+      				newPowerupTime : Int = powerupTime,
+      				newFrozenTime : Int = frozenTime,
+      				newDead : Boolean = dead) : PlayerToken
   
   def updatedDecrementCounters() : PlayerToken
 }
@@ -70,8 +75,8 @@ trait PlayerToken extends VersatileGameObject {
 case class HumanToken(id : Int, 
                       coords : (Int,Int),
                   		coins : Int = 0,
-                  		powerupTime : Int = 0,
                   		score : Int = 0,
+                  		powerupTime : Int = 0,
                   		frozenTime : Int = 0,
                   		dead : Boolean = false)
                   		extends PlayerToken {

@@ -292,8 +292,8 @@ function handleKeyEvent(evt) {
 	var down = 40; // down key
 	var respanToken = 70; // f
 	var switchToken = 71; // g
-	var nextPlayer = 72; // h
-	var nextGame = 78; // n
+	var nextGame = 77; // m
+	var nextPlayer = 78; // n
 	var restartGame = 82; // r
 
 	var textBox = document.getElementById("userInput");

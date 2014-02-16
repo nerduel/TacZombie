@@ -5,13 +5,13 @@ import CoordinateHelper._
 import scala.language.implicitConversions
 
 private object LevelHelper {
-  val path = "  "
-  val wall = "##"
-  val zombieBase = "ZZ"
-  val innerWall = "++"
-  val coin = ".."
-  val powerup = ";;"
-  val unset = "xx"
+  val path = " "
+  val wall = "#"
+  val zombieBase = "Z"
+  val innerWall = "+"
+  val coin = "."
+  val powerup = ";"
+  val unset = "x"
 
   class StringHelper(value : String) {
     def isPath = value == path
@@ -197,7 +197,6 @@ class LevelCreator {
     buildHorizontalWall
   }
 
-  // TODO: Make better maybe
   private def buildVerticalWall {
     for (row <- 0 to rInterval._2)
       field.addWall(row, 0).copyIntoEachQuadrant

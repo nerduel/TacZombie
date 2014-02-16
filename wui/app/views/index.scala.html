@@ -24,6 +24,14 @@
 		        <td>Current player:</td>
 		        <td class="scnd" id="cPlayer"></td>
 		      </tr>
+		      <tr>
+            <td>Dead tokens:</td>
+            <td class="scnd" id="cDTokens"></td>
+          </tr>
+          <tr>
+            <td>Total tokens:</td>
+            <td class="scnd" id="cTTokens"></td>
+          </tr>
 		    </table>
 		  </div>
 		  
@@ -35,11 +43,14 @@
 		        <th colspan="2">Commands:</th>
 		      </tr>
 		      <tr>
-		        <td>Move:</td> <td class="scnd">&lt;w&gt; &lt;s&gt; &lt;a&gt; &lt;d&gt;</td>
+		        <td>Move:</td> <td class="scnd">&lt;&#8592;&gt; &lt;&#8593;&gt; &lt;&#8595;&gt; &lt;&#8594;&gt;</td>
 		      </tr>
 	        <tr>
 	          <td>Switch token:</td> <td class="scnd">&lt;g&gt;</td>
 	        </tr>
+	        <tr>
+            <td>Respawn token:</td> <td class="scnd">&lt;f&gt;</td>
+          </tr>
 	        <tr>
 	          <td>Next player:</td> <td class="scnd">&lt;h&gt;</td>
 	        </tr>
@@ -56,7 +67,7 @@
 	  <div id="dividerV"></div>
 	  
 	  <div id="logger">
-	     <p>Log:</p>
+	     <p>Log: </p>
 	     <textarea id="log" readonly="readonly" wrap="soft"></textarea>
 	  </div>
 	</div>

@@ -1,5 +1,6 @@
 var wsUri = "ws://localhost:9000/broadcast";
 var grid;
+var logCounter = 0; 
 window.addEventListener("load", init, false);
 
 function init() {
@@ -46,6 +47,7 @@ function onMessage(evt) {
 		case "all":
 			renewGrid(msg.gameData.levelHeight, msg.gameData.levelWidth);
 			updateView(msg);
+			changeElement("log", "", "");
 			displayInformation(msg.gameMessage);
 			document.getElementById("gameData").style = "";
 			break;
@@ -63,6 +65,10 @@ function onMessage(evt) {
 
 function appendToLog(logList) {
 	var logOutput = document.getElementById("log");
+	
+	if (logOutput.value.split(/\r|\r\n|\n/).length >= 100) {
+		logOutput.value = "";
+	}
 	for ( var i = 0; i < logList.length; i++) {
 		logOutput.value += logList[i];
 		logOutput.value += "\n";
@@ -102,7 +108,7 @@ function updateView(data) {
 		switch (data.gameData.currentPlayer) {
 		case "H":
 			changeElement("cPlayer", "", "Human");
-			
+
 			var tRow = document.createElement("tr");
 			var tDesk1 = document.createElement("td");
 			var tDesk2 = document.createElement("td");
@@ -112,7 +118,6 @@ function updateView(data) {
 			tRow.appendChild(tDesk1);
 			tRow.appendChild(tDesk2);
 			gameData.appendChild(tRow);
-			
 
 			tRow = document.createElement("tr");
 			tDesk1 = document.createElement("td");
@@ -123,7 +128,7 @@ function updateView(data) {
 			tRow.appendChild(tDesk1);
 			tRow.appendChild(tDesk2);
 			gameData.appendChild(tRow);
-			
+
 			tRow = document.createElement("tr");
 			tDesk1 = document.createElement("td");
 			tDesk2 = document.createElement("td");
@@ -133,7 +138,7 @@ function updateView(data) {
 			tRow.appendChild(tDesk1);
 			tRow.appendChild(tDesk2);
 			gameData.appendChild(tRow);
-			
+
 			tRow = document.createElement("tr");
 			tDesk1 = document.createElement("td");
 			tDesk2 = document.createElement("td");
@@ -143,7 +148,7 @@ function updateView(data) {
 			tRow.appendChild(tDesk1);
 			tRow.appendChild(tDesk2);
 			gameData.appendChild(tRow);
-			
+
 			tRow = document.createElement("tr");
 			tDesk1 = document.createElement("td");
 			tDesk2 = document.createElement("td");
@@ -168,13 +173,15 @@ function updateView(data) {
 			gameData.appendChild(tRow);
 			break;
 		}
-		
+
 		changeElement("cMoves", "", data.gameData.movesRemaining);
+		changeElement("cDTokens", "", data.gameData.deadTokens);
+		changeElement("cTTokens", "", data.gameData.totalTokens);
 		propagateState(data.gameData.gameState, data.gameData.score);
 	}
 
 	for ( var i in data.cells) {
-		updateCell(data.cells[i]);
+		updateCell(data, i);
 	}
 }
 
@@ -182,7 +189,7 @@ function clearGameData(obj) {
 	var tableRows = obj.getElementsByTagName("tr");
 	var rowCount = tableRows.length;
 
-	for (var x = rowCount - 1; x > 1; x--) {
+	for ( var x = rowCount - 1; x > 3; x--) {
 		obj.removeChild(tableRows[x]);
 	}
 }
@@ -206,16 +213,41 @@ function changeElement(id, style, content) {
 	toChange.innerHTML = content;
 }
 
-function updateCell(cell) {
+function updateCell(data, i) {
+	cell = data.cells[i];
 	var cellId = (cell.x + "," + cell.y).toString();
 	var cellNode = document.getElementById(cellId);
 
 	switch (cell.token) {
 	case 'H':
-		if (cell.isHiglighted == true)
-			cellNode.className = "hHuman";
-		else
-			cellNode.className = "human";
+		if (cell.isHiglighted == true) {
+			if (data.gameData.powerUp == 0)
+				cellNode.className = "hHuman";
+			else
+				cellNode.className = "hHumanPowerup";
+		} else {
+			if (data.gameData.currentPlayer == "H") {
+    			if (data.gameData.powerUp == 0)
+    				cellNode.className = "human";
+    			else
+    				cellNode.className = "humanPowerup";
+			}
+			else {
+				switch (cellNode.className) {
+				case 'hHumanPowerup':
+				case 'humanPowerup':
+					cellNode.className = "humanPowerup";
+					break;
+					
+				case 'hHuman':
+				case 'human':
+					cellNode.className = "human";
+					break;
+				}
+			}
+			
+			
+		}
 		break;
 
 	case 'Z':
@@ -254,13 +286,15 @@ function updateCell(cell) {
 }
 
 function handleKeyEvent(evt) {
-	var left = 65;	// a
+	var left = 37; // left key
+	var up = 38; // up key
+	var right = 39; // right key
+	var down = 40; // down key
+	var respanToken = 70; // f
 	var switchToken = 71; // g
 	var nextPlayer = 72; // h
 	var nextGame = 78; // n
-	var right = 68; // d
-	var down = 83; // s
-	var up = 87; // w
+	var restartGame = 82; // r
 
 	var textBox = document.getElementById("userInput");
 	var charCode = (evt.which) ? evt.which : evt.keyCode;
@@ -298,6 +332,16 @@ function handleKeyEvent(evt) {
 	case nextGame:
 		doSend("nextGame");
 		textBox.value = "nextGame";
+		break;
+
+	case restartGame:
+		doSend("restartGame");
+		textBox.value = "restartGame";
+		break;
+		
+	case respanToken:
+		doSend("respawnToken");
+		textBox.value = "respawnToken";
 		break;
 	}
 }

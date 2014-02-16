@@ -12,6 +12,8 @@ import taczombie.model.NextPlayer
 import taczombie.model.NextToken
 import taczombie.model.Restart
 import taczombie.model.util.LevelCreator
+import scala.language.implicitConversions
+import taczombie.model.RespawnToken
 
 object GameController {
 
@@ -47,6 +49,9 @@ object GameController {
 	      
 	    case "restartGame" =>
 	      currentGame.executeCommand(Restart)
+	      
+	    case "respawnToken" =>
+	      currentGame.executeCommand(RespawnToken)
 	      
 	    case "nextGame" =>
 	    	if (currentGame.gameState == GameState.Win)

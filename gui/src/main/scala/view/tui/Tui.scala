@@ -6,6 +6,11 @@ import util.Observer
 
 class Tui(model: ViewModel, controller: Communication) extends Observer {
 
+  val arrowKeyLeft = '\033' :: '[' :: 'D' :: Nil
+  val arrowKeyUp = '\033' :: '[' :: 'A' :: Nil
+  val arrowKeyDown = '\033' :: '[' :: 'B' :: Nil
+  val arrowKeyRight = '\033' :: '[' :: 'C' :: Nil
+  
   model.add(this)
   val inputThread = new Thread(new Runnable {
     override def run() {
@@ -20,15 +25,14 @@ class Tui(model: ViewModel, controller: Communication) extends Observer {
   def readInput {
     while (true) {
       val input = readLine
-
       input.toList match {
-        case 'w' :: Nil =>
+        case `arrowKeyUp` :: Nil =>
           controller.moveUp
-        case 's' :: Nil =>
+        case `arrowKeyDown` =>
           controller.moveDown
-        case 'a' :: Nil =>
+        case `arrowKeyLeft` =>
           controller.moveLeft
-        case 'd' :: Nil =>
+        case `arrowKeyRight` =>
           controller.moveRight
         case 'q' :: Nil =>
           controller.disconnect
@@ -65,14 +69,24 @@ class Tui(model: ViewModel, controller: Communication) extends Observer {
   }
 
   def printHelp {
-    println("------------------------------")
-    println("Move Player: <a>, <w>, <s>, <d>")
-    println("Switch Token: <g>")
-    println("Next Player: <h>")
-    println("Next Game: <n>")
-    println("Restart Game: <r>")
-    println("Quit Game: <q>")
-    println("------------------------------")
+    println("---------------------------------|----------------------------------")
+    print("                                ")
+    println(" |  Moves remaining:\t" + model.movesRemaining)
+    print("Move Player: <←>, <↑>, <→>, <↓> ")
+    println(" |  -----------------------------")
+    print("Switch Token: <g>               ")
+    println(" |  Current player:\t" + getTokenName(model.currentPlayerTokenAsChar))
+    print("Next Player: <h>                ")
+    if (model.currentPlayerTokenAsChar == 'H') println(" |  Lifes:\t\t" + model.lifes)
+    else if (model.currentPlayerTokenAsChar == 'Z') println(" |  Frozen Time:\t" + model.frozenTime)
+    else println(" |  Coins collected:\t" + model.coins)
+    print("Next Game: <n>                  ")
+    if (model.currentPlayerTokenAsChar == 'H') println(" |  Score:\t\t" + model.score) else println(" |")    
+    print("Restart Game: <r>               ")
+    if (model.currentPlayerTokenAsChar == 'H') println(" |  Powerup time:\t" + model.powerUp) else println(" |")
+    print("Quit Game: <q>                  ")
+    if (model.currentPlayerTokenAsChar == 'H') println(" |  Frozen Time:\t" + model.frozenTime) else println(" |")
+    println("---------------------------------|----------------------------------")
   }
 
   def printGameField {
@@ -91,19 +105,7 @@ class Tui(model: ViewModel, controller: Communication) extends Observer {
             print(Console.WHITE_B + getChar(cell._1) + Console.RESET)
         }
       }
-      
-      x match {
-        case 0 => print("\t Moves remaining:\t" + model.movesRemaining + '\n')
-        case 1 => print("\t -----------------------------\n")
-        case 2 => print("\t Current player:\t" + getTokenName(model.currentPlayerTokenAsChar) + '\n')
-        case 3 if model.currentPlayerTokenAsChar == 'H' => print("\t Lifes:\t\t\t" + model.lifes + '\n')
-        case 3 if model.currentPlayerTokenAsChar == 'Z' => print("\t Frozen Time:\t\t" + model.frozenTime + '\n')
-        case 4 if model.currentPlayerTokenAsChar == 'H' => print("\t Coins collected:\t" + model.coins + '\n')
-        case 5 if model.currentPlayerTokenAsChar == 'H' => print("\t Score:\t\t\t" + model.score + '\n')
-        case 6 if model.currentPlayerTokenAsChar == 'H' => print("\t Powerup time:\t\t" + model.powerUp + '\n')
-        case 7 if model.currentPlayerTokenAsChar == 'H' => print("\t Frozen Time:\t\t" + model.frozenTime + '\n')
-        case _ => print('\n')
-      }
+      println
     }
   }
   

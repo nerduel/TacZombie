@@ -71,6 +71,16 @@ div#gameField table#grid td.hHuman {
 	background-size: 25px 25px;
 }
 
+div#gameField table#grid td.humanPowerup {
+  background-image: URL("/assets/images/humanPowerup.png");
+  background-size: 25px 25px;
+}
+
+div#gameField table#grid td.hHumanPowerup {
+	background-image: URL("/assets/images/hHumanPowerup.png");
+  background-size: 25px 25px;
+}
+
 div#gameField table#grid td.coin {
 	background-image: URL("/assets/images/coin.png");
 }
@@ -98,7 +108,6 @@ div#gameField table#grid td.hEmpty {
 div#rightBox {
 	float: left;
 	margin-left: 2em;
-	margin-top: 1em;
 	vertical-align: middle;
 	padding: 0 0em;
 }
@@ -164,6 +173,7 @@ div#logger {
 	display: inline-block;
 	float: right;
 	margin-left: 1em;
+	margin-top: -3.4em;
 	padding: 0 0em;
 }
 
@@ -174,6 +184,7 @@ div#logger p {
 div#logger textarea {
 	width: 25em;
 	height: 32.7em;
+	resize: none;
 }
 
 div#clear {

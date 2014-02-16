@@ -159,7 +159,7 @@ case class ZombieToken(id : Int,
     updated(newFrozenTime = this.frozenTime-1)
   }    
   
-  def isVisitedBy (versatileGameObject : VersatileGameObject) = 
+  def isVisitedBy (versatileGameObject : VersatileGameObject) = { 
     versatileGameObject match {
       case humanToken : HumanToken => {
         (humanToken.dead, humanToken.powerupTime) match {
@@ -174,4 +174,5 @@ case class ZombieToken(id : Int,
       }
       case zombieToken : ZombieToken => (this, zombieToken)
     }
+  }
 }

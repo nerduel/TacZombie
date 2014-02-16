@@ -61,8 +61,8 @@ class Game(val id : Int,
 	      
 	      // check if token is frozen
         if(currentToken.frozenTime > 0) {
-        	logger.+=("Current token is frozen for " + currentToken.frozenTime
-        	    + " rounds.")
+        	logger += "Current token is frozen for " + currentToken.frozenTime +
+        	    " rounds."
         	
         	updatedGameMessage = GameMessages.frozenToken(currentToken.frozenTime)    
           updatedGameState = GameState.NeedTokenSwitch
@@ -96,30 +96,19 @@ class Game(val id : Int,
         // decrease current player's token's freezetimes
         updatedGameField = updatedGameField.updatedDecrementedCounters(updatedPlayer)
         
-	      // check if the player has collected all the coins
-	      if(updatedPlayer.coins(updatedGameField) 
-	      		== gameField.coinsPlaced) {
+	      // check is won      
+        if(gameIsWon(updatedPlayers, updatedGameField)) {
 	        updatedGameMessage = GameMessages.won
-	      	logger.+=(updatedGameMessage)
+	      	logger += updatedGameMessage
 	      	return updated(updatedGameField, updatedPlayers, GameState.Win, updatedGameMessage)
 	      }
         
-        // check if the game is lost
-        val humanLifes = updatedPlayers.playerList.foldLeft(0){(sum, player) => 
-          player match { 
-            case human : Human => sum + human.lifes
-            case _ => sum 
-          }
-        }
-
-        if(humanLifes == 0) {
-          if(updatedGameField.findHumanTokens
-          									 .filter(hT => hT.dead).size == 0) {
+        // check if the game is lost     
+        if(gameIsLost(updatedPlayers, updatedGameField)) {
             updatedGameMessage = GameMessages.gameOver
-            logger.+=(updatedGameMessage)
+            logger += updatedGameMessage
             return updated(updatedGameField, updatedPlayers, 
                 					 GameState.GameOver, updatedGameMessage)
-				  }
         }
 
 
@@ -129,14 +118,16 @@ class Game(val id : Int,
           case human : Human =>
             
           case zombie : Zombie =>
+            
         }
               
 	      // check for movesRemaining for player
-        logger.+=("Player " + updatedPlayer.name + " can move "
-              + updatedPlayer.movesRemaining + " more times.")
+        logger += "Player " + updatedPlayer.name + " can move "
+              + updatedPlayer.movesRemaining + " more times."
+              
         if (updatedPlayer.movesRemaining == 0) {
           updatedGameMessage = GameMessages.noRemainingMoves
-          logger.+=(updatedGameMessage)
+          logger += updatedGameMessage
           return updated(newGameField = updatedGameField,
               					 newPlayers = updatedPlayers,
               					 newGameState = GameState.NeedPlayerSwitch,
@@ -159,9 +150,14 @@ class Game(val id : Int,
   	      							GameState.NeedTokenSwitch) => {		  
         
   	    // TODO check if tokens can be respawned
-  	      							  
-        return updated(newPlayers = players.updatedRotatedPlayers(),
-            					 newGameState = GameState.InGame)
+  	    
+  	    updatedGameField = gameField.updatedDecrementedCounters(currentPlayer)
+  	    updatedPlayers = players.updatedRotatedPlayers()
+  	    updatedGameState = GameState.InGame
+  	    
+        return updated(newGameField = updatedGameField,
+            					 newPlayers = updatedPlayers,
+            					 newGameState = updatedGameState)
   		}
 
   	  case (NextToken, GameState.NeedPlayerSwitch | 
@@ -174,7 +170,7 @@ class Game(val id : Int,
   	  case (gameCmd : GameCommand, _) => {
   	    updatedGameMessage = "Unsupported GameCommand " +
   	    		gameCmd	+ " for GameState " + gameState
-      	logger.+=(updatedGameMessage)
+      	logger += updatedGameMessage
     	  return updated(newGameMessage = updatedGameMessage)
       }
 	  }
@@ -189,5 +185,25 @@ class Game(val id : Int,
         		 newPlayers, newGameState, newGameMessage, this)
 	}
 	
+  private def gameIsWon(players : Players, gameField : GameField) : Boolean = {
+    val coinsCollected = players.playerList.foldLeft(0){(sum, player) => 
+      player match { 
+        case human : Human => sum + human.coins(gameField)
+        case _ => sum
+      }
+    }
+    coinsCollected	== gameField.coinsPlaced  
+  }	
+
+  private def gameIsLost(players : Players, gameField : GameField) : Boolean = {
+  	val humanLifes = players.playerList.foldLeft(0){(sum, player) => 
+      player match { 
+        case human : Human => sum + human.lifes
+        case _ => sum
+      }
+    }
+    humanLifes == 0 && 
+    		gameField.findHumanTokens.filter(hT => hT.dead).size == 0
+  } 
 	//private def cycleTokenMap(tokenMap : TreeMap[Int,PlayerToken]) : Player
 }

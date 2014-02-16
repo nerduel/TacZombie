@@ -46,14 +46,13 @@ function onMessage(evt) {
 		case "all":
 			renewGrid(msg.gameData.levelHeight, msg.gameData.levelWidth);
 			updateView(msg);
-			displayInformation("New Game Loaded.");
-			//msg.log instead of "NewGame Loaded."
+			displayInformation(msg.gameMessage);
 			document.getElementById("gameData").style = "";
 			break;
 			
 		case "updated":
 			updateView(msg);
-			displayInformation("Turn of player was valid.");
+			displayInformation(msg.gameMessage);
 			appendToLog(msg.log);
 			break;
 		}
@@ -88,7 +87,6 @@ function renewGrid(height, width) {
 	}
 }
 
-
 function displayError(msg) {
 	changeElement("message1", "color: red", msg);
 }
@@ -120,12 +118,12 @@ function updateView(data) {
     	changeElement("cScore", "", data.gameData.score);
     
     	switch (data.gameData.powerUp) {
-    	case true:
-    		changeElement("cZKiller", "", "YES");
+    	case 0:
+    		changeElement("cZKiller", "", "NO");
     		break;
     
-    	case false:
-    		changeElement("cZKiller", "", "NO");
+    	default:
+    		changeElement("cZKiller", "", "YES");
     		break;
     	}
     }

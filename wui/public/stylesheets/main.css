@@ -48,22 +48,27 @@ div#gameField table#grid td {
 div#gameField table#grid td.wall {
 	background-image: URL("/assets/images/wall.png");
 	background-repeat: repeat;
+	background-size: 25px 25px;
 }
 
 div#gameField table#grid td.zombie {
 	background-image: URL("/assets/images/zombie.png");
+	background-size: 25px 25px;
 }
 
 div#gameField table#grid td.hZombie {
 	background-image: URL("/assets/images/hZombie.png");
+	background-size: 25px 25px;
 }
 
 div#gameField table#grid td.human {
 	background-image: URL("/assets/images/human.png");
+	background-size: 25px 25px;
 }
 
 div#gameField table#grid td.hHuman {
 	background-image: URL("/assets/images/hHuman.png");
+	background-size: 25px 25px;
 }
 
 div#gameField table#grid td.coin {

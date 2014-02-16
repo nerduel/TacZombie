@@ -1,16 +1,19 @@
 package view.gui
 
 import java.awt.Color
-
 import javax.swing.BorderFactory
 import javax.swing.ImageIcon
 import model.ViewModel
 import util.Observer
+import scala.swing.Swing
+import scala.swing.Alignment
 
 class GameCell(model: ViewModel, cell: ((Int, Int), (Char, Boolean)))
   extends swing.Label with Observer {
-
   model.add(this)
+
+  horizontalAlignment = Alignment.Center
+  verticalAlignment = Alignment.Center
 
   updateIcon(cell._2._1, cell._2._2)
 
@@ -53,5 +56,5 @@ class GameCell(model: ViewModel, cell: ((Int, Int), (Char, Boolean)))
     }
   }
 
-  border = BorderFactory.createLineBorder(Color.BLACK, 1)
+  border = Swing.LineBorder(Color.BLACK)
 }

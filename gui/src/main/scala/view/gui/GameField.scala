@@ -8,8 +8,9 @@ class GameField(model: ViewModel) extends swing.GridPanel(model.levelWidth, mode
 
   model.cells.foreach(cell => addCell(cell))
 
+  focusable = false
+
   def addCell(cell: ((Int, Int), (Char, Boolean))) {
-//    println(cell)
     contents += new GameCell(model, cell)
   }
 }

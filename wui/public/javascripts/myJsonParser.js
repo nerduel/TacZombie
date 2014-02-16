@@ -284,6 +284,7 @@ function updateCell(data, i) {
 function handleKeyEvent(evt) {
 	var left = 65; // a
 	var right = 68; // d
+	var respanToken = 70; // f
 	var switchToken = 71; // g
 	var nextPlayer = 72; // h
 	var nextGame = 78; // n
@@ -332,6 +333,11 @@ function handleKeyEvent(evt) {
 	case restartGame:
 		doSend("restartGame");
 		textBox.value = "restartGame";
+		break;
+		
+	case respanToken:
+		doSend("respawnToken");
+		textBox.value = "respawnToken";
 		break;
 	}
 }

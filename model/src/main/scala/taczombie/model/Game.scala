@@ -157,18 +157,22 @@ class Game(val id : Int,
   	    // TODO check if tokens can be respawned						  
   	    
   	    updatedGameField = gameField.updatedDecrementedCounters(currentPlayer)
-  	    updatedPlayers = players.updatedRotatedPlayers()
+  	    updatedPlayers = players.updatedRotatedPlayers
   	    updatedGameState = GameState.InGame
-  	    updatedPlayer = updatedPlayers.currentPlayer
       	updatedGameMessage = GameMessages.noMsg
-  	     	    
+  	   
+      	updatedPlayer = updatedPlayers.currentPlayer
+      	logger += "Next player is " + updatedPlayer + " with token " + 
+      						updatedPlayer.currentToken(updatedGameField)
+      	
   	    // check if next player's currentToken is dead
   	    if(updatedPlayer.currentToken(updatedGameField).dead) {
           // if it is a zombie. respawn it
           updatedPlayer match { 
             case zombie : Zombie => 
           		updatedPlayer.currentToken(updatedGameField)
-            	updatedGameField = updatedGameField respawn currentToken.id
+            	updatedGameField = updatedGameField respawn 
+            										 updatedPlayer.currentToken(updatedGameField).id
             	logger merge updatedGameField
             	
           	case human : Human =>
@@ -183,6 +187,15 @@ class Game(val id : Int,
             					 newGameState = updatedGameState,
             					 newGameMessage = updatedGameMessage)
   		}
+  	      							
+//  	  case (RespawnToken, GameState.NeedTokenSwitch) => {
+//        // check if next player's currentToken is dead
+//  	  	if(currentToken.dead) {
+//  	  	  
+//  	  	}
+//  	  	
+//  	  	this
+//  	  }
 
   	  case (NextToken, GameState.NeedPlayerSwitch | 
   	      						 GameState.InGame |

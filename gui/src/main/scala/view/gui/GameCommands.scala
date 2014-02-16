@@ -5,7 +5,6 @@ import scala.swing.Button
 import scala.swing.event.MouseClicked
 import controller.Communication
 import model.ViewModel
-import taczombie.model.Quit
 import javax.swing.Action
 import scala.swing.event.Event
 
@@ -42,7 +41,7 @@ class GameCommands(model: ViewModel, controller: Communication) extends BorderPa
 
     listenTo(mouse.clicks)
     reactions += {
-      case me: MouseClicked => controller.disconnect; println("disconnect"); exit(0)
+      case me: MouseClicked => controller.disconnect; println("disconnect"); sys.exit(0)
     }
   }
 

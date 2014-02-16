@@ -18,9 +18,11 @@ class Gui(val model: ViewModel, val controller: Communication) extends swing.Fra
   val gameStats = new GameStats(model)
   val gameMessages = new GameMessage(model)
   val gameCommands = new GameCommands(model, controller)
+  
   while (!model.receivedAll) {
     Thread.sleep(100)
   }
+  
   val gameField = new GameField(model)
 
   contents = new BorderPanel {
@@ -41,11 +43,12 @@ class Gui(val model: ViewModel, val controller: Communication) extends swing.Fra
       case KeyPressed(_, Key.Right, _, _) =>
         controller.moveRight
       case KeyPressed(_, Key.N, _, _) =>
-        controller.newGame
+        controller.nextGame
       case KeyPressed(_, Key.Q, _, _) =>
         controller.disconnect
-        exit(0)
+        sys.exit(0)
     }
+    
     focusable = true
     requestFocus
   }

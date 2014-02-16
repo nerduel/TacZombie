@@ -1,5 +1,6 @@
 var wsUri = "ws://localhost:9000/broadcast";
 var grid;
+var logCounter = 0; 
 window.addEventListener("load", init, false);
 
 function init() {
@@ -64,6 +65,10 @@ function onMessage(evt) {
 
 function appendToLog(logList) {
 	var logOutput = document.getElementById("log");
+	
+	if (logOutput.value.split(/\r|\r\n|\n/).length >= 100) {
+		logOutput.value = "";
+	}
 	for ( var i = 0; i < logList.length; i++) {
 		logOutput.value += logList[i];
 		logOutput.value += "\n";
@@ -170,9 +175,8 @@ function updateView(data) {
 		}
 
 		changeElement("cMoves", "", data.gameData.movesRemaining);
-		// TODO: uncomment when value is implemented in Json format
-//		changeElement("cDTokens", "", data.gameData.deadTokens);
-//		changeElement("cTTokens", "", data.gameData.totalTokens);
+		changeElement("cDTokens", "", data.gameData.deadTokens);
+		changeElement("cTTokens", "", data.gameData.totalTokens);
 		propagateState(data.gameData.gameState, data.gameData.score);
 	}
 
@@ -185,7 +189,7 @@ function clearGameData(obj) {
 	var tableRows = obj.getElementsByTagName("tr");
 	var rowCount = tableRows.length;
 
-	for ( var x = rowCount - 1; x > 1; x--) {
+	for ( var x = rowCount - 1; x > 3; x--) {
 		obj.removeChild(tableRows[x]);
 	}
 }

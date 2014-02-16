@@ -137,7 +137,9 @@ class Game(val id : Int,
         if (updatedPlayer.movesRemaining == 0) {
           updatedGameMessage = GameMessages.noRemainingMoves
           logger.+=(updatedGameMessage)
-          return updated(newGameState = GameState.NeedPlayerSwitch,
+          return updated(newGameField = updatedGameField,
+              					 newPlayers = updatedPlayers,
+              					 newGameState = GameState.NeedPlayerSwitch,
               					 newGameMessage = updatedGameMessage)
         }
         
@@ -179,11 +181,11 @@ class Game(val id : Int,
 	  
 	} // def executeCommand(gameCommand : GameCommand)
 	
-	private def updated(newUpdatedGameField : GameField = this.gameField,
+	private def updated(newGameField : GameField = this.gameField,
 	    								newPlayers : Players = this.players,
 	    								newGameState : GameState = this.gameState,
 	    								newGameMessage : String = GameMessages.noMsg) : Game = {
-	  new Game(id, newUpdatedGameField, 
+	  new Game(id, newGameField, 
         		 newPlayers, newGameState, newGameMessage, this)
 	}
 	

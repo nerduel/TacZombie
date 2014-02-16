@@ -47,9 +47,8 @@ object GameController {
 	      
 	    case "restartGame" =>
 	      currentGame.executeCommand(Restart)
-	      currentGame
 	      
-	    case "nextGame" => 
+	    case "nextGame" =>
 	    	if (currentGame.gameState == GameState.Win)
 	    	  // TODO: GameFactory needs to take old score 
 	    	  // GameFactory.nextLevel(currentGame)

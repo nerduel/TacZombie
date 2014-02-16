@@ -96,9 +96,10 @@ div#gameField table#grid td.hEmpty {
 }
 
 div#rightBox {
-	display: inline-block;
 	float: left;
 	margin-left: 2em;
+	margin-top: 1em;
+	vertical-align: middle;
 	padding: 0 0em;
 }
 
@@ -128,7 +129,7 @@ div#gameData td.scnd {
 
 div#gameData td {
 	padding: 0.3em;
-	width: 8em;
+	width: 8.5em;
 }
 
 div#gameData tr#bottom td {
@@ -150,7 +151,7 @@ div#gameControl td.scnd {
 
 div#gameControl td {
 	padding: 0.3em;
-	width: 8em;
+	width: 8.5em;
 	background-repeat: no-repeat;
 	background-position: center;
 }

@@ -182,7 +182,7 @@ function clearGameData(obj) {
 	var tableRows = obj.getElementsByTagName("tr");
 	var rowCount = tableRows.length;
 
-	for (var x = rowCount - 1; x > 2; x--) {
+	for (var x = rowCount - 1; x > 1; x--) {
 		obj.removeChild(tableRows[x]);
 	}
 }
@@ -254,33 +254,33 @@ function updateCell(cell) {
 }
 
 function handleKeyEvent(evt) {
-	var switchToken = 9; // tab
-	var nextPlayer = 13; // enter|return
-	var leftArrow = 37;
-	var upArrow = 38;
-	var rightArrow = 39;
-	var downArrow = 40;
+	var left = 65;	// a
+	var switchToken = 71; // g
+	var nextPlayer = 72; // h
 	var nextGame = 78; // n
+	var right = 68; // d
+	var down = 83; // s
+	var up = 87; // w
 
 	var textBox = document.getElementById("userInput");
 	var charCode = (evt.which) ? evt.which : evt.keyCode;
 	switch (charCode) {
-	case leftArrow:
+	case left:
 		doSend("moveLeft");
 		textBox.value = "left";
 		break;
 
-	case upArrow:
+	case up:
 		doSend("moveUp");
 		textBox.value = "up";
 		break;
 
-	case rightArrow:
+	case right:
 		doSend("moveRight");
 		textBox.value = "right";
 		break;
 
-	case downArrow:
+	case down:
 		doSend("moveDown");
 		textBox.value = "down";
 		break;

@@ -10,7 +10,6 @@ import taczombie.model.MoveRight
 import taczombie.model.MoveUp
 import taczombie.model.NextPlayer
 import taczombie.model.NextToken
-import taczombie.model.Quit
 import taczombie.model.Restart
 import taczombie.model.util.LevelCreator
 

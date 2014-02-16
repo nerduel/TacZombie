@@ -27,6 +27,9 @@ object GameMessages {
   def noRemainingMoves = "You have no moves remaining. Please switch players."
   def won = "All coins collected! We have a winner"
   def gameOver = "Game Over!"
+  def tokenDied = "You ran into death! Please switch players."
+  def deadTokenSelected = "Your last selected token is dead. Please use \"respawn token\"" +
+  												" or \"respawn token\" accordingly." 
 }
 
 class Game(val id : Int,
@@ -111,15 +114,17 @@ class Game(val id : Int,
                 					 GameState.GameOver, updatedGameMessage)
         }
 
-
         // check if current token is dead
-        if(updatedPlayer.currentToken(updatedGameField).dead)
-        currentPlayer match {
-          case human : Human =>
-            
-          case zombie : Zombie =>
-            
+        if(updatedPlayer.currentToken(updatedGameField).dead) {
+          updatedGameMessage = GameMessages.tokenDied
+          updatedGameState = GameState.NeedPlayerSwitch
+                    
+          return updated(newGameField = updatedGameField,
+              					 newPlayers = updatedPlayers,
+              					 newGameState = updatedGameState,
+        	    					 newGameMessage = updatedGameMessage)
         }
+        
               
 	      // check for movesRemaining for player
         logger += "Player " + updatedPlayer.name + " can move "
@@ -149,24 +154,48 @@ class Game(val id : Int,
   	      							GameState.InGame |
   	      							GameState.NeedTokenSwitch) => {		  
         
-  	    // TODO check if tokens can be respawned
+  	    // TODO check if tokens can be respawned						  
   	    
   	    updatedGameField = gameField.updatedDecrementedCounters(currentPlayer)
   	    updatedPlayers = players.updatedRotatedPlayers()
   	    updatedGameState = GameState.InGame
+  	    updatedPlayer = updatedPlayers.currentPlayer
+      	updatedGameMessage = GameMessages.noMsg
+  	     	    
+  	    // check if next player's currentToken is dead
+  	    if(updatedPlayer.currentToken(updatedGameField).dead) {
+          // if it is a zombie. respawn it
+          updatedPlayer match { 
+            case zombie : Zombie => 
+          		updatedPlayer.currentToken(updatedGameField)
+            	updatedGameField = updatedGameField respawn currentToken.id
+            	logger merge updatedGameField
+            	
+          	case human : Human =>
+          	  updatedGameState = GameState.NeedTokenSwitch
+          	  updatedGameMessage = GameMessages.deadTokenSelected
+          	  logger += updatedGameMessage
+          }
+  	    }
   	    
         return updated(newGameField = updatedGameField,
             					 newPlayers = updatedPlayers,
-            					 newGameState = updatedGameState)
+            					 newGameState = updatedGameState,
+            					 newGameMessage = updatedGameMessage)
   		}
 
   	  case (NextToken, GameState.NeedPlayerSwitch | 
-  	      							GameState.InGame |
-  	      							GameState.NeedTokenSwitch) => {
+  	      						 GameState.InGame |
+  	      						 GameState.NeedTokenSwitch) => {
   		  this
   		  // TODO
   		}
-    	    
+  	  
+  	  case (_, GameState.NeedPlayerSwitch |
+  	      	   GameState.NeedTokenSwitch) =>
+     	  return updated(newGameMessage = lastGameMessage)  	    
+  	  
+  	      						 
   	  case (gameCmd : GameCommand, _) => {
   	    updatedGameMessage = "Unsupported GameCommand " +
   	    		gameCmd	+ " for GameState " + gameState
@@ -205,5 +234,5 @@ class Game(val id : Int,
     humanLifes == 0 && 
     		gameField.findHumanTokens.filter(hT => hT.dead).size == 0
   } 
-	//private def cycleTokenMap(tokenMap : TreeMap[Int,PlayerToken]) : Player
+
 }

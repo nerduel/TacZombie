@@ -10,6 +10,7 @@ import scala.swing.Alignment
 
 class GameCell(model: ViewModel, cell: ((Int, Int), (Char, Boolean)))
   extends swing.Label with Observer {
+  focusable = false
   model.add(this)
 
   horizontalAlignment = Alignment.Center
@@ -32,10 +33,19 @@ class GameCell(model: ViewModel, cell: ((Int, Int), (Char, Boolean)))
         else
           new ImageIcon(getClass.getResource("/images/coin.png"))
       case 'H' =>
-        icon = if (isHighlighted)
-          new ImageIcon(getClass.getResource("/images/hHuman.png"))
-        else
-          new ImageIcon(getClass.getResource("/images/human.png"))
+        icon = if (isHighlighted) {
+          if (model.powerUp > 0) {
+            new ImageIcon(getClass.getResource("/images/hHumanPowerup.png"))
+          } else {
+            new ImageIcon(getClass.getResource("/images/hHuman.png"))
+          }
+        } else {
+          if (model.powerUp > 0) {
+            new ImageIcon(getClass.getResource("/images/humanPowerup.png"))
+          } else {
+            new ImageIcon(getClass.getResource("/images/human.png"))
+          }
+        }
       case 'Z' =>
         icon = if (isHighlighted)
           new ImageIcon(getClass.getResource("/images/hZombie.png"))

@@ -40,6 +40,7 @@ class Communication(model: ViewModel) {
   def moveRight = send("moveRight")
   def nextGame = send("nextGame")
   def switchToken = send("switchToken")
+  def respawnToken = send("respawnToken")
   def nextPlayer = send("nextPlayer")
   def restartGame = send("restartGame")
   def disconnect = {

@@ -13,97 +13,109 @@ import scala.swing.Swing
 import java.awt.Dimension
 import javax.swing.border._
 import scala.swing.Alignment
+import scala.swing.GridBagPanel
+import scala.swing.Component
+import scala.swing.Separator
 
 case object quit extends Event
 
 class GameCommands(model: ViewModel, controller: Communication) extends BorderPanel {
-  border = new CompoundBorder(new TitledBorder(new EtchedBorder, "Commands"), new EmptyBorder(5, 5, 5, 10))
+  focusable = false
+  val buttonWidth = 185
 
-  val buttonUp = new Button("Up") {
-    listenTo(mouse.clicks)
-    reactions += {
-      case me: MouseClicked => controller.moveUp
+  val gridBagPanel = new GridBagPanel {
+    border = new CompoundBorder(new TitledBorder(new EtchedBorder, "Move"), new EmptyBorder(5, 5, 5, 10))
+
+    val constraint = new Constraints
+    def addToGridBag(x: Int, y: Int, component: Component) {
+      constraint.gridx = x
+      constraint.fill = GridBagPanel.Fill.Both
+      constraint.gridy = y
+      add(component, constraint)
     }
+
+    addToGridBag(1, 0, new Button("Up") {
+      listenTo(mouse.clicks)
+      reactions += {
+        case me: MouseClicked => controller.moveUp
+      }
+    })
+
+    addToGridBag(1, 1, new Button("Down") {
+      listenTo(mouse.clicks)
+      reactions += {
+        case me: MouseClicked => controller.moveDown
+      }
+    })
+
+    addToGridBag(0, 1, new Button("Left") {
+      listenTo(mouse.clicks)
+      reactions += {
+        case me: MouseClicked => controller.moveLeft
+      }
+    })
+
+    addToGridBag(2, 1, new Button("Right") {
+      listenTo(mouse.clicks)
+      reactions += {
+        case me: MouseClicked => controller.moveRight
+      }
+    })
+
+    addToGridBag(0, 3, new Separator)
+    addToGridBag(1, 3, new Separator)
+    addToGridBag(2, 3, new Separator)
+
+    addToGridBag(0, 4, new Button("RT") {
+      tooltip = "Respawn Token <f>"
+      listenTo(mouse.clicks)
+      reactions += {
+        case me: MouseClicked => controller.respawnToken
+      }
+    })
+
+    addToGridBag(1, 4, new Button("ST") {
+      tooltip = "Switch Token <g>"
+      listenTo(mouse.clicks)
+      reactions += {
+        case me: MouseClicked => controller.switchToken
+      }
+    })
+
+    addToGridBag(2, 4, new Button("NP") {
+      tooltip = "Next Player <h>"
+      listenTo(mouse.clicks)
+      reactions += {
+        case me: MouseClicked => controller.nextPlayer
+      }
+    })
   }
 
-  val buttonDown = new Button("Down") {
-    listenTo(mouse.clicks)
-    reactions += {
-      case me: MouseClicked => controller.moveDown
-    }
-  }
+  add(gridBagPanel, BorderPanel.Position.North)
 
-  val buttonLeft = new Button("Left") {
-    listenTo(mouse.clicks)
-    reactions += {
-      case me: MouseClicked => controller.moveLeft
-    }
-  }
-
-  val buttonRight = new Button("Right") {
-    listenTo(mouse.clicks)
-    reactions += {
-      case me: MouseClicked => controller.moveRight
-    }
-  }
-
-  val buttonSwitchToken = new Button("Switch Token") {
-    minimumSize = new Dimension(140, 25)
-    maximumSize = new Dimension(140, 25)
-    preferredSize = new Dimension(140, 25)
-    listenTo(mouse.clicks)
-    reactions += {
-      case me: MouseClicked => controller.switchToken
-    }
-  }
-
-  val buttonNextPlayer = new Button("Next Player") {
-    minimumSize = new Dimension(140, 25)
-    maximumSize = new Dimension(140, 25)
-    preferredSize = new Dimension(140, 25)
-    listenTo(mouse.clicks)
-    reactions += {
-      case me: MouseClicked => controller.nextPlayer
-    }
-  }
-
-  val buttonNextGame = new Button("Next Game") {
-    minimumSize = new Dimension(140, 25)
-    maximumSize = new Dimension(140, 25)
-    preferredSize = new Dimension(140, 25)
+  val buttonNextGame = new Button("Next Game <n>") {
     listenTo(mouse.clicks)
     reactions += {
       case me: MouseClicked => controller.nextGame
     }
   }
 
-  val buttonRestartGame = new Button("Restart Game") {
-    minimumSize = new Dimension(140, 25)
-    maximumSize = new Dimension(140, 25)
-    preferredSize = new Dimension(140, 25)
+  val buttonRestartGame = new Button("Restart Game <r>") {
     listenTo(mouse.clicks)
     reactions += {
       case me: MouseClicked => controller.restartGame
     }
   }
 
-  val buttonQuit = new Button("Quit") {
-    minimumSize = new Dimension(140, 25)
-    maximumSize = new Dimension(140, 25)
-    preferredSize = new Dimension(140, 25)
+  val buttonQuit = new Button("Quit <q>") {
     listenTo(mouse.clicks)
     reactions += {
       case me: MouseClicked => controller.disconnect; sys.exit(0)
     }
   }
 
-  add(buttonUp, BorderPanel.Position.North)
-  add(buttonDown, BorderPanel.Position.South)
-  add(buttonLeft, BorderPanel.Position.West)
-  add(buttonRight, BorderPanel.Position.East)
-
   add(new BoxPanel(Orientation.Vertical) {
-    border = Swing.EmptyBorder(10, 10, 10, 10)
-    contents ++= Seq(buttonSwitchToken, buttonNextPlayer, buttonNextGame, buttonRestartGame, buttonQuit)
+    border = new CompoundBorder(new TitledBorder(new EtchedBorder, "Round"), new EmptyBorder(5, 5, 5, 10))
+    contents ++= Seq(buttonNextGame, buttonRestartGame, buttonQuit)
   }, BorderPanel.Position.Center)
 }

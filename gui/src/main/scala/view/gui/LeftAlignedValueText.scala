@@ -3,7 +3,7 @@ package view.gui
 import scala.swing._
 
 class LeftAlignedValueText(text: String, value: String) extends BorderPanel {
-
+  focusable = false
   private var labelText = new Label(text.padTo(18, ' ')) {
     horizontalTextPosition = Alignment.Left
   }

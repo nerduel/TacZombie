@@ -12,7 +12,6 @@ import taczombie.model.GameFactory
 
 object Application extends Controller {
 
-  //var myGame = GameFactory.newGame(random = false, file = "model/src/test/scala/taczombie/test/model/starWars-map")
   GameController.evaluateCommand("nextGame")
   
   def index = Action {

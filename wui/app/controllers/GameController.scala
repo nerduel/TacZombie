@@ -31,31 +31,42 @@ object GameController {
 	def evaluateCommand(cmd : String) : String = {
 	  cmd match {
 	    case "moveLeft" =>
-      	 myGame.executeCommand(MoveLeft).toJson(Updated)
+      	  myGame = myGame.executeCommand(MoveLeft)
+      	  myGame.toJson(Updated)
       	  
 	    case "moveRight" =>
-	      myGame.executeCommand(MoveRight).toJson(Updated)
+	      myGame = myGame.executeCommand(MoveRight)
+	      myGame.toJson(Updated)
 	      
 	    case "moveUp" =>
-	      myGame.executeCommand(MoveUp).toJson(Updated)
+	      myGame = myGame.executeCommand(MoveUp)
+	      myGame.toJson(Updated)
 	      
 	    case "moveDown" =>
-	      myGame.executeCommand(MoveDown).toJson(Updated)
+	      myGame = myGame.executeCommand(MoveDown)
+	      myGame.toJson(Updated)
 	      
 	    case "nextPlayer" =>
-	      myGame.executeCommand(NextPlayer).toJson(Updated)
+	      myGame = myGame.executeCommand(NextPlayer)
+	      myGame.toJson(Updated)
 	      
 	    case "switchToken" =>
-	      myGame.executeCommand(NextToken).toJson(Updated)
+	      myGame = myGame.executeCommand(NextToken)
+	      myGame.toJson(Updated)
 	      
 	    case "restartGame" => {
-	      if(lastGeneratedGame != null)
-	    	  lastGeneratedGame.toJson(All)
-          else myGame.toJson(All)
+	      if(lastGeneratedGame != null) {
+	    	  myGame = lastGeneratedGame
+	    	  myGame.toJson(All)
+	      }
+          else{
+            myGame.toJson(All)
+          } 
 	    }
 	      
 	    case "respawnToken" =>
-	      myGame.executeCommand(RespawnToken).toJson(Updated)
+	      myGame.executeCommand(RespawnToken)
+	      myGame.toJson(Updated)
 	      
 	    case "nextGame" => {
 //	      	val nextGame = GameFactory.newGame(random = false, 
@@ -68,7 +79,7 @@ object GameController {
 	}
 	
 	def getCurrentGame : String = {
-	  myGame.toJson(All)
+		myGame.toJson(All)
 	}
 	
 }

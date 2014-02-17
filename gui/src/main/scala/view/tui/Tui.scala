@@ -17,7 +17,7 @@ class Tui(model: ViewModel, controller: Communication) extends Observer {
       try {
         readInput
       } catch {
-        case ex: Exception => println(ex.getMessage())
+        case _ : Throwable => 
       }
     }
   })

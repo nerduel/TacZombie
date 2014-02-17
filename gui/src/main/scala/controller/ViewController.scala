@@ -8,10 +8,9 @@ import com.scalaloader.ws.WebSocketClientFactory
 import model.ViewModel
 import spray.json.pimpString
 import view.gui.Address
-import view.main.GUI
-import util.Observable
+import view.main.View
 
-class Communication(model: ViewModel, address: Address) extends Observable {
+class Communication(model: ViewModel, address: Address, view: View) {
   private var connected = false
   private val wsFactory = WebSocketClientFactory(1)
   private val wsUri = new java.net.URI("ws://" + address.toString + ":9000/broadcast")
@@ -21,7 +20,7 @@ class Communication(model: ViewModel, address: Address) extends Observable {
       println("Connecting")
     case Disconnected(_, reason) =>
       if (connected != false)
-        notifyObservers
+        view.show
       println("Disconnected")
     case TextMessage(_, data) =>
       handleInput(data)

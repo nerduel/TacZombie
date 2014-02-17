@@ -30,7 +30,7 @@ object GameFactory {
       if(random == false)
         	createGameFieldAndPlayerMap(humans, zombies, file)
       else {
-        	val level = levelCreator.create(defaultHeight, defaultWidth)
+        	val level = levelCreator.create(defaultHeight, defaultWidth, humans)
         	
         	val array = scala.collection.mutable.ArrayBuffer[String]()
         	
@@ -104,11 +104,9 @@ object GameFactory {
               tmpGameFieldCell = tmpGameFieldCell.addHere(new Powerup(this.generateId, (tuple)))
           case 'H' =>
               humanBase = (tuple)
-              for(i <- 0 until humanTokenCount) {
-                val humanToken = new HumanToken(this.generateId, (tuple))
-                humanTokenIds.+=(humanToken.id)
-                tmpGameFieldCell = tmpGameFieldCell.addHere(humanToken)
-              }              
+              val humanToken = new HumanToken(this.generateId, (tuple))
+              humanTokenIds.+=(humanToken.id)
+              tmpGameFieldCell = tmpGameFieldCell.addHere(humanToken)
           case 'Z' =>
               zombieBase = (tuple)
               for(i <- 0 until zombieTokenCount) {

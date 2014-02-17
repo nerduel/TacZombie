@@ -26,7 +26,7 @@ class Tui(model: ViewModel, controller: Communication) extends Observer {
     while (true) {
       val input = readLine
       input.toList match {
-        case `arrowKeyUp` :: Nil =>
+        case `arrowKeyUp` =>
           controller.moveUp
         case `arrowKeyDown` =>
           controller.moveDown

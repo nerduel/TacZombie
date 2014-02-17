@@ -1,13 +1,22 @@
 package taczombie.model
 
 import scala.collection.immutable.TreeMap
+import taczombie.model.util.Logger
 
-trait Player {
+trait Player extends Logger {
 	val name : String
   val playerTokenIds : List[Int]  
   val movesRemaining : Int
 	
-	def currentTokenId = playerTokenIds.head
+	def currentTokenId = { 
+	  if(playerTokenIds.nonEmpty) 
+	    playerTokenIds.head 
+	  else {
+	    logger += ("This player doesn't have any tokens?!", true)
+	    0
+	  }
+	}
+	
 	
   def coins(gameField : GameField) : Int = 0
   def score(gameField : GameField) : Int = 0
@@ -46,7 +55,7 @@ case class Human(val name : String,
     						 val playerTokenIds : List[Int],
     						 val movesRemaining : Int = defaults.humanMoves,
     						 val lifes : Int = defaults.humanLifes)
-    extends Player  {
+    extends Player with Logger  {
   
   override def currentToken(gameField : GameField) : HumanToken = {
   	gameField.findOnePlayerTokenById(currentTokenId) match {

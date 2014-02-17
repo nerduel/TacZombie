@@ -71,7 +71,7 @@ class GameCommands(model: ViewModel, controller: Communication) extends BoxPanel
     preferredSize = new Dimension(300, 130)
     maximumSize = new Dimension(300, 130)
     minimumSize = new Dimension(300, 130)
-    border = new CompoundBorder(new TitledBorder(new EtchedBorder, "Round"), new EmptyBorder(5, 5, 5, 10))
+    border = new CompoundBorder(new TitledBorder(new EtchedBorder, "Token"), new EmptyBorder(5, 5, 5, 10))
     contents += new GridBagPanel {
       val constraint = new Constraints
       def addToGridBag(x: Int, y: Int, component: Component) {

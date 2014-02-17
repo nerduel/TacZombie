@@ -11,7 +11,7 @@ import taczombie.model.Zombie
 
 object JsonHelper {
 
-  case class Data(cmd: String, gameMessage: String, gameData: JsValue, cells: JsValue, log: List[String])
+  case class Data(cmd: String, gameMessage: String, gameData: JsValue, cells: JsValue, log: List[String], humanTokens : JsValue)
 
   case class GameData(gameState: String, currentPlayer: Char,
     lifes: Int, movesRemaining: Int, coins: Int,
@@ -20,10 +20,13 @@ object JsonHelper {
 
   case class Cell(x: Int, y: Int, token: Char, isHiglighted: Boolean)
   
+  case class HumanTokens(x: Int, y: Int, powerUp : Boolean)
+  
   object GameDataJsonProtocol extends DefaultJsonProtocol {
     implicit val GameDataFormat = jsonFormat12(GameData)
     implicit val CellFormat = jsonFormat4(Cell)
-    implicit val DataFormat = jsonFormat5(Data)
+    implicit val HumanTokensFormat = jsonFormat3(HumanTokens)
+    implicit val DataFormat = jsonFormat6(Data)
   }
   
   trait Type
@@ -108,12 +111,18 @@ object JsonHelper {
       
       var logList = g.logger.get
       
+      val humanTokens = for {
+        token <- g.gameField.findHumanTokens
+        hToken = HumanTokens(token.coords._1, token.coords._2, token.powerupTime > 0)
+      } yield hToken
+      
+      
       import GameDataJsonProtocol._
 
       val gameData = GameData(gameState, currentPlayerTokenAsChar, lifes,
           movesRemaining, coins, score, powerUp, width, height, frozenTime, deadTokenCount, totalTokens)
       val gameDataJson = gameData.toJson
-      val data = Data(cmd.toString(), g.lastGameMessage, gameDataJson, cells.toJson, logList)
+      val data = Data(cmd.toString(), g.lastGameMessage, gameDataJson, cells.toJson, logList, humanTokens.toJson)
 
       data.toJson.toString
     }

@@ -8,17 +8,21 @@ import com.scalaloader.ws.WebSocketClientFactory
 
 import model.ViewModel
 import spray.json.pimpString
+import view.gui.Address
+import view.main.GUI
 
-class Communication(model: ViewModel) {
+class Communication(model: ViewModel, address: Address) {
   private var connected = false
   private val wsFactory = WebSocketClientFactory(1)
-  private val wsUri = new java.net.URI("ws://127.0.0.1:9000/broadcast")
+  private val wsUri = new java.net.URI("ws://" + address.toString + ":9000/broadcast")
 
   private val wsClient = wsFactory.newClient(wsUri) {
     case Connecting =>
       println("Connecting")
     case Disconnected(_, reason) =>
-      connected = false
+      if (connected != false)
+        GUI.show
+      println("Disconnected")
     case TextMessage(_, data) =>
       handleInput(data)
     case Connected(_) =>
@@ -44,6 +48,7 @@ class Communication(model: ViewModel) {
   def nextPlayer = send("nextPlayer")
   def restartGame = send("restartGame")
   def disconnect = {
+    connected = false
     wsFactory.shutdownAll
   }
 

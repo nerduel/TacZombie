@@ -45,7 +45,7 @@ class GameUI(model: ViewModel, controller: Communication) extends BorderPanel wi
       controller.disconnect
       sys.exit(0)
   }
-  
+
   // Make sure this gets focus after every update, 
   // otherwise key inputs wouldnt be recognized.
   def update {
@@ -53,17 +53,16 @@ class GameUI(model: ViewModel, controller: Communication) extends BorderPanel wi
   }
 
   add(new GameMessage(model), BorderPanel.Position.North)
-  
+
   add(new FlowPanel(new BoxPanel(Orientation.Vertical) {
     contents += new GameStats(model)
     contents += new GameCommands(model, controller)
   }), BorderPanel.Position.West)
-  
+
   add(new FlowPanel(new BoxPanel(Orientation.Vertical) {
     contents += new GameField(model)
     contents += new Log(model)
   }), BorderPanel.Position.East)
-
 
   requestFocusInWindow
 }

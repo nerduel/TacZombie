@@ -196,22 +196,13 @@ class Game(val id : Int,
             					 newGameMessage = updatedGameMessage)
   		}
   	      							
-  	  case (RespawnToken, GameState.NeedTokenSwitch) => {
-        // check if next player's currentToken is dead
-  	  	if(currentToken.dead) {
-  	  		updatedGameField = gameField.respawn(currentToken.id)
-  	  		updatedGameState = GameState.InGame
-  	  		if(defaults.spawnFreeze > 0)
-  	  			updatedGameMessage = GameMessages.frozenToken(defaults.spawnFreeze)
-  	  		else
-  	  		  updatedGameMessage = GameMessages.noMsg
-  	  		  
-  	  		updatedPlayers = players.updatedExistingPlayer(
-  	  		    currentPlayer.updatedDecreasedLifes.updatedDecreasedLifes)
-  	  		
-    	  	return updated(newGameField = updatedGameField, 
-    	  	    					 newGameState = updatedGameState,
-    	  	    					 newGameMessage = updatedGameMessage)  	  		
+  	  case (RespawnToken, GameState.InGame |
+  	      								GameState.NeedTokenSwitch) => {
+        // check if player has dead tokens
+  	    val deadTokens = currentPlayer.deadTokens(gameField)
+  	  	if(deadTokens.nonEmpty) {
+  	  		updatedGameField = gameField.respawn(deadTokens.head.id)
+    	  	return updated(newGameField = updatedGameField)  	  		
   	  	} else this
   	  }
 
@@ -231,16 +222,10 @@ class Game(val id : Int,
   	          					 newGameMessage = updatedGameMessage)
   	      
   	    } else {
-  	      logger += ("Switching from token " + currentToken.id, true)
-  	      // switch to next alive token
-  	      logger += ("Remaining moves " + currentPlayer.movesRemaining, true)
     	    updatedPlayer = currentPlayer.updatedCycledTokens
     	    while(updatedPlayer.currentToken(gameField).dead) 
     	      updatedPlayer = updatedPlayer.updatedCycledTokens
-    	    logger += ("to token " + updatedPlayer.currentTokenId, true)
-    	    
-    	    logger += ("Remaining moves " + updatedPlayer.movesRemaining, true)
-    	    
+    	      
     	    updatedPlayers = players.updatedExistingPlayer(updatedPlayer)
   	      updatedGameState = GameState.InGame
   	      return updated(newGameState = updatedGameState,    	    

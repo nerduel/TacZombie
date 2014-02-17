@@ -21,50 +21,54 @@ object GameController {
 	}
 	
 	var lastGeneratedGame : Game = null
+	var myGame : Game = null
 	
 	implicit def gameWrapper(g : Game) =
 	  new GameHelper(g)
 	
-	def evaluateCommand(cmd : String, currentGame : Game) : Game = {
+	import taczombie.model.util.JsonHelper._
+	
+	def evaluateCommand(cmd : String) : String = {
 	  cmd match {
 	    case "moveLeft" =>
-      	 currentGame.executeCommand(MoveLeft)
+      	 myGame.executeCommand(MoveLeft).toJson(Updated)
       	  
 	    case "moveRight" =>
-	      currentGame.executeCommand(MoveRight)
+	      myGame.executeCommand(MoveRight).toJson(Updated)
 	      
 	    case "moveUp" =>
-	      currentGame.executeCommand(MoveUp)
+	      myGame.executeCommand(MoveUp).toJson(Updated)
 	      
 	    case "moveDown" =>
-	      currentGame.executeCommand(MoveDown)
+	      myGame.executeCommand(MoveDown).toJson(Updated)
 	      
 	    case "nextPlayer" =>
-	      currentGame.executeCommand(NextPlayer)
+	      myGame.executeCommand(NextPlayer).toJson(Updated)
 	      
 	    case "switchToken" =>
-	      currentGame.executeCommand(NextToken)
+	      myGame.executeCommand(NextToken).toJson(Updated)
 	      
 	    case "restartGame" => {
 	      if(lastGeneratedGame != null)
-          lastGeneratedGame
-        else currentGame
+	    	  lastGeneratedGame.toJson(All)
+          else myGame.toJson(All)
 	    }
 	      
 	    case "respawnToken" =>
-	      currentGame.executeCommand(RespawnToken)
+	      myGame.executeCommand(RespawnToken).toJson(Updated)
 	      
 	    case "nextGame" => {
 //	      	val nextGame = GameFactory.newGame(random = false, 
 //	      	    file = "../model/src/test/scala/taczombie/test/model/TestLevel_correct")
 	      	val nextGame = GameFactory.newGame(random = true)	      
-	      	lastGeneratedGame = nextGame
-	      	nextGame
+	      	myGame = nextGame
+	      	myGame.toJson(All)
 	    }
 	  }
 	}
 	
-	
-	
+	def getCurrentGame : String = {
+	  myGame.toJson(All)
+	}
 	
 }

@@ -13,7 +13,7 @@ import taczombie.model.GameFactory
 object Application extends Controller {
 
   //var myGame = GameFactory.newGame(random = false, file = "model/src/test/scala/taczombie/test/model/starWars-map")
-  var myGame = GameController.evaluateCommand("nextGame", null)
+  GameController.evaluateCommand("nextGame")
   
   def index = Action {
     Ok(views.html.index("TacZombie"))
@@ -24,7 +24,6 @@ object Application extends Controller {
         "lobby" -> new ListBuffer[play.api.libs.iteratee.Concurrent.Channel[String]]()
     )
   
-  import taczombie.model.util.JsonHelper._
   def broadcast = WebSocket.async[String] { request =>
   	
     concurrent.future {
@@ -38,16 +37,12 @@ object Application extends Controller {
         println("[DEBUG]: receiving message: " + msg)
         
         if (msg == "getGameData") {
-        	channel.push(myGame.toJson(All))
+        	channel.push(GameController.getCurrentGame)
         }
         else {
-	        val game = GameController.evaluateCommand(msg, myGame)
-	        
-	        val jsonString = game.toJson(Updated)
+	        val jsonString = GameController.evaluateCommand(msg)
 	        	
 	        outchannels("lobby").foreach(_.push(jsonString))
-	        
-	        myGame = game
         }
       }
 

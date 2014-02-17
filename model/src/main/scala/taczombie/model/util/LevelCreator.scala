@@ -459,9 +459,10 @@ class LevelCreator {
   }
 
   private def addCoins {
-    for (c <- 1 until cInterval._2 + 2; r <- 1 until rInterval._2 + 2) {
-      if (field((r, c)).isPath)
-        field.addCoin((r, c)).copyIntoEachQuadrant
+    for (c <- 1 until width; r <- 1 until height) {
+      if (field((r, c)).isPath) {
+        field.addCoin((r, c))
+      }
     }
   }
 

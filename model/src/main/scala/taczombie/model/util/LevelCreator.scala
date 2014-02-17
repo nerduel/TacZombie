@@ -193,12 +193,13 @@ class LevelCreator {
       }
     }
 
+    addPowerups
+    
     // add human Base to map
     for (i <- 0  until amountHumans)
     	addHumanBase
     
     addCoins
-    addPowerups
     
     field
   }
@@ -542,7 +543,9 @@ class LevelCreator {
       randomCoords = (rand.nextInt(height - rowsLowerBound) + rowsLowerBound, rand.nextInt(width))
     while 
       (!field(randomCoords).isPath)
-      
+    
+    println(randomCoords)
+    
     field.addHumanBase(randomCoords)
   }
 }

@@ -124,10 +124,7 @@ class GameField(val id : String,
     updatedGameFieldCells += updatedSourceCell
     updatedGameFieldCells += gameFieldCells.apply(updatedRespawnToken.coords)
     																			 .addHere(updatedRespawnToken)
-    
-    logger += "Respawned " + updatedRespawnToken + 
-    					" to " + updatedRespawnToken.coords
-    					
+    																			 
     updated(updatedGameFieldCells.toList)
   }
   

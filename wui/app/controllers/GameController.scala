@@ -65,7 +65,7 @@ object GameController {
 	    }
 	      
 	    case "respawnToken" =>
-	      myGame.executeCommand(RespawnToken)
+	      myGame = myGame.executeCommand(RespawnToken)
 	      myGame.toJson(Updated)
 	      
 	    case "nextGame" => {

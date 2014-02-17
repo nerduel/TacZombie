@@ -5,10 +5,8 @@ import taczombie.model.util.JsonHelper.Cell
 import util.Observer
 
 class GameField(model: ViewModel) extends swing.GridPanel(model.levelWidth, model.levelHeight) {
-
-  model.cells.foreach(cell => addCell(cell))
-
   focusable = false
+  model.cells.foreach(cell => addCell(cell))
 
   def addCell(cell: ((Int, Int), (Char, Boolean))) {
     contents += new GameCell(model, cell)

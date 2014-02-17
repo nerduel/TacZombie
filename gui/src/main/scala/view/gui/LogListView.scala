@@ -6,11 +6,11 @@ import model.ViewModel
 import util.Observer
 
 class LogListView(model: ViewModel) extends ListView[String] with Observer {
+  focusable = false
   model.add(this)
 
   def update {
-    listData = listData.reverse
-    listData ++= model.log.toSeq
-    listData = listData.reverse
+    listData = model.log.toSeq
+    ensureIndexIsVisible(listData.size - 1)
   }
 }

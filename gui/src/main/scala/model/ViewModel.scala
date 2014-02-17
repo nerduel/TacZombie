@@ -18,6 +18,8 @@ class ViewModel extends Observable {
   var cmd = ""
   var gameState = " "
   var currentPlayerTokenAsChar = ' '
+  var deadTokens = 0
+  var totalTokens = 0
   var lifes = 0
   var movesRemaining = 0
   var coins = 0
@@ -37,11 +39,13 @@ class ViewModel extends Observable {
     updatedCells.foreach { x =>
       cells += (x.x, x.y) -> (x.token, x.isHiglighted)
     }
-    
+
     cmd = data.cmd
     gameState = gameData.gameState.toString()
     currentPlayerTokenAsChar = gameData.currentPlayer
     lifes = gameData.lifes
+    totalTokens = gameData.totalTokens
+    deadTokens = gameData.deadTokens
     movesRemaining = gameData.movesRemaining
     score = gameData.score
     powerUp = gameData.powerUp
@@ -50,7 +54,7 @@ class ViewModel extends Observable {
     frozenTime = gameData.frozenTime
     log = data.log
     gameMessage = data.gameMessage
-    
+
     if (cmd == "all")
       receivedAll = true
 

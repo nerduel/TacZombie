@@ -18,7 +18,7 @@ import javax.swing.border.EtchedBorder
 import javax.swing.border.EmptyBorder
 
 class GameUI(model: ViewModel, controller: Communication) extends BorderPanel with Observer {
-
+  focusable = true
   model.add(this)
 
   // Make sure this gets focus after every update, 
@@ -29,10 +29,13 @@ class GameUI(model: ViewModel, controller: Communication) extends BorderPanel wi
 
   add(new GameMessage(model), BorderPanel.Position.South)
   add(new FlowPanel(new BoxPanel(Orientation.Vertical) {
-    contents += new GameStats(model)
     contents += new GameCommands(model, controller)
+    contents += new GameStats(model)
   }), BorderPanel.Position.West)
-  add(new FlowPanel(new GameField(model), new Log(model)), BorderPanel.Position.Center)
+  add(new FlowPanel(new BoxPanel(Orientation.Vertical) {
+    contents += new GameField(model)
+    contents += new Log(model)
+  }), BorderPanel.Position.Center)
 
   listenTo(keys)
   reactions += {
@@ -46,17 +49,17 @@ class GameUI(model: ViewModel, controller: Communication) extends BorderPanel wi
       controller.moveRight
     case KeyPressed(_, Key.G, _, _) =>
       controller.switchToken
-    case KeyPressed(_, Key.H, _, _) =>
+    case KeyPressed(_, Key.F, _, _) =>
+      controller.respawnToken
+    case KeyPressed(_, Key.N, _, _) =>
       controller.nextPlayer
+    case KeyPressed(_, Key.M, _, _) =>
+      controller.nextGame
     case KeyPressed(_, Key.R, _, _) =>
       controller.restartGame
-    case KeyPressed(_, Key.N, _, _) =>
-      controller.nextGame
     case KeyPressed(_, Key.Q, _, _) =>
       controller.disconnect
       sys.exit(0)
   }
-
-  focusable = true
   requestFocus
 }

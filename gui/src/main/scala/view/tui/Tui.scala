@@ -10,7 +10,7 @@ class Tui(model: ViewModel, controller: Communication) extends Observer {
   val arrowKeyUp = '\033' :: '[' :: 'A' :: Nil
   val arrowKeyDown = '\033' :: '[' :: 'B' :: Nil
   val arrowKeyRight = '\033' :: '[' :: 'C' :: Nil
-  
+
   model.add(this)
   val inputThread = new Thread(new Runnable {
     override def run() {
@@ -81,7 +81,7 @@ class Tui(model: ViewModel, controller: Communication) extends Observer {
     else if (model.currentPlayerTokenAsChar == 'Z') println(" |  Frozen Time:\t" + model.frozenTime)
     else println(" |  Coins collected:\t" + model.coins)
     print("Next Game: <n>                  ")
-    if (model.currentPlayerTokenAsChar == 'H') println(" |  Score:\t\t" + model.score) else println(" |")    
+    if (model.currentPlayerTokenAsChar == 'H') println(" |  Score:\t\t" + model.score) else println(" |")
     print("Restart Game: <r>               ")
     if (model.currentPlayerTokenAsChar == 'H') println(" |  Powerup time:\t" + model.powerUp) else println(" |")
     print("Quit Game: <q>                  ")
@@ -108,8 +108,8 @@ class Tui(model: ViewModel, controller: Communication) extends Observer {
       println
     }
   }
-  
-  def getTokenName(token: Char) : String = {
+
+  def getTokenName(token: Char): String = {
     token match {
       case 'H' => return "Human"
       case 'Z' => return "Zombie"

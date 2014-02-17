@@ -2,8 +2,6 @@ package taczombie.model
 
 trait GameCommand
 
-case object Restart extends GameCommand
-
 trait InGameCmd extends GameCommand
 trait MoveCmd extends InGameCmd
 case object MoveUp extends MoveCmd

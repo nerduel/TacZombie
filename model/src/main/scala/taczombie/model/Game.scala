@@ -31,8 +31,8 @@ object GameMessages {
   def won = "All coins collected! We have a winner"
   def gameOver = "Game Over!"
   def tokenDied = "You ran into death! Please switch players."
-  def deadTokenSelected = "Your last selected token is dead. Please use \"respawn token\"" +
-  												" or switch players."
+  def deadTokenSelected = "Your last selected token is dead. Please try to " + 
+    											"respawn or switch tokens"
   def noOthersAlive = "You have no other living tokens."
 }
 
@@ -201,9 +201,30 @@ class Game(val id : Int,
         // check if player has dead tokens
   	    val deadTokens = currentPlayer.deadTokens(gameField)
   	  	if(deadTokens.nonEmpty) {
-  	  		updatedGameField = gameField.respawn(deadTokens.head.id)
-    	  	return updated(newGameField = updatedGameField)  	  		
-  	  	} else this
+  	  	  if(currentPlayer.lifes > 0) {
+  	  	    logger += ("Respawning " + deadTokens.head.id, true)
+    	  	  updatedGameField = gameField.respawn(deadTokens.head.id)
+    	  		updatedPlayers = players.updatedExistingPlayer(
+    	  		    										 	currentPlayer.updatedDecreasedLifes)
+    	  		
+    	  		// if the respawned is currently selected
+    	  		if(currentToken.id == deadTokens.head.id) {
+    	  			updatedGameMessage = GameMessages.frozenToken(defaults.spawnFreeze)
+    	  			updatedGameState = GameState.NeedTokenSwitch
+    	  		} else {
+    	  		  updatedGameMessage = this.lastGameMessage
+    	  		  updatedGameState = this.gameState
+    	  		}
+
+      	  	return updated(newGameField = updatedGameField,
+      	  	    					 newPlayers = updatedPlayers,
+      	  	    					 newGameState = updatedGameState,
+      	  	    					 newGameMessage = updatedGameMessage)  
+  	  	  }
+  	  	  return updated(newGameMessage = "You don't have lifes left to respawn.")
+  	  	} else {
+  	  	  return updated(newGameMessage = "There are no dead tokens to respawn")
+  	  	}
   	  }
 
   	  case (NextToken, GameState.InGame |
@@ -237,6 +258,10 @@ class Game(val id : Int,
   	      	   GameState.NeedTokenSwitch) =>
      	  return updated(newGameMessage = lastGameMessage)  	    
   	  
+  	  case (gameCmd : GameCommand, GameState.Lose | 
+  	      												 GameState.Win) => {
+  	    this
+  	  }
   	      						 
   	  case (gameCmd : GameCommand, _) => {
   	    updatedGameMessage = "Unsupported GameCommand " +
@@ -276,8 +301,8 @@ class Game(val id : Int,
         case _ => sum
       }
     }
-    humanLifes == 0 && 
-    		gameField.findHumanTokens.filter(hT => hT.dead).size == 0
+    humanLifes == 0 &&
+    		gameField.findHumanTokens.filter(hT => !hT.dead).size == 0
   } 
 
 }

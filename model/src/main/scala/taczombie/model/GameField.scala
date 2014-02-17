@@ -20,6 +20,9 @@ class GameField(val id : String,
   if(mergeLog != null)
     logger merge mergeLog
 
+  /**
+   * Get all PlayerTokens with the specified id
+   */
   def findPlayerTokensById(tokenIds : List[Int]) : List[PlayerToken] = {
     val playerTokensMap = scala.collection.mutable.HashMap[Int, PlayerToken]();
     
@@ -36,11 +39,16 @@ class GameField(val id : String,
     playerTokensMap.values.toList
   }
   
+  /**
+   * Get the PlayerToken with the specified id
+   */
   def findOnePlayerTokenById(id : Int) : PlayerToken = 
   	findPlayerTokensById(List[Int](id)).head
   
-  type A <: GameObject	
-  	
+
+  /**
+   * Find all HumanTokens on the gameField 
+   */
   def findHumanTokens : List[HumanToken] = {
     gameFieldCells.foldLeft(List[HumanToken]())({(resultList, cell) =>
       resultList ++ cell._2.gameObjects.collect({case go : HumanToken => go})

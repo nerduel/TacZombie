@@ -45,7 +45,7 @@ case class Powerup(id : Int,
     versatileGameObject match {
       case humanToken : HumanToken => 
         (null, humanToken.updated(newPowerupTime = 
-          humanToken.powerupTime+10, newScore = humanToken.score+1))
+          humanToken.powerupTime+defaults.powerupTime, newScore = humanToken.score+1))
       case zombieToken : ZombieToken => (this, zombieToken)
   }
 }

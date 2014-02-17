@@ -15,7 +15,8 @@ object defaults {
   val humanName = "Pacman"
   val zombieName = "Zombie"
   
-  val spawnFreeze = 1 
+  val spawnFreeze = 1
+  val powerupTime = 40
     
   val killScore = 3
 }
@@ -122,6 +123,9 @@ class Game(val id : Int,
                 					 GameState.GameOver, updatedGameMessage)
         }
 
+        // check for dead tokens
+        val deadTokens = gameField
+        
         // check if current token is dead
         if(updatedPlayer.currentToken(updatedGameField).dead) {
           updatedGameMessage = GameMessages.tokenDied
@@ -173,22 +177,26 @@ class Game(val id : Int,
       	logger += "Next player is " + updatedPlayer + " with token " + 
       						updatedPlayer.currentToken(updatedGameField)
       	
-  	    // check if next player's currentToken is dead
-  	    if(updatedPlayer.currentToken(updatedGameField).dead) {
-          // if it is a zombie. respawn it
-          updatedPlayer match { 
-            case zombie : Zombie => 
-          		updatedPlayer.currentToken(updatedGameField)
-            	updatedGameField = updatedGameField respawn 
-            										 updatedPlayer.currentToken(updatedGameField).id
-            	logger merge updatedGameField
-            	
+      	// check for dead tokens
+        val playersDeadPlayer = updatedPlayer.deadTokens(gameField)
+        if(playersDeadPlayer.size > 0) {
+          updatedPlayer match {
+            case zombie : Zombie =>
+              // respawn all dead zombie tokens
+              for(deadToken <- playersDeadPlayer) {
+              	updatedGameField = updatedGameField respawn deadToken.id
+              	logger merge updatedGameField  
+              }
+              
           	case human : Human =>
-          	  updatedGameState = GameState.NeedTokenSwitch
-          	  updatedGameMessage = GameMessages.deadTokenSelected
-          	  logger += updatedGameMessage
+          	  // check if next player's currentToken is dead
+          	  if(updatedPlayer.currentToken(updatedGameField).dead) {
+            	  updatedGameState = GameState.NeedTokenSwitch
+            	  updatedGameMessage = GameMessages.deadTokenSelected
+            	  logger += updatedGameMessage                      	    
+          	  }
           }
-  	    }
+        }
   	    
         return updated(newGameField = updatedGameField,
             					 newPlayers = updatedPlayers,

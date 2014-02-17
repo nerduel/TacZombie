@@ -37,28 +37,28 @@ class GameCommands(model: ViewModel, controller: Communication) extends BoxPanel
         add(component, constraint)
       }
 
-      addToGridBag(1, 0, new Button("Up") {
+      addToGridBag(1, 0, new Button("↑") {
         listenTo(mouse.clicks)
         reactions += {
           case me: MouseClicked => controller.moveUp
         }
       })
 
-      addToGridBag(1, 1, new Button("Down") {
+      addToGridBag(1, 2, new Button("↓") {
         listenTo(mouse.clicks)
         reactions += {
           case me: MouseClicked => controller.moveDown
         }
       })
 
-      addToGridBag(0, 1, new Button("Left") {
+      addToGridBag(0, 1, new Button("←") {
         listenTo(mouse.clicks)
         reactions += {
           case me: MouseClicked => controller.moveLeft
         }
       })
 
-      addToGridBag(2, 1, new Button("Right") {
+      addToGridBag(2, 1, new Button("→") {
         listenTo(mouse.clicks)
         reactions += {
           case me: MouseClicked => controller.moveRight

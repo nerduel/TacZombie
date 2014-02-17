@@ -238,7 +238,11 @@ class Game(val id : Int,
   	    if(otherAliveTokens.isEmpty) {
   	      updatedGameMessage = GameMessages.noOthersAlive
   	      logger += (updatedGameMessage, true)
-  	      updatedGameState = GameState.InGame
+  	      if(currentToken.dead)
+  	      	updatedGameState = GameState.NeedTokenSwitch
+	      	else
+	      		updatedGameState = GameState.InGame
+	      		
   	      return updated(newGameState = updatedGameState,
   	          					 newGameMessage = updatedGameMessage)
   	      
@@ -258,8 +262,8 @@ class Game(val id : Int,
   	      	   GameState.NeedTokenSwitch) =>
      	  return updated(newGameMessage = lastGameMessage)  	    
   	  
-  	  case (gameCmd : GameCommand, GameState.Lose | 
-  	      												 GameState.Win) => {
+  	  case (_, GameState.GameOver | 
+  						 GameState.Win) => {
   	    this
   	  }
   	      						 

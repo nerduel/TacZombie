@@ -27,7 +27,8 @@ object GameMessages {
   def frozenToken(rounds : Int) = "This token is frozen for " + rounds + 
   	" rounds. If you have more Tokens switch to them, otherwise switch players!"
   def wall = "*OUCH* You ran against a wall..."
-    
+  def respawnedToken(id : Int, coords : (Int, Int)) = 
+    "Respawned a Token("+ id +") to " + coords  
   def noRemainingMoves = "You have no moves remaining. Please switch players."
   def won = "All coins collected! We have a winner"
   def gameOver = "Game Over!"
@@ -210,18 +211,18 @@ class Game(val id : Int,
   	    val deadTokens = currentPlayer.deadTokens(gameField)
   	  	if(deadTokens.nonEmpty) {
   	  	  if(currentPlayer.lifes > 0) {
-  	  	    logger += ("Respawning " + deadTokens.head.id, true)
     	  	  updatedGameField = gameField.respawn(deadTokens.head.id)
     	  		updatedPlayers = players.updatedExistingPlayer(
     	  		    										 	currentPlayer.updatedDecreasedLifes)
-    	  		
+    	  		    										 	
     	  		// if the respawned is currently selected
-    	  		if(currentToken.id == deadTokens.head.id) {
-    	  			updatedGameMessage = GameMessages.frozenToken(defaults.spawnFreeze)
+    	  		if(currentToken.id == deadTokens.head.id) {    	  			
     	  			updatedGameState = GameState.NeedTokenSwitch
+    	  			updatedGameMessage = GameMessages.frozenToken(defaults.spawnFreeze)
     	  		} else {
-    	  		  updatedGameMessage = this.lastGameMessage
-    	  		  updatedGameState = this.gameState
+    	  		  updatedGameState = GameState.InGame
+    	  		  updatedGameMessage = GameMessages.respawnedToken(deadTokens.head.id,
+    	  		      updatedGameField.findOnePlayerTokenById(deadTokens.head.id).coords)
     	  		}
 
       	  	return updated(newGameField = updatedGameField,

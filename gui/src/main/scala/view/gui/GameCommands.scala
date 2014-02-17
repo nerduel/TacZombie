@@ -83,7 +83,7 @@ class GameCommands(model: ViewModel, controller: Communication) extends BorderPa
     })
 
     addToGridBag(2, 4, new Button("NP") {
-      tooltip = "Next Player <h>"
+      tooltip = "Next Player <n>"
       listenTo(mouse.clicks)
       reactions += {
         case me: MouseClicked => controller.nextPlayer
@@ -93,7 +93,7 @@ class GameCommands(model: ViewModel, controller: Communication) extends BorderPa
 
   add(gridBagPanel, BorderPanel.Position.North)
 
-  val buttonNextGame = new Button("Next Game <n>") {
+  val buttonNextGame = new Button("Next Game <m>") {
     listenTo(mouse.clicks)
     reactions += {
       case me: MouseClicked => controller.nextGame

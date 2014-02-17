@@ -51,9 +51,9 @@ class GameUI(model: ViewModel, controller: Communication) extends BorderPanel wi
       controller.switchToken
     case KeyPressed(_, Key.F, _, _) =>
       controller.respawnToken
-    case KeyPressed(_, Key.H, _, _) =>
-      controller.nextPlayer
     case KeyPressed(_, Key.N, _, _) =>
+      controller.nextPlayer
+    case KeyPressed(_, Key.M, _, _) =>
       controller.nextGame
     case KeyPressed(_, Key.R, _, _) =>
       controller.restartGame

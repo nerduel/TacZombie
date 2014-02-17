@@ -15,14 +15,18 @@ trait Player {
   
   def currentToken(gameField : GameField) : PlayerToken
   
-  def deadTokens(gameField : GameField) : Int = {
+  def deadTokens(gameField : GameField) : List[PlayerToken] = {
 	  gameField.findPlayerTokensById(playerTokenIds)
-	  				 .filter(token => token.dead).size
+	  				 .filter(token => token.dead)
+	}
+  
+  def deadTokenCount(gameField : GameField) : Int = {
+	  deadTokens(gameField).size
 	}
 	
 	def totalTokens = playerTokenIds.size
   
-  def updated(updatedPlayerTokenIds : List[Int] = playerTokenIds,
+  def updated(updatedPlayerTokenIds : List[Int] = this.playerTokenIds,
     				 updatedMovesRemaining : Int = this.movesRemaining,
     				 newLifes : Int = lifes) : Player				 
     				 
@@ -92,7 +96,7 @@ case class Zombie(val name : String,
   }  
   
   def updated(newPlayerTokenIds : List[Int] = this.playerTokenIds,
-    				 newMovesRemaining : Int = 0,
+    				 newMovesRemaining : Int,
     				 newLifes : Int = lifes) : Zombie = {
     new Zombie(this.name, newPlayerTokenIds, newMovesRemaining)
   }

@@ -51,7 +51,7 @@ object JsonHelper {
       val gameState = g.gameState.toString
       val currentPlayer = g.players.currentPlayer
       val frozenTime = currentPlayer.currentToken(g.gameField).frozenTime
-      val deadTokens = currentPlayer.deadTokens(g.gameField)
+      val deadTokenCount = currentPlayer.deadTokenCount(g.gameField)
       val totalTokens = currentPlayer.totalTokens
       var currentPlayerTokenAsChar = ' '
       var lifes = 0
@@ -111,7 +111,7 @@ object JsonHelper {
       import GameDataJsonProtocol._
 
       val gameData = GameData(gameState, currentPlayerTokenAsChar, lifes,
-          movesRemaining, coins, score, powerUp, width, height, frozenTime, deadTokens, totalTokens)
+          movesRemaining, coins, score, powerUp, width, height, frozenTime, deadTokenCount, totalTokens)
       val gameDataJson = gameData.toJson
       val data = Data(cmd.toString(), g.lastGameMessage, gameDataJson, cells.toJson, logList)
 

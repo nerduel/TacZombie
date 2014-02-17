@@ -64,11 +64,8 @@ object GameController {
         myGame.toJson(Updated)
 
       case "nextGame" => {
-        //	      	val nextGame = GameFactory.newGame(random = false, 
-        //	      	    file = "../model/src/test/scala/taczombie/test/model/TestLevel_correct")
-        val nextGame = GameFactory.newGame(random = true)
-        lastGeneratedGame = nextGame
-        myGame = nextGame
+        lastGeneratedGame = GameFactory.newGame(random = true)
+        myGame = lastGeneratedGame
         myGame.toJson(All)
       }
     }

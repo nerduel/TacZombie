@@ -39,7 +39,7 @@ object JsonHelper {
   class Game2JsonHelper(g: Game) {   
     def toJson(command: Type): String = {
       
-      var lastUpdatedGameFieldCells: List[GameFieldCell] = List.empty
+      var lastUpdatedGameFieldCells: List[GameFieldCell] = List[GameFieldCell]()
       
       var cmd = ""
       command match {
@@ -93,14 +93,17 @@ object JsonHelper {
         } yield cell
       }.toList
       
-      // Add updated Cells.
-      var updatedCells = highlightedCells ::: { 
-        for { 
-        	gameFieldCell <- lastUpdatedGameFieldCells.filter(x => !gameFieldCellsFromAllowedMoves.contains(x.coords))
-        	cell = Cell(gameFieldCell.coords._1,gameFieldCell.coords._2, getChar(gameFieldCell), false)
-        } yield cell
+      // Add updated Cells.    
+      var updatedCells = highlightedCells ::: {
+        if(lastUpdatedGameFieldCells != null)
+          for { 
+          	gameFieldCell <- lastUpdatedGameFieldCells.filter(x => !gameFieldCellsFromAllowedMoves.contains(x.coords))
+          	cell = Cell(gameFieldCell.coords._1,gameFieldCell.coords._2, getChar(gameFieldCell), false)
+          } yield cell 
+        else 
+          Nil
       }
-               
+      
       // Add unhighlighted Cells. (because they arent counted as updated cells).
       var cells = updatedCells ::: { 
         for { 

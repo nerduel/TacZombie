@@ -21,50 +21,65 @@ object GameController {
 	}
 	
 	var lastGeneratedGame : Game = null
+	var myGame : Game = null
 	
 	implicit def gameWrapper(g : Game) =
 	  new GameHelper(g)
 	
-	def evaluateCommand(cmd : String, currentGame : Game) : Game = {
+	import taczombie.model.util.JsonHelper._
+	
+	def evaluateCommand(cmd : String) : String = {
 	  cmd match {
 	    case "moveLeft" =>
-      	 currentGame.executeCommand(MoveLeft)
+      	  myGame = myGame.executeCommand(MoveLeft)
+      	  myGame.toJson(Updated)
       	  
 	    case "moveRight" =>
-	      currentGame.executeCommand(MoveRight)
+	      myGame = myGame.executeCommand(MoveRight)
+	      myGame.toJson(Updated)
 	      
 	    case "moveUp" =>
-	      currentGame.executeCommand(MoveUp)
+	      myGame = myGame.executeCommand(MoveUp)
+	      myGame.toJson(Updated)
 	      
 	    case "moveDown" =>
-	      currentGame.executeCommand(MoveDown)
+	      myGame = myGame.executeCommand(MoveDown)
+	      myGame.toJson(Updated)
 	      
 	    case "nextPlayer" =>
-	      currentGame.executeCommand(NextPlayer)
+	      myGame = myGame.executeCommand(NextPlayer)
+	      myGame.toJson(Updated)
 	      
 	    case "switchToken" =>
-	      currentGame.executeCommand(NextToken)
+	      myGame = myGame.executeCommand(NextToken)
+	      myGame.toJson(Updated)
 	      
 	    case "restartGame" => {
-	      if(lastGeneratedGame != null)
-          lastGeneratedGame
-        else currentGame
+	      if(lastGeneratedGame != null) {
+	    	  myGame = lastGeneratedGame
+	    	  myGame.toJson(All)
+	      }
+          else{
+            myGame.toJson(All)
+          } 
 	    }
 	      
 	    case "respawnToken" =>
-	      currentGame.executeCommand(RespawnToken)
+	      myGame.executeCommand(RespawnToken)
+	      myGame.toJson(Updated)
 	      
 	    case "nextGame" => {
 //	      	val nextGame = GameFactory.newGame(random = false, 
 //	      	    file = "../model/src/test/scala/taczombie/test/model/TestLevel_correct")
 	      	val nextGame = GameFactory.newGame(random = true)	      
-	      	lastGeneratedGame = nextGame
-	      	nextGame
+	      	myGame = nextGame
+	      	myGame.toJson(All)
 	    }
 	  }
 	}
 	
-	
-	
+	def getCurrentGame : String = {
+		myGame.toJson(All)
+	}
 	
 }

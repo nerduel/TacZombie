@@ -57,10 +57,9 @@ object GameController {
 	    	if (currentGame.gameState == GameState.Win)
 	    	  // TODO: GameFactory needs to take old score 
 	    	  // GameFactory.nextLevel(currentGame)
-	    	  GameFactory.newGame(random = false, file = "../model/src/test/scala/taczombie/test/model/TestLevel_correct", humans = 1, zombies = 1)
+	    	  GameFactory.newGame(random = false, file = "../model/src/test/scala/taczombie/test/model/TestLevel_correct")
 	    	else
-	    	  // new Start
-	    	  GameFactory.newGame(random = false, file = "../model/src/test/scala/taczombie/test/model/TestLevel_correct", humans = 1, zombies = 1)
+	    	  currentGame
 	  }
 	}
 	

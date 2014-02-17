@@ -9,6 +9,6 @@ class GameMessage(model: ViewModel) extends Label with Observer {
   model.add(this)
 
   def update {
-    text = "TODO: Implement Message in Class:GameMessage"
+    text = model.gameMessage
   }
 }

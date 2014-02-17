@@ -3,29 +3,15 @@ package view.gui
 import scala.swing.BoxPanel
 import model.ViewModel
 import util.Observer
+import scala.swing.Swing
+import java.awt.Color
+import javax.swing.border._
 
 class GameStats(model: ViewModel) extends BoxPanel(swing.Orientation.Vertical) with Observer {
 
   model.add(this)
 
-  var gameState = new LeftAlignedValueText("GameState:", "n/a")
-  var currentPlayerToken = new LeftAlignedValueText("Current Player:", "n/a")
-  var lifes = new LeftAlignedValueText("Lifes:", "n/a")
-  var movesRemaining = new LeftAlignedValueText("Moves remaining:", "n/a")
-  var coins = new LeftAlignedValueText("Coins:", "0")
-  var score = new LeftAlignedValueText("Score:", "n/a")
-  var powerUp = new LeftAlignedValueText("PowerUp", "n/a")
-
-  contents += gameState
-  contents += currentPlayerToken
-  contents += lifes
-  contents += movesRemaining
-  contents += coins
-  contents += score
-  contents += powerUp
-
   def update = {
-    gameState.update(model.gameState.toString)
     currentPlayerToken.update(model.currentPlayerTokenAsChar.toString)
     lifes.update(model.lifes.toString)
     movesRemaining.update(model.movesRemaining.toString)
@@ -33,4 +19,20 @@ class GameStats(model: ViewModel) extends BoxPanel(swing.Orientation.Vertical) w
     score.update(model.score.toString)
     powerUp.update(model.powerUp.toString)
   }
+
+  border = new CompoundBorder(new TitledBorder(new EtchedBorder, "GameStats"), new EmptyBorder(5, 5, 5, 10))
+
+  var currentPlayerToken = new LeftAlignedValueText("Current Player:", model.currentPlayerTokenAsChar.toString)
+  var lifes = new LeftAlignedValueText("Lifes:", model.lifes.toString)
+  var movesRemaining = new LeftAlignedValueText("Moves remaining:", model.movesRemaining.toString)
+  var coins = new LeftAlignedValueText("Coins:", model.coins.toString)
+  var score = new LeftAlignedValueText("Score:", model.score.toString)
+  var powerUp = new LeftAlignedValueText("PowerUp", model.powerUp.toString)
+
+  contents += currentPlayerToken
+  contents += lifes
+  contents += movesRemaining
+  contents += coins
+  contents += score
+  contents += powerUp
 }

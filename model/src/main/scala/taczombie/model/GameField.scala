@@ -42,9 +42,13 @@ class GameField(val id : String,
   /**
    * Get the PlayerToken with the specified id
    */
-  def findOnePlayerTokenById(id : Int) : PlayerToken = 
-  	findPlayerTokensById(List[Int](id)).head
-  
+  def findOnePlayerTokenById(id : Int) : PlayerToken = {
+    val playerTokens = findPlayerTokensById(List[Int](id))
+    if(playerTokens.isEmpty) {
+      logger += ("Did not find any playerTokens!" ,true)
+      null // TODO exception
+    } else playerTokens.head
+  }
 
   /**
    * Find all HumanTokens on the gameField 

@@ -1,6 +1,6 @@
 var wsUri = "ws://localhost:9000/broadcast";
 var grid;
-var logCounter = 0; 
+var logCounter = 0;
 window.addEventListener("load", init, false);
 
 function init() {
@@ -65,7 +65,7 @@ function onMessage(evt) {
 
 function appendToLog(logList) {
 	var logOutput = document.getElementById("log");
-	
+
 	if (logOutput.value.split(/\r|\r\n|\n/).length >= 100) {
 		logOutput.value = "";
 	}
@@ -180,9 +180,14 @@ function updateView(data) {
 		propagateState(data.gameData.gameState, data.gameData.score);
 	}
 
-	for ( var i in data.cells) {
-		updateCell(data, i);
+	for (var i in data.cells) {
+		updateCell(data.cells[i]);
 	}
+	
+	for (var i in data.humanTokens) {
+		changeHuman(data.humanTokens[i])
+	}
+	
 }
 
 function clearGameData(obj) {
@@ -213,41 +218,37 @@ function changeElement(id, style, content) {
 	toChange.innerHTML = content;
 }
 
-function updateCell(data, i) {
-	cell = data.cells[i];
+function changeHuman(hToken) {
+	var cellId = (hToken.x + "," + hToken.y).toString();
+	var cellNode = document.getElementById(cellId);
+	
+	switch(hToken.powerUp) {
+	case true:
+		if (cellNode.className == "human")
+			cellNode.className = "humanPowerup"
+		else
+			cellNode.className = "hHumanPowerup"
+		break;
+		
+	case false:
+		if (cellNode.className == "hHuman")
+			cellNode.className = "hHuman"
+		break;
+	}
+	
+}
+
+
+function updateCell(cell) {
 	var cellId = (cell.x + "," + cell.y).toString();
 	var cellNode = document.getElementById(cellId);
 
 	switch (cell.token) {
 	case 'H':
-		if (cell.isHiglighted == true) {
-			if (data.gameData.powerUp == 0)
-				cellNode.className = "hHuman";
-			else
-				cellNode.className = "hHumanPowerup";
-		} else {
-			if (data.gameData.currentPlayer == "H") {
-    			if (data.gameData.powerUp == 0)
-    				cellNode.className = "human";
-    			else
-    				cellNode.className = "humanPowerup";
-			}
-			else {
-				switch (cellNode.className) {
-				case 'hHumanPowerup':
-				case 'humanPowerup':
-					cellNode.className = "humanPowerup";
-					break;
-					
-				case 'hHuman':
-				case 'human':
-					cellNode.className = "human";
-					break;
-				}
-			}
-			
-			
-		}
+		if (cell.isHiglighted == true)
+			cellNode.className = "hHuman";
+		else
+			cellNode.className = "human";
 		break;
 
 	case 'Z':
@@ -255,7 +256,6 @@ function updateCell(data, i) {
 			cellNode.className = "hZombie";
 		else
 			cellNode.className = "zombie";
-
 		break;
 
 	case 'C':
@@ -338,7 +338,7 @@ function handleKeyEvent(evt) {
 		doSend("restartGame");
 		textBox.value = "restartGame";
 		break;
-		
+
 	case respanToken:
 		doSend("respawnToken");
 		textBox.value = "respawnToken";

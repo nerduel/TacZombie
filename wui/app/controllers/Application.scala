@@ -43,7 +43,7 @@ object Application extends Controller {
 	        val game = GameController.evaluateCommand(msg, myGame)
 	        
 	        val jsonString = game.toJson(Updated)
-	        
+	        	
 	        outchannels("lobby").foreach(_.push(jsonString))
 	        
 	        myGame = game

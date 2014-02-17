@@ -19,18 +19,18 @@ class GameStats(model: ViewModel) extends BoxPanel(swing.Orientation.Vertical) w
   preferredSize = new Dimension(300, 220)
   maximumSize = new Dimension(300, 220)
   minimumSize = new Dimension(300, 220)
-  
+
   paintContent
 
   def update = {
     paintContent
   }
-  
+
   def paintContent {
-  	contents.clear
-    
-  	val buffer = Buffer.empty[Component]
-  	
+    contents.clear
+
+    val buffer = Buffer.empty[Component]
+
     buffer += new LeftAlignedValueText("Current Player:", charToPlayer(model.currentPlayerTokenAsChar))
     buffer += new LeftAlignedValueText("Total Tokens:", model.totalTokens.toString)
     buffer += new LeftAlignedValueText("Dead Tokens:", model.deadTokens.toString)
@@ -43,9 +43,9 @@ class GameStats(model: ViewModel) extends BoxPanel(swing.Orientation.Vertical) w
       buffer += new LeftAlignedValueText("PowerUp Time", model.powerUp.toString)
     }
     buffer += new LeftAlignedValueText("Frozen Time:", model.frozenTime.toString)
-    
+
     contents ++= buffer
-    
+
     revalidate
     repaint
   }

@@ -20,11 +20,11 @@ class Gui(val model: ViewModel, val controller: Communication) extends swing.Fra
     if (model.cmd == "all") {
       val gameUI = new GameUI(model, controller)
       contents = gameUI
-      
+
       // Most stupid fix to get key inputs working.
       gameUI.update
     }
-    
+
   }
 
 }

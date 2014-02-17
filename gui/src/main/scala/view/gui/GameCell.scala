@@ -26,10 +26,10 @@ class GameCell(model: ViewModel, cell: ((Int, Int), (Char, Boolean)))
   }
 
   def updateIcon(x: Int, y: Int) {
-    val cell = model.cells(x,y)
+    val cell = model.cells(x, y)
     val token = cell._1
     val isHighlighted = cell._2
-    
+
     token match {
       case 'C' =>
         icon = if (isHighlighted)
@@ -38,8 +38,8 @@ class GameCell(model: ViewModel, cell: ((Int, Int), (Char, Boolean)))
           new ImageIcon(getClass.getResource("/images/coin.png"))
       case 'H' =>
         var powerUp = false
-        if (model.humanTokens.contains(x,y)) {
-          powerUp = model.humanTokens(x,y)
+        if (model.humanTokens.contains(x, y)) {
+          powerUp = model.humanTokens(x, y)
         }
         icon = if (isHighlighted) {
           if (powerUp) {

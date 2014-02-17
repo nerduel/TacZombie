@@ -15,8 +15,8 @@ object GameFactory {
   val defaultFile =  
     "src/test/scala/taczombie/test/model/TestLevel_correct"
     
-  val defaultHumans = 1
-  val defaultZombies = 1
+  val defaultHumans = 2
+  val defaultZombies = 4
     
   def newGame(random : Boolean = false, file : String = defaultFile, 
       humans: Int = defaultHumans, zombies: Int= defaultZombies) : Game = {

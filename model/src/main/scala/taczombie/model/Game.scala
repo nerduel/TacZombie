@@ -9,8 +9,8 @@ import java.util.Calendar
 object defaults {
   val humanLifes = 3
   
-  val humanMoves = 4
-  val zombieMoves = 2
+  val humanMoves = 7
+  val zombieMoves = 4
   
   val humanName = "Pacman"
   val zombieName = "Zombie"
@@ -32,7 +32,8 @@ object GameMessages {
   def gameOver = "Game Over!"
   def tokenDied = "You ran into death! Please switch players."
   def deadTokenSelected = "Your last selected token is dead. Please use \"respawn token\"" +
-  												" or switch players." 
+  												" or switch players."
+  def noOthersAlive = "You have no other living tokens."
 }
 
 class Game(val id : Int,
@@ -161,8 +162,8 @@ class Game(val id : Int,
   	      							GameState.InGame |
   	      							GameState.NeedTokenSwitch) => {		  
         
-  	    // TODO check if tokens can be respawned						  
-  	    
+  	    // TODO check if tokens can be respawned
+  	    // TODO don't reduce poweruptime if player moved
   	    updatedGameField = gameField.updatedDecrementedCounters(currentPlayer)
   	    updatedPlayers = players.updatedRotatedPlayers
   	    updatedGameState = GameState.InGame
@@ -195,30 +196,41 @@ class Game(val id : Int,
             					 newGameMessage = updatedGameMessage)
   		}
   	      							
-  	  case (RespawnToken, GameState.NeedTokenSwitch) => {
-        // check if next player's currentToken is dead
-  	  	if(currentToken.dead) {
-  	  		updatedGameField = gameField.respawn(currentToken.id)
-  	  		updatedGameState = GameState.InGame
-  	  		if(defaults.spawnFreeze > 0)
-  	  			updatedGameMessage = GameMessages.frozenToken(defaults.spawnFreeze)
-  	  		else
-  	  		  updatedGameMessage = GameMessages.noMsg
-  	  		  
-  	  		updatedPlayers = players.updatedExistingPlayer(
-  	  		    currentPlayer.updatedDecreasedLifes.updatedDecreasedLifes)
-  	  		
-    	  	return updated(newGameField = updatedGameField, 
-    	  	    					 newGameState = updatedGameState,
-    	  	    					 newGameMessage = updatedGameMessage)  	  		
+  	  case (RespawnToken, GameState.InGame |
+  	      								GameState.NeedTokenSwitch) => {
+        // check if player has dead tokens
+  	    val deadTokens = currentPlayer.deadTokens(gameField)
+  	  	if(deadTokens.nonEmpty) {
+  	  		updatedGameField = gameField.respawn(deadTokens.head.id)
+    	  	return updated(newGameField = updatedGameField)  	  		
   	  	} else this
   	  }
 
-  	  case (NextToken, GameState.NeedPlayerSwitch | 
-  	      						 GameState.InGame |
+  	  case (NextToken, GameState.InGame |
   	      						 GameState.NeedTokenSwitch) => {
-  		  this
-  		  // TODO
+  	  	  	      						   
+        // check if there are other alive tokens 	      						   
+  	    val otherAliveTokens = gameField.findPlayerTokensById(
+  	        currentPlayer.playerTokenIds.filter(id => 
+  	          	  											 id != currentPlayer.currentTokenId))
+  	          	  			 .filter(token => !token.dead)
+  	    if(otherAliveTokens.isEmpty) {
+  	      updatedGameMessage = GameMessages.noOthersAlive
+  	      logger += (updatedGameMessage, true)
+  	      updatedGameState = GameState.InGame
+  	      return updated(newGameState = updatedGameState,
+  	          					 newGameMessage = updatedGameMessage)
+  	      
+  	    } else {
+    	    updatedPlayer = currentPlayer.updatedCycledTokens
+    	    while(updatedPlayer.currentToken(gameField).dead) 
+    	      updatedPlayer = updatedPlayer.updatedCycledTokens
+    	      
+    	    updatedPlayers = players.updatedExistingPlayer(updatedPlayer)
+  	      updatedGameState = GameState.InGame
+  	      return updated(newGameState = updatedGameState,    	    
+    	    							 newPlayers = updatedPlayers)
+  	    }
   		}
   	  
   	  case (_, GameState.NeedPlayerSwitch |

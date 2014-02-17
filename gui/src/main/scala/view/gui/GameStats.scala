@@ -11,6 +11,29 @@ class GameStats(model: ViewModel) extends BoxPanel(swing.Orientation.Vertical) w
   focusable = false
   model.add(this)
 
+  border = new CompoundBorder(new TitledBorder(new EtchedBorder, "GameStats"), new EmptyBorder(5, 5, 5, 10))
+
+  // Init.  
+  var currentPlayerToken = new LeftAlignedValueText("Current Player:", charToPlayer(model.currentPlayerTokenAsChar))
+  var totalTokens = new LeftAlignedValueText("Total Tokens:", model.totalTokens.toString)
+  var deadTokens = new LeftAlignedValueText("Dead Tokens:", model.deadTokens.toString)
+  var frozenTime = new LeftAlignedValueText("Frozen Time:", model.frozenTime.toString)
+  var lifes = new LeftAlignedValueText("Lifes:", model.lifes.toString)
+  var movesRemaining = new LeftAlignedValueText("Moves remaining:", model.movesRemaining.toString)
+  var coins = new LeftAlignedValueText("Coins:", model.coins.toString)
+  var score = new LeftAlignedValueText("Score:", model.score.toString)
+  var powerUp = new LeftAlignedValueText("PowerUp", model.powerUp.toString)
+
+  contents += currentPlayerToken
+  contents += totalTokens
+  contents += deadTokens
+  contents += frozenTime
+  contents += movesRemaining
+  contents += lifes
+  contents += coins
+  contents += score
+  contents += powerUp
+  
   def update = {
     currentPlayerToken.update(charToPlayer(model.currentPlayerTokenAsChar))
     totalTokens.update(model.totalTokens.toString)
@@ -33,28 +56,6 @@ class GameStats(model: ViewModel) extends BoxPanel(swing.Orientation.Vertical) w
       contents += powerUp
     }
   }
-
-  border = new CompoundBorder(new TitledBorder(new EtchedBorder, "GameStats"), new EmptyBorder(5, 5, 5, 10))
-
-  var currentPlayerToken = new LeftAlignedValueText("Current Player:", charToPlayer(model.currentPlayerTokenAsChar))
-  var totalTokens = new LeftAlignedValueText("Total Tokens:", model.totalTokens.toString)
-  var deadTokens = new LeftAlignedValueText("Dead Tokens:", model.deadTokens.toString)
-  var frozenTime = new LeftAlignedValueText("Frozen Time:", model.frozenTime.toString)
-  var lifes = new LeftAlignedValueText("Lifes:", model.lifes.toString)
-  var movesRemaining = new LeftAlignedValueText("Moves remaining:", model.movesRemaining.toString)
-  var coins = new LeftAlignedValueText("Coins:", model.coins.toString)
-  var score = new LeftAlignedValueText("Score:", model.score.toString)
-  var powerUp = new LeftAlignedValueText("PowerUp", model.powerUp.toString)
-
-  contents += currentPlayerToken
-  contents += totalTokens
-  contents += deadTokens
-  contents += frozenTime
-  contents += movesRemaining
-  contents += lifes
-  contents += coins
-  contents += score
-  contents += powerUp
 
   def charToPlayer(char: Char): String = {
     char match {

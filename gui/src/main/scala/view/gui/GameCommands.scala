@@ -23,49 +23,50 @@ case object quit extends Event
 class GameCommands(model: ViewModel, controller: Communication) extends BoxPanel(Orientation.Vertical) {
   focusable = false
 
-  val gridBagPanel = new GridBagPanel {
-    val constraint = new Constraints
-    def addToGridBag(x: Int, y: Int, component: Component) {
-      constraint.gridx = x
-      constraint.fill = GridBagPanel.Fill.Both
-      constraint.gridy = y
-      add(component, constraint)
+  contents += new BoxPanel(Orientation.Vertical) {
+    border = new CompoundBorder(new TitledBorder(new EtchedBorder, "Move"), new EmptyBorder(5, 5, 5, 10))
+    contents += new GridBagPanel {
+      val constraint = new Constraints
+      def addToGridBag(x: Int, y: Int, component: Component) {
+        constraint.gridx = x
+        constraint.fill = GridBagPanel.Fill.Both
+        constraint.gridy = y
+        add(component, constraint)
+      }
+
+      addToGridBag(1, 0, new Button("Up") {
+        listenTo(mouse.clicks)
+        reactions += {
+          case me: MouseClicked => controller.moveUp
+        }
+      })
+
+      addToGridBag(1, 1, new Button("Down") {
+        listenTo(mouse.clicks)
+        reactions += {
+          case me: MouseClicked => controller.moveDown
+        }
+      })
+
+      addToGridBag(0, 1, new Button("Left") {
+        listenTo(mouse.clicks)
+        reactions += {
+          case me: MouseClicked => controller.moveLeft
+        }
+      })
+
+      addToGridBag(2, 1, new Button("Right") {
+        listenTo(mouse.clicks)
+        reactions += {
+          case me: MouseClicked => controller.moveRight
+        }
+      })
     }
-
-    addToGridBag(1, 0, new Button("Up") {
-      listenTo(mouse.clicks)
-      reactions += {
-        case me: MouseClicked => controller.moveUp
-      }
-    })
-
-    addToGridBag(1, 1, new Button("Down") {
-      listenTo(mouse.clicks)
-      reactions += {
-        case me: MouseClicked => controller.moveDown
-      }
-    })
-
-    addToGridBag(0, 1, new Button("Left") {
-      listenTo(mouse.clicks)
-      reactions += {
-        case me: MouseClicked => controller.moveLeft
-      }
-    })
-
-    addToGridBag(2, 1, new Button("Right") {
-      listenTo(mouse.clicks)
-      reactions += {
-        case me: MouseClicked => controller.moveRight
-      }
-    })
   }
 
   contents += new BoxPanel(Orientation.Vertical) {
-    border = new CompoundBorder(new TitledBorder(new EtchedBorder, "Move"), new EmptyBorder(5, 5, 5, 10))
+    border = new CompoundBorder(new TitledBorder(new EtchedBorder, "Token"), new EmptyBorder(5, 5, 5, 10))
     contents ++= Seq(
-      gridBagPanel,
-      new Label(" "),
       new Button("Respawn Token <f>") {
         listenTo(mouse.clicks)
         reactions += {
@@ -85,7 +86,7 @@ class GameCommands(model: ViewModel, controller: Communication) extends BoxPanel
         }
       })
   }
-  
+
   contents += new BoxPanel(Orientation.Vertical) {
     border = new CompoundBorder(new TitledBorder(new EtchedBorder, "Round"), new EmptyBorder(5, 5, 5, 10))
     contents ++= Seq(

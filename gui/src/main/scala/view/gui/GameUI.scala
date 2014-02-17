@@ -19,23 +19,8 @@ import javax.swing.border.EmptyBorder
 
 class GameUI(model: ViewModel, controller: Communication) extends BorderPanel with Observer {
   focusable = true
+  requestFocus
   model.add(this)
-
-  // Make sure this gets focus after every update, 
-  // otherwise key inputs wouldnt be recognized.
-  def update {
-    requestFocus
-  }
-
-  add(new GameMessage(model), BorderPanel.Position.North)
-  add(new FlowPanel(new BoxPanel(Orientation.Vertical) {
-    contents += new GameCommands(model, controller)
-    contents += new GameStats(model)
-  }), BorderPanel.Position.West)
-  add(new FlowPanel(new BoxPanel(Orientation.Vertical) {
-    contents += new GameField(model)
-    contents += new Log(model)
-  }), BorderPanel.Position.Center)
 
   listenTo(keys)
   reactions += {
@@ -61,5 +46,25 @@ class GameUI(model: ViewModel, controller: Communication) extends BorderPanel wi
       controller.disconnect
       sys.exit(0)
   }
+  
+  // Make sure this gets focus after every update, 
+  // otherwise key inputs wouldnt be recognized.
+  def update {
+    requestFocus
+  }
+
+  add(new GameMessage(model), BorderPanel.Position.North)
+  
+  add(new FlowPanel(new BoxPanel(Orientation.Vertical) {
+    contents += new GameCommands(model, controller)
+    contents += new GameStats(model)
+  }), BorderPanel.Position.West)
+  
+  add(new FlowPanel(new BoxPanel(Orientation.Vertical) {
+    contents += new GameField(model)
+    contents += new Log(model)
+  }), BorderPanel.Position.Center)
+
+
   requestFocus
 }

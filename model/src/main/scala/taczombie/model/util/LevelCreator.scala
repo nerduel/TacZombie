@@ -8,6 +8,7 @@ private object LevelHelper {
   val path = " "
   val wall = "#"
   val zombieBase = "Z"
+  val humanBase = "H"
   val innerWall = "+"
   val coin = "."
   val powerup = ";"
@@ -39,6 +40,11 @@ private object LevelHelper {
 
     def addZombieBase(id : (Int, Int)) = {
       array(id._1)(id._2) = zombieBase
+      (array, id)
+    }
+    
+    def addHumanBase(id : (Int, Int)) = {
+      array(id._1)(id._2) = humanBase
       (array, id)
     }
 
@@ -150,7 +156,7 @@ class LevelCreator {
   var cInterval : (Int, Int) = (0, 0)
   var rInterval : (Int, Int) = (0, 0)
 
-  def create(levelHeight : Int, levelWidth : Int) = {
+  def create(levelHeight : Int, levelWidth : Int, amountHumans : Int) = {
     height = makeOdd(levelHeight)
     width = makeOdd(levelWidth)
     rInterval = (0, (height / 2) - 1)
@@ -187,8 +193,14 @@ class LevelCreator {
       }
     }
 
-    addCoins
     addPowerups
+    
+    // add human Base to map
+    for (i <- 0  until amountHumans)
+    	addHumanBase
+    
+    addCoins
+    
     field
   }
 
@@ -447,9 +459,10 @@ class LevelCreator {
   }
 
   private def addCoins {
-    for (c <- 1 until cInterval._2 + 2; r <- 1 until rInterval._2 + 2) {
-      if (field((r, c)).isPath)
-        field.addCoin((r, c)).copyIntoEachQuadrant
+    for (c <- 1 until width; r <- 1 until height) {
+      if (field((r, c)).isPath) {
+        field.addCoin((r, c))
+      }
     }
   }
 
@@ -518,5 +531,22 @@ class LevelCreator {
 
   private def makeOdd(number : Int) : Int = {
     if (number % 2 != 0) number else number + 1
+  }
+  
+  private def addHumanBase = {
+    val cols = width
+    val rowsLowerBound = rInterval._2 + 1;
+    
+    var randomCoords : (Int, Int) = null
+    val rand = new Random(System.currentTimeMillis());
+    
+    do 
+      randomCoords = (rand.nextInt(height - rowsLowerBound) + rowsLowerBound, rand.nextInt(width))
+    while 
+      (!field(randomCoords).isPath)
+    
+    println(randomCoords)
+    
+    field.addHumanBase(randomCoords)
   }
 }

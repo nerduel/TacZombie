@@ -20,7 +20,7 @@ trait Player extends Logger {
 	
   def coins(gameField : GameField) : Int = 0
   def score(gameField : GameField) : Int = 0
-  def lifes : Int
+  def lifes : Int = 0
   
   def currentToken(gameField : GameField) : PlayerToken
   
@@ -54,7 +54,7 @@ trait Player extends Logger {
 case class Human(val name : String,
     						 val playerTokenIds : List[Int],
     						 val movesRemaining : Int = defaults.humanMoves,
-    						 val lifes : Int = defaults.humanLifes)
+    						 override val lifes : Int = defaults.humanLifes)
     extends Player with Logger  {
   
   override def currentToken(gameField : GameField) : HumanToken = {
@@ -94,9 +94,7 @@ case class Zombie(val name : String,
     						  val playerTokenIds : List[Int],
 									val movesRemaining : Int = defaults.zombieMoves)
     extends Player {
-  
-  val lifes = 0
-  
+    
   override def currentToken(gameField : GameField) : ZombieToken = {
   	gameField.findOnePlayerTokenById(currentTokenId) match {
   	  case zombieToken : ZombieToken => zombieToken

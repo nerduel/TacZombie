@@ -4,6 +4,7 @@ import scala.Array.canBuildFrom
 import scala.collection.immutable.HashSet
 import scala.io.Source
 import scala.collection.mutable.HashMap
+import taczombie.model.util.LevelCreator
 
 object GameFactory {
   var counter : Int = 1
@@ -12,28 +13,45 @@ object GameFactory {
     counter
   }
   
+  val levelCreator = new LevelCreator()
+  
   val defaultFile =  
     "src/test/scala/taczombie/test/model/TestLevel_correct"
     
   val defaultHumans = 2
   val defaultZombies = 4
+  val defaultHeight = 21
+  val defaultWidth = 21
     
   def newGame(random : Boolean = false, file : String = defaultFile, 
       humans: Int = defaultHumans, zombies: Int= defaultZombies) : Game = {
     
     val (gameField, playerMap) = {
-//      if(random == false)
+      if(random == false)
         	createGameFieldAndPlayerMap(humans, zombies, file)
-//      else {
-//        	var (level, name) = fromRandom()
-//        	createGameFieldAndPlayerMap(humans, zombies, level, name)
-//        	
+      else {
+        	val level = levelCreator.create(defaultHeight, defaultWidth)
+        	
+        	val array = scala.collection.mutable.ArrayBuffer[String]()
+        	
+        	for(line <- level) {
+        	  val lineConcatString = line.foldLeft("")((result, element) =>
+        	    result concat element)
+        	  array += lineConcatString
+        	}
+        	for(s <- array)
+        	  println(s)
+        	
+        	createGameFieldAndPlayerMap(
+        	    humans, zombies, 
+        	    level = array.toArray[String], name = array.hashCode().toString)
+      }
     }
-    
     new Game(generateId, gameField, playerMap, GameState.InGame)
   }
     
-  def createGameFieldAndPlayerMap(humanTokenCount : Int, zombieTokenCount : Int,
+  def createGameFieldAndPlayerMap(
+      							humanTokenCount : Int, zombieTokenCount : Int,
                     file : String = null,
                     level : Array[String] = null,
                     name : String = null)

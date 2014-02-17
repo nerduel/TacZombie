@@ -6,55 +6,48 @@ import util.Observer
 import scala.swing.Swing
 import java.awt.Color
 import javax.swing.border._
+import java.awt.Dimension
+import scala.collection.mutable.Buffer
+import scala.swing.Label
+import scala.swing.Component
 
 class GameStats(model: ViewModel) extends BoxPanel(swing.Orientation.Vertical) with Observer {
   focusable = false
   model.add(this)
 
   border = new CompoundBorder(new TitledBorder(new EtchedBorder, "GameStats"), new EmptyBorder(5, 5, 5, 10))
-
-  // Init.  
-  var currentPlayerToken = new LeftAlignedValueText("Current Player:", charToPlayer(model.currentPlayerTokenAsChar))
-  var totalTokens = new LeftAlignedValueText("Total Tokens:", model.totalTokens.toString)
-  var deadTokens = new LeftAlignedValueText("Dead Tokens:", model.deadTokens.toString)
-  var frozenTime = new LeftAlignedValueText("Frozen Time:", model.frozenTime.toString)
-  var lifes = new LeftAlignedValueText("Lifes:", model.lifes.toString)
-  var movesRemaining = new LeftAlignedValueText("Moves remaining:", model.movesRemaining.toString)
-  var coins = new LeftAlignedValueText("Coins:", model.coins.toString)
-  var score = new LeftAlignedValueText("Score:", model.score.toString)
-  var powerUp = new LeftAlignedValueText("PowerUp", model.powerUp.toString)
-
-  contents += currentPlayerToken
-  contents += totalTokens
-  contents += deadTokens
-  contents += frozenTime
-  contents += movesRemaining
-  contents += lifes
-  contents += coins
-  contents += score
-  contents += powerUp
+  preferredSize = new Dimension(300, 220)
+  maximumSize = new Dimension(300, 220)
+  minimumSize = new Dimension(300, 220)
   
-  def update = {
-    currentPlayerToken.update(charToPlayer(model.currentPlayerTokenAsChar))
-    totalTokens.update(model.totalTokens.toString)
-    deadTokens.update(model.deadTokens.toString)
-    lifes.update(model.lifes.toString)
-    movesRemaining.update(model.movesRemaining.toString)
-    coins.update(model.coins.toString)
-    score.update(model.score.toString)
-    powerUp.update(model.powerUp.toString)
+  paintContent
 
-    if (model.currentPlayerTokenAsChar == 'Z') {
-      contents -= lifes
-      contents -= coins
-      contents -= score
-      contents -= powerUp
-    } else {
-      contents += lifes
-      contents += coins
-      contents += score
-      contents += powerUp
+  def update = {
+    paintContent
+  }
+  
+  def paintContent {
+  	contents.clear
+    
+  	val buffer = Buffer.empty[Component]
+  	
+    buffer += new LeftAlignedValueText("Current Player:", charToPlayer(model.currentPlayerTokenAsChar))
+    buffer += new LeftAlignedValueText("Total Tokens:", model.totalTokens.toString)
+    buffer += new LeftAlignedValueText("Dead Tokens:", model.deadTokens.toString)
+    buffer += new LeftAlignedValueText("Moves remaining:", model.movesRemaining.toString)
+
+    if (model.currentPlayerTokenAsChar == 'H') {
+      buffer += new LeftAlignedValueText("Lifes:", model.lifes.toString)
+      buffer += new LeftAlignedValueText("Coins Collected:", model.coins.toString)
+      buffer += new LeftAlignedValueText("Score:", model.score.toString)
+      buffer += new LeftAlignedValueText("PowerUp Time", model.powerUp.toString)
     }
+    buffer += new LeftAlignedValueText("Frozen Time:", model.frozenTime.toString)
+    
+    contents ++= buffer
+    
+    revalidate
+    repaint
   }
 
   def charToPlayer(char: Char): String = {

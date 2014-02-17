@@ -14,6 +14,5 @@ class LogListView(model: ViewModel) extends ListView[String] with Observer {
   
   def update {
     listData = model.log.toSeq
-    ensureIndexIsVisible(listData.size - 1)
   }
 }

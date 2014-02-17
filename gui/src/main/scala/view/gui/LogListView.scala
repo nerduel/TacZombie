@@ -8,7 +8,10 @@ import util.Observer
 class LogListView(model: ViewModel) extends ListView[String] with Observer {
   focusable = false
   model.add(this)
-
+  
+  // Init.
+  listData = model.log.toSeq
+  
   def update {
     listData = model.log.toSeq
     ensureIndexIsVisible(listData.size - 1)

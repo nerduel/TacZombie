@@ -16,16 +16,21 @@ class GameCell(model: ViewModel, cell: ((Int, Int), (Char, Boolean)))
   horizontalAlignment = Alignment.Center
   verticalAlignment = Alignment.Center
 
-  updateIcon(cell._2._1, cell._2._2)
+  updateIcon(cell._2._1, cell._2._2, false)
 
   def update {
     if (model.cmd == "updated") {
       val currentCell = model.cells(cell._1._1, cell._1._2)
-      updateIcon(currentCell._1, currentCell._2)
+      var powerUp = false
+      
+     	if(model.humanTokens.contains(cell._1._1, cell._1._2))
+     	  powerUp = model.humanTokens(cell._1._1, cell._1._2)
+      
+      updateIcon(currentCell._1, currentCell._2, powerUp)
     }
   }
 
-  def updateIcon(token: Char, isHighlighted: Boolean) {
+  def updateIcon(token: Char, isHighlighted: Boolean, powerUp: Boolean) {
     token match {
       case 'C' =>
         icon = if (isHighlighted)
@@ -34,13 +39,13 @@ class GameCell(model: ViewModel, cell: ((Int, Int), (Char, Boolean)))
           new ImageIcon(getClass.getResource("/images/coin.png"))
       case 'H' =>
         icon = if (isHighlighted) {
-          if (model.powerUp > 0) {
+          if (powerUp) {
             new ImageIcon(getClass.getResource("/images/hHumanPowerup.png"))
           } else {
             new ImageIcon(getClass.getResource("/images/hHuman.png"))
           }
         } else {
-          if (model.powerUp > 0) {
+          if (powerUp) {
             new ImageIcon(getClass.getResource("/images/humanPowerup.png"))
           } else {
             new ImageIcon(getClass.getResource("/images/human.png"))

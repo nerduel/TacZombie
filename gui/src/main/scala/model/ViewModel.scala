@@ -28,6 +28,7 @@ class ViewModel extends Observable {
   var levelWidth = 0
   var levelHeight = 0
   var cells = SortedMap[(Int, Int), (Char, Boolean)]()
+  var humanTokens = SortedMap[(Int, Int), (Boolean)]()
   var frozenTime = 0
   var log = List[String]()
   var gameMessage = " "

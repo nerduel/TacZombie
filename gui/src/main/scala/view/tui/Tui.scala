@@ -115,10 +115,18 @@ class Tui(model: ViewModel, controller: Communication) extends Observer {
             null
         }
         if (cell != null) {
-          if (cell._2)
-            print(Console.RED_B + getChar(cell._1) + Console.RESET)
-          else
-            print(Console.WHITE_B + getChar(cell._1) + Console.RESET)
+          if (cell._2) {
+        	  if (cell._1 == 'H' && model.humanTokens(x,y) == true)
+        		  print(Console.RED_B + " 😒 " + Console.RESET)
+    		  else
+    			  print(Console.RED_B + getChar(cell._1) + Console.RESET)
+          }
+          else {
+        	  if (cell._1 == 'H' && model.humanTokens(x,y) == true)
+        		  print(Console.WHITE_B + " 😒 " + Console.RESET)
+    		  else
+    			  print(Console.WHITE_B + getChar(cell._1) + Console.RESET)
+          }
         }
       }
       println
@@ -136,8 +144,8 @@ class Tui(model: ViewModel, controller: Communication) extends Observer {
   def getChar(token: Char): String = {
     token match {
       case 'C' => return " • "
-      case 'H' => return " H "
-      case 'Z' => return " Z "
+      case 'H' => return " 😓 "
+      case 'Z' => return " 😈 "
       case 'P' => return " ★ "
       case 'N' => return "   "
       case 'W' => return "███"

@@ -27,7 +27,7 @@ class GameUI(model: ViewModel, controller: Communication) extends BorderPanel wi
     requestFocus
   }
 
-  add(new GameMessage(model), BorderPanel.Position.South)
+  add(new GameMessage(model), BorderPanel.Position.North)
   add(new FlowPanel(new BoxPanel(Orientation.Vertical) {
     contents += new GameCommands(model, controller)
     contents += new GameStats(model)

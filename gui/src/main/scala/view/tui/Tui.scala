@@ -37,13 +37,13 @@ class Tui(model: ViewModel, controller: Communication) extends Observer {
         case 'q' :: Nil =>
           controller.disconnect
           sys.exit(0)
-        case 'n' :: Nil =>
+        case 'm' :: Nil =>
           controller.nextGame
         case 'r' :: Nil =>
           controller.restartGame
         case 'g' :: Nil =>
           controller.switchToken
-        case 'h' :: Nil =>
+        case 'n' :: Nil =>
           controller.nextPlayer
         case _ =>
           printGameField

@@ -69,24 +69,40 @@ class Tui(model: ViewModel, controller: Communication) extends Observer {
   }
 
   def printHelp {
-    println("---------------------------------|----------------------------------")
-    print("                                ")
-    println(" |  Moves remaining:\t" + model.movesRemaining)
-    print("Move Player: <←>, <↑>, <→>, <↓> ")
-    println(" |  -----------------------------")
-    print("Switch Token: <g>               ")
-    println(" |  Current player:\t" + getTokenName(model.currentPlayerTokenAsChar))
-    print("Next Player: <h>                ")
-    if (model.currentPlayerTokenAsChar == 'H') println(" |  Lifes:\t\t" + model.lifes)
-    else if (model.currentPlayerTokenAsChar == 'Z') println(" |  Frozen Time:\t" + model.frozenTime)
-    else println(" |  Coins collected:\t" + model.coins)
-    print("Next Game: <n>                  ")
-    if (model.currentPlayerTokenAsChar == 'H') println(" |  Score:\t\t" + model.score) else println(" |")
-    print("Restart Game: <r>               ")
-    if (model.currentPlayerTokenAsChar == 'H') println(" |  Powerup time:\t" + model.powerUp) else println(" |")
-    print("Quit Game: <q>                  ")
-    if (model.currentPlayerTokenAsChar == 'H') println(" |  Frozen Time:\t" + model.frozenTime) else println(" |")
-    println("---------------------------------|----------------------------------")
+    var outputBuffer = Array.ofDim[String](10,2)
+    
+    outputBuffer(0)(0) = "Move Player: <←>, <↑>, <→>, <↓>  "
+    outputBuffer(1)(0) = "Respawn token <f>                "
+    outputBuffer(2)(0) = "Switch token: <g>                "
+    outputBuffer(3)(0) = "Next player: <n>                 "					 
+    outputBuffer(4)(0) = "Next game: <m>                   "
+    outputBuffer(5)(0) = "Restart game: <r>                "
+    outputBuffer(6)(0) = "                                 "
+    outputBuffer(7)(0) = "                                 "
+    outputBuffer(8)(0) = "                                 "
+    outputBuffer(9)(0) = "                                 "
+    
+    outputBuffer(0)(1) = "Moves remaining:\t" + model.movesRemaining
+    outputBuffer(1)(1) = "-------------------------------"
+    outputBuffer(2)(1) = "Current player:\t" + getTokenName(model.currentPlayerTokenAsChar)
+    outputBuffer(3)(1) = "Dead Tokens:\t" + model.deadTokens
+    outputBuffer(4)(1) = "Total Tokens:\t" + model.totalTokens
+    outputBuffer(5)(1) = if (model.currentPlayerTokenAsChar == 'H') "Lifes:\t\t" + model.lifes
+    					 	else "Frozen Time:\t" + model.frozenTime    
+    outputBuffer(6)(1) = if (model.currentPlayerTokenAsChar == 'H') "Coins collected:\t" + model.coins
+							else "" 
+    outputBuffer(7)(1) = if (model.currentPlayerTokenAsChar == 'H') "Score:\t\t" + model.score
+    						else ""
+    outputBuffer(8)(1) = if (model.currentPlayerTokenAsChar == 'H') "Powerup time:\t" + model.powerUp
+    						else ""
+    outputBuffer(9)(1) = if (model.currentPlayerTokenAsChar == 'H') "Frozen Time:\t" + model.frozenTime 
+    						else ""
+   
+    println("----------------------------------|----------------------------------")
+    for (i <- 0 until 10) {
+      println(outputBuffer(i)(0) + " | " + outputBuffer(i)(1))
+    }
+    println("----------------------------------|----------------------------------")
   }
 
   def printGameField {

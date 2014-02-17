@@ -12,7 +12,7 @@ import spray.json.pimpString
 class Communication(model: ViewModel) {
   private var connected = false
   private val wsFactory = WebSocketClientFactory(1)
-  private var wsUri = new java.net.URI("ws://127.0.0.1:9000/broadcast")
+  private val wsUri = new java.net.URI("ws://127.0.0.1:9000/broadcast")
 
   private val wsClient = wsFactory.newClient(wsUri) {
     case Connecting =>

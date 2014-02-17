@@ -545,8 +545,6 @@ class LevelCreator {
     while 
       (!field(randomCoords).isPath)
     
-    println(randomCoords)
-    
     field.addHumanBase(randomCoords)
   }
 }

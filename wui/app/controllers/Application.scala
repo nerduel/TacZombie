@@ -28,8 +28,6 @@ object Application extends Controller {
     concurrent.future {
       val (out, channel) = Concurrent.broadcast[String]
 
-      println(request.id)
-      
       outchannels.apply("lobby").append(channel)
 
       val in = Iteratee.foreach[String] { msg =>

@@ -16,12 +16,11 @@ import taczombie.model.RespawnToken
 
 object GameController {
 
-	val levelHeight = 21
-	val levelWidth = 21
-  
 	class GameHelper(g : Game) {
 	  def isSet = g != null
 	}
+	
+	var lastGeneratedGame : Game = null
 	
 	implicit def gameWrapper(g : Game) =
 	  new GameHelper(g)
@@ -46,19 +45,22 @@ object GameController {
 	    case "switchToken" =>
 	      currentGame.executeCommand(NextToken)
 	      
-	    case "restartGame" =>
-	      currentGame//.executeCommand(Restart)
+	    case "restartGame" => {
+	      if(lastGeneratedGame != null)
+          lastGeneratedGame
+        else currentGame
+	    }
 	      
 	    case "respawnToken" =>
 	      currentGame.executeCommand(RespawnToken)
 	      
-	    case "nextGame" =>
-	    	if (currentGame.gameState == GameState.Win)
-	    	  // TODO: GameFactory needs to take old score 
-	    	  // GameFactory.nextLevel(currentGame)
-	    	  GameFactory.newGame(random = false, file = "../model/src/test/scala/taczombie/test/model/TestLevel_correct")
-	    	else
-	    	  currentGame
+	    case "nextGame" => {
+//	      	val nextGame = GameFactory.newGame(random = false, 
+//	      	    file = "../model/src/test/scala/taczombie/test/model/TestLevel_correct")
+	      	val nextGame = GameFactory.newGame(random = true)	      
+	      	lastGeneratedGame = nextGame
+	      	nextGame
+	    }
 	  }
 	}
 	

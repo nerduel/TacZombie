@@ -37,10 +37,16 @@ class ViewModel extends Observable {
     val data: Data = json.convertTo[Data]
     val gameData = data.gameData.convertTo[GameData]
     val updatedCells = data.cells.convertTo[List[Cell]]
+    
     updatedCells.foreach { x =>
       cells += (x.x, x.y) -> (x.token, x.isHiglighted)
     }
 
+    val humanTokensTmp = data.humanTokens.convertTo[List[HumanTokens]]
+    humanTokensTmp.foreach { x =>
+      humanTokens += (x.x, x.y) -> (x.powerUp)
+    }
+    
     cmd = data.cmd
     gameState = gameData.gameState.toString()
     currentPlayerTokenAsChar = gameData.currentPlayer

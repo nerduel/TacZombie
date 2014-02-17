@@ -1,6 +1,10 @@
 package view.gui
 
 import scala.swing._
+import util.RegexHelper
+import scala.swing.event.KeyEvent
+import scala.swing.event.KeyPressed
+import scala.swing.event.Key
 
 case class Address(ip: String) {
   override def toString: String = {
@@ -10,10 +14,15 @@ case class Address(ip: String) {
 
 class ConnectDialog extends Dialog {
   var connect: Option[Address] = None
-  val ip = new TextField
-  val port = new TextField
+  val ip = new TextField {
+    listenTo(keys)
+    reactions += {
+    case KeyPressed(_, Key.Enter, _, _) =>
+      handleEvent(this)
+    }
+  }
 
-  title = "IP:PORT"
+  title = "Server IP Address"
   modal = true
 
   contents = new BorderPanel {
@@ -26,25 +35,20 @@ class ConnectDialog extends Dialog {
 
     add(new FlowPanel(FlowPanel.Alignment.Right)(
       Button("Connect") {
-        if (checkAddress()) {
-          connect = Some(Address(ip.text))
-          close()
-        } else {
-          Dialog.showMessage(this, "Invalid IP Adress!", "Login Error", Dialog.Message.Error)
-        }
+        handleEvent(this)
       }), BorderPanel.Position.South)
-  }
-
-  def checkAddress(): Boolean = {
-    val ipPatternNumber = """^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}""".r
-
-    if (ip.text == "localhost" || ipPatternNumber.findFirstIn(ip.text) != None) {
-      return true
-    } else {
-      return false
-    }
   }
 
   centerOnScreen()
   open()
+  
+  def handleEvent(elem : Component) {
+    if (RegexHelper.checkAddress(ip.text)) {
+          connect = Some(Address(ip.text))
+          close()
+        } else {
+          Dialog.showMessage(elem, "Invalid IP Adress!", "Login Error", Dialog.Message.Error)
+        }
+  }
+  
 }

@@ -1,4 +1,5 @@
-var wsUri = "ws://localhost:9000/broadcast";
+var myUrl = document.URL.replace("http://","");
+var wsUri = "ws://"+ myUrl +"broadcast";
 var grid;
 var logCounter = 0;
 window.addEventListener("load", init, false);
@@ -292,7 +293,7 @@ function handleKeyEvent(evt) {
 	var down = 40; // down key
 	var respanToken = 70; // f
 	var switchToken = 71; // g
-	var nextGame = 77; // m
+	var newGame = 77; // m
 	var nextPlayer = 78; // n
 	var restartGame = 82; // r
 
@@ -329,9 +330,9 @@ function handleKeyEvent(evt) {
 		textBox.value = "switchToken";
 		break;
 
-	case nextGame:
-		doSend("nextGame");
-		textBox.value = "nextGame";
+	case newGame:
+		doSend("newGame");
+		textBox.value = "newGame";
 		break;
 
 	case restartGame:

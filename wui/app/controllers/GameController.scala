@@ -63,7 +63,7 @@ object GameController {
         myGame = myGame.executeCommand(RespawnToken)
         myGame.toJson(Updated)
 
-      case "nextGame" => {
+      case "newGame" => {
         lastGeneratedGame = GameFactory.newGame(random = true)
         myGame = lastGeneratedGame
         myGame.toJson(All)

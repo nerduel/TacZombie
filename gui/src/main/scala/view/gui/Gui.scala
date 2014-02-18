@@ -5,8 +5,9 @@ import controller.Communication
 import model.ViewModel
 import util.Observer
 import java.awt.KeyboardFocusManager
+import view.main.View
 
-class Gui(val model: ViewModel, val controller: Communication) extends swing.Frame with Observer {
+class Gui(val model: ViewModel, val controller: Communication) extends swing.Frame with Observer with View {
   title = "TacZombie"
   iconImage = java.awt.Toolkit.getDefaultToolkit.getImage(getClass.getResource("/images/zombie.png"))
   model.add(this)

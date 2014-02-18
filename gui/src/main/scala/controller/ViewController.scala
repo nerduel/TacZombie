@@ -8,12 +8,11 @@ import com.scalaloader.ws.WebSocketClientFactory
 
 import model.ViewModel
 import spray.json.pimpString
-import view.gui.Address
 import view.main.Main
 
-class Communication(model: ViewModel,main: Main, address: String, port: String = "9000") {
+class Communication(model: ViewModel, main: Main, address: String, port: String = "9000") {
   private var connected = false
-   val wsFactory = WebSocketClientFactory(1)
+  val wsFactory = WebSocketClientFactory(1)
   private val wsUri = new java.net.URI("ws://" + address + ":" + port + "/broadcast")
 
   private val wsClient = wsFactory.newClient(wsUri) {
@@ -55,6 +54,10 @@ class Communication(model: ViewModel,main: Main, address: String, port: String =
   def disconnect {
     connected = false
     wsClient.disconnect
+    close
+  }
+
+  def close {
     wsFactory.shutdownAll
   }
 

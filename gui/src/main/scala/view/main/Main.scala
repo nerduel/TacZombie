@@ -15,7 +15,7 @@ trait Main {
   var address: Address = null
   var model: ViewModel = null
   var controller: Communication = null
-  
+
   def main(args: Array[String]) {
     show
   }
@@ -30,7 +30,7 @@ object GUI extends Main {
     model = new ViewModel
     controller = new Communication(model, this, address.toString)
     view = new Gui(model, controller)
-    view.asInstanceOf[Gui].visible = true
+    view.asInstanceOf[Gui].open
   }
 
   def reconnect {
@@ -41,7 +41,7 @@ object GUI extends Main {
   }
 }
 
-object TUI extends Main { 
+object TUI extends Main {
   def show {
     var restart = true
 
@@ -50,9 +50,8 @@ object TUI extends Main {
       model = new ViewModel
       controller = new Communication(model, this, address.toString)
       view = new Tui(model, controller)
-      restart = view.asInstanceOf[Tui].show
-      view.asInstanceOf[Tui].reset
-    }    
+      restart = view.asInstanceOf[Tui].open
+    }
   }
 
   def reconnect {

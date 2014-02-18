@@ -63,13 +63,17 @@ class Tui(model: ViewModel, controller: Communication) extends Observer with Vie
     }
   }
   
-  def show : Boolean = {
+  def open : Boolean = {
     pool.submit(future)
 
     println("\nWelcome to TacZombie!")
     update
 
-    return future.get
+    // Wait for future to return.
+    val ret = future.get
+    controller.close
+    pool.shutdownNow()
+    return ret
   }
 
   def update {
@@ -161,10 +165,5 @@ class Tui(model: ViewModel, controller: Communication) extends Observer with Vie
       case 'W' => return "███"
       case _ => return "███"
     }
-  }
-
-  def reset {
-    controller.disconnect
-    pool.shutdownNow()
   }
 }

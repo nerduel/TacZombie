@@ -60,44 +60,57 @@ class GameFieldCell(val coords : (Int, Int),
   /**
    * Move a PlayerToken to the Cell
    */
-  def moveHere (playerToken : PlayerToken) 
+  def moveHere (visitorPlayerToken : PlayerToken) 
   		: GameFieldCell = {
-    logger.init(playerToken + " arriving at " + this.coords)
+    logger.init(visitorPlayerToken + " arriving at " + this.coords, true)
     
-    val zombieList = gameObjects.filter(
-        hostObject =>	hostObject.isInstanceOf[ZombieToken])
+    val updatedHostObjects = scala.collection.mutable.HashSet[GameObject]()
+    var updatedVisitorPlayerToken : PlayerToken = visitorPlayerToken.updated(coords)
     
-    val hostList = if (zombieList.size > 0) zombieList 
-        					 else gameObjects
-        					 
-    val finalHostObjects = scala.collection.mutable.HashSet[GameObject]()
-    var finalPlayerToken : PlayerToken = playerToken.updated(coords)
-    for (hostObject <- hostList) { 
-      hostObject match {
-        // PlayerToken acts on every versatile object in Cell
-      	case versatileHostObject : VersatileGameObject => {
-      	  logger += (versatileHostObject + " visitedBy " + finalPlayerToken, true)
-      		versatileHostObject isVisitedBy finalPlayerToken match {
-      			case (hostObjectResult, playerTokenResult : PlayerToken) => {
-      			  logger += ("Result: " + hostObjectResult + " and " + playerTokenResult, true)
-      			  
-      			  // Delete the old object from the cell
-    			  	finalHostObjects.-=(versatileHostObject)
-    			  	
-    			  	// It would be null if it was a coin or powerup
-    			  	if(hostObjectResult != null)
-    			  	  finalHostObjects.+=(hostObjectResult)
-    			  	  
-    			  	finalPlayerToken = playerTokenResult
-      			}
-      		}
-      	}
-      }
+    
+    // visitorPlayerToken fights the local living enemies first
+    val hostLivingEnemies = gameObjects.filter(go => go match {
+      case hostLivingEnemy : PlayerToken => 
+        (!hostLivingEnemy.dead && 
+            hostLivingEnemy.getClass() != visitorPlayerToken.getClass())
+      case _=> false
+    })
+    
+    // keep the rest in case the visitor dies
+    val restHostObjects = gameObjects.--(hostLivingEnemies)
+    
+    for(hostLivingEnemy <- hostLivingEnemies) {
+      hostLivingEnemy match {case hostLivingEnemy : VersatileGameObject =>
+      hostLivingEnemy isVisitedBy updatedVisitorPlayerToken match {
+        case (hostLivingEnemyResult : PlayerToken,
+            		 updatedVisitorPlayerTokenResult : PlayerToken) => {
+            	  
+	        updatedHostObjects += hostLivingEnemyResult
+	        updatedVisitorPlayerToken = updatedVisitorPlayerTokenResult
+        } case _ => logger += ("Unexpected match")
+      } case _ => logger += ("Unexpected match")}
     }
-    // add final visitorObjectResult 
-    finalHostObjects += finalPlayerToken
     
-    this.updated(finalHostObjects.toSet)
+    // dead visitors can't pass to the rest
+    if(!updatedVisitorPlayerToken.dead) {
+      for(restHostObject <- restHostObjects) {
+        restHostObject match { case restHostObject : VersatileGameObject =>
+        restHostObject isVisitedBy updatedVisitorPlayerToken match {
+          case (restHostObjectResult : VersatileGameObject,
+              	updatedVisitorPlayerTokenResult : PlayerToken) => {
+
+            updatedHostObjects += restHostObjectResult	
+  	        updatedVisitorPlayerToken = updatedVisitorPlayerTokenResult
+          } case _ => logger += ("Unexpected match")
+        } case _ => logger += ("Unexpected match") }
+      }
+    } 
+    else {
+      restHostObjects.foreach(rHO => updatedHostObjects += rHO) 
+    }
+      					 
+
+    return this.updated(updatedHostObjects.toSet + updatedVisitorPlayerToken)
   }
   
   /**
@@ -122,7 +135,7 @@ class GameFieldCell(val coords : (Int, Int),
    */
   def updated(gameObjects : Set[GameObject]) = { 
     val newGameFieldCell = new GameFieldCell(this.coords, gameObjects)
-    newGameFieldCell.logger.merge(this)
+    newGameFieldCell.logger merge this
     newGameFieldCell
   }
 }

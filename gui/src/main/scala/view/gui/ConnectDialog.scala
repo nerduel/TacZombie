@@ -5,6 +5,7 @@ import util.RegexHelper
 import scala.swing.event.KeyEvent
 import scala.swing.event.KeyPressed
 import scala.swing.event.Key
+import javax.swing.Box
 
 case class Address(ip: String) {
   override def toString: String = {
@@ -13,7 +14,7 @@ case class Address(ip: String) {
 }
 
 class ConnectDialog extends Dialog {
-  var connect: Option[Address] = None
+  var address: Option[Address] = None
   val ip = new TextField {
     listenTo(keys)
     reactions += {
@@ -21,7 +22,8 @@ class ConnectDialog extends Dialog {
       handleEvent(this)
     }
   }
-
+	preferredSize = new Dimension(200,120)
+  
   title = "Server IP Address"
   modal = true
 
@@ -33,10 +35,10 @@ class ConnectDialog extends Dialog {
       contents += ip
     }, BorderPanel.Position.North)
 
-    add(new FlowPanel(FlowPanel.Alignment.Right)(
-      Button("Connect") {
-        handleEvent(this)
-      }), BorderPanel.Position.South)
+    add(new FlowPanel(FlowPanel.Alignment.Center)(
+          new FlowPanel(FlowPanel.Alignment.Left)(Button("Connect") { handleEvent(this)}),
+          new FlowPanel(FlowPanel.Alignment.Right)(Button("Quit") { sys.exit(0)})
+      ), BorderPanel.Position.South)
   }
 
   centerOnScreen()
@@ -44,7 +46,7 @@ class ConnectDialog extends Dialog {
   
   def handleEvent(elem : Component) {
     if (RegexHelper.checkAddress(ip.text)) {
-          connect = Some(Address(ip.text))
+          address = Some(Address(ip.text))
           close()
         } else {
           Dialog.showMessage(elem, "Invalid IP Adress!", "Login Error", Dialog.Message.Error)

@@ -20,7 +20,7 @@ class Communication(model: ViewModel, address: Address, view: View) {
       println("Connecting")
     case Disconnected(_, reason) =>
       if (connected != false)
-        view.show
+        view.reconnect
       println("Disconnected")
     case TextMessage(_, data) =>
       handleInput(data)

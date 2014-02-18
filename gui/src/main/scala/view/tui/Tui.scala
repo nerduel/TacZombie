@@ -3,6 +3,8 @@ package view.tui
 import controller.Communication
 import model.ViewModel
 import util.Observer
+import view.gui.Address
+import util.RegexHelper
 
 class Tui(model: ViewModel, controller: Communication) extends Observer {
 
@@ -152,5 +154,5 @@ class Tui(model: ViewModel, controller: Communication) extends Observer {
       case _ => return "███"
     }
   }
-
+  
 }

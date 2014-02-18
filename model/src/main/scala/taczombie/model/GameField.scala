@@ -3,7 +3,6 @@ package taczombie.model
 import scala.collection.immutable.HashMap
 import scala.collection.mutable.ListBuffer
 import taczombie.model.util.Logger
-import util.GameHelper._
 import scala.util.Random
 
 class GameField(val id : String,
@@ -46,7 +45,7 @@ class GameField(val id : String,
     val playerTokens = findPlayerTokensById(List[Int](id))
     if(playerTokens.isEmpty) {
       logger += ("Did not find any playerTokens!" ,true)
-      null // TODO exception
+      null // FIXME exception
     } else playerTokens.head
   }
 
@@ -116,8 +115,8 @@ class GameField(val id : String,
     																			.remove(respawnToken)
  
     val updatedRespawnToken = respawnToken.updated(
-                                newCoords = getRandomSpawnCoords, 
-                                newPowerupTime = 0, 
+                                newCoords = getRandomSpawnCoords(respawnToken), 
+                                newPowerupTime = defaults.spawnPowerupTime, 
                                 newFrozenTime = defaults.spawnFreeze, 
                                 newDead = false)
        
@@ -131,14 +130,24 @@ class GameField(val id : String,
   /**
    * Find a random empty cell
    */
-  private def getRandomSpawnCoords() : (Int, Int) = {
+  private def getRandomSpawnCoords(playerToken : PlayerToken) : (Int, Int) = {
     var randomCoords : (Int, Int) = null    
     val rand = new Random(System.currentTimeMillis());
     
     do 
       randomCoords = (rand.nextInt(levelHeight), rand.nextInt(levelWidth))
-    while 
-      (!gameFieldCells.apply(randomCoords).isEmpty)
+    while (
+      gameFieldCells.apply(randomCoords).containsWall || (
+      playerToken match {
+        case humanToken : HumanToken => { 
+        	gameFieldCells.apply(randomCoords).containsLivingZombieToken
+        }
+        case zombieToken : ZombieToken => { 
+          gameFieldCells.apply(randomCoords).containsLivingHumanToken
+        }
+      })
+    )
+
       
     randomCoords
   }

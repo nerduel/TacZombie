@@ -8,7 +8,13 @@ import view.gui.ConnectDialog
 import view.gui.Gui
 import view.tui.Tui
 
-trait View {
+trait View
+
+trait Main {
+  var view: View = null
+  var address: Address = null
+  var model: ViewModel = null
+  var controller: Communication = null
 
   def main(args: Array[String]) {
     show
@@ -18,38 +24,42 @@ trait View {
   def reconnect
 }
 
-object GUI extends View {
-  var gui: Gui = null
-
+object GUI extends Main {
   def show {
-    val address = new ConnectDialog().address.getOrElse(throw new IllegalStateException("Please provide IP Address!"))
-    val model = new ViewModel
-    val controller = new Communication(model, address, this)
-    gui = new Gui(model, controller)
-    gui.visible = true
+    address = new ConnectDialog().address.getOrElse(throw new IllegalStateException("Please provide IP Address!"))
+    model = new ViewModel
+    controller = new Communication(model, this, address.toString)
+    view = new Gui(model, controller)
+    view.asInstanceOf[Gui].open
   }
 
   def reconnect {
-    if (gui != null)
-      gui.dispose
+    if (view != null) {
+      view.asInstanceOf[Gui].dispose
+    }
     show
   }
 }
 
-object TUI extends View {
-  var tui: Tui = null
+object TUI extends Main {
   def show {
-    val address = askForAddress()
-    val model = new ViewModel
-    val controller = new Communication(model, address, this)
-    tui = new Tui(model, controller)
-    tui.show
+    var restart = true
+
+    while (restart) {
+      address = askForAddress()
+      model = new ViewModel
+      controller = new Communication(model, this, address.toString)
+      view = new Tui(model, controller)
+      restart = view.asInstanceOf[Tui].open
+    }
   }
 
   def reconnect {
-    if (tui != null)
-      tui.inputThread.stop()
-    show
+    if (view != null) {
+      println(Console.RED_B + "[CONSOLEFIX] Need to press [ENTER]!" + Console.RESET)
+      view.asInstanceOf[Tui].restart = true
+      view.asInstanceOf[Tui].continue = false
+    }
   }
 
   def askForAddress(): Address = {
@@ -57,7 +67,7 @@ object TUI extends View {
     var input = readLine
 
     while (!RegexHelper.checkAddress(input)) {
-      if(input == "q") {
+      if (input == "q") {
         sys.exit(0)
       }
       println("Invalid IP Address! Please try again!")

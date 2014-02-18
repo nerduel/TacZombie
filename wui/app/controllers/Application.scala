@@ -12,7 +12,7 @@ import taczombie.model.GameFactory
 
 object Application extends Controller {
 
-  GameController.evaluateCommand("nextGame")
+  GameController.evaluateCommand("newGame")
   
   def index = Action {
     Ok(views.html.index("TacZombie"))

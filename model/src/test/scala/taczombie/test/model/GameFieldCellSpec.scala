@@ -246,4 +246,35 @@ class GameFieldCellSpec extends Specification {
       gfc.containsLivingZombieToken must be_==(true)
     }        
   }
+    
+  "A living HumanToken gets updated" should {
+    val gfc = emptyGfc.addHere(powerUp)
+    									.moveHere(livingHumanToken)
+    val gfc2 = gfc.updatedWithReplacement(livingHumanToken.updatedDecrementCounters)
+    
+    "isEmpty return false" in {
+      gfc.isEmpty must be_==(false)
+    }  
+    "containsCoin return false" in {
+      gfc.containsCoin must be_==(false)
+    }
+    "containsHumanToken return true" in {
+      gfc.containsHumanToken must be_==(true)
+    }
+    "containsLivingZombieToken return false" in {
+      gfc.containsLivingZombieToken must be_==(false)
+    }
+    "containsLivingHumanToken return true" in {
+      gfc.containsLivingHumanToken must be_==(true)
+    }
+    "containsPowerup return false" in {
+      gfc.containsPowerup must be_==(false)
+    }
+    "containsWall return false" in {
+      gfc.containsWall must be_==(false)
+    }
+    "containsZombieToken return false" in {
+      gfc.containsZombieToken must be_==(false)
+    }   
+  }
 }

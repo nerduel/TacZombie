@@ -64,16 +64,20 @@ class Tui(model: ViewModel, controller: Communication) extends Observer with Vie
   }
   
   def open : Boolean = {
-    pool.submit(future)
-
-    println("\nWelcome to TacZombie!")
-    update
-
-    // Wait for future to return.
-    val ret = future.get
-    controller.close
-    pool.shutdownNow()
-    return ret
+  	if(controller.connect) {
+      pool.submit(future)
+      println("\nWelcome to TacZombie!")
+      update
+  
+      // Wait for future to return.
+      val ret = future.get
+      controller.close
+      pool.shutdownNow()
+      return ret
+  	} else {
+  	  controller.close
+  	  return false
+  	}
   }
 
   def update {

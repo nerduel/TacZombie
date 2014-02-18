@@ -1,0 +1,15 @@
+package view.gui
+
+import scala.swing.GridBagPanel
+import scala.swing._
+
+class GameButtonBagPanel extends GridBagPanel {
+  val constraint = new Constraints
+  
+  def add(c: Component, x: Int, y: Int) {
+    constraint.gridx = x
+    constraint.gridy = y
+    constraint.fill = GridBagPanel.Fill.Both
+    super.add(c, constraint)
+  }
+}

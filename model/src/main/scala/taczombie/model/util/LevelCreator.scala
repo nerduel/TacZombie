@@ -195,7 +195,6 @@ class LevelCreator {
 
     addPowerups
     
-    // add human Base to map
     for (i <- 0  until amountHumans)
     	addHumanBase
     

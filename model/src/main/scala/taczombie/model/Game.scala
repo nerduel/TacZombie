@@ -15,8 +15,10 @@ object defaults {
   val humanName = "Pacman"
   val zombieName = "Zombie"
   
+  val powerupTime = 5
+  
+  val spawnPowerupTime = 1
   val spawnFreeze = 1
-  val powerupTime = 40
     
   val killScore = 3
 }
@@ -67,9 +69,7 @@ class Game(val id : Int,
     val currentTokenCoords = currentToken.coords	  
 	  
 	  (gameCommand, gameState) match {
- 	    // TODO nextGame
- 	    // TODO nextToken	   
-	
+
 	    case (moveCmd : MoveCmd, GameState.InGame) => {
 	      
 	      // check if token is frozen
@@ -104,11 +104,7 @@ class Game(val id : Int,
         // decrease player's remaining moves
         updatedPlayer = currentPlayer.updatedMoved
         updatedPlayers = players.updatedExistingPlayer(updatedPlayer)
-
-        // decrease current players powerup if it's a human
-        // decrease current player's token's freezetimes
-        updatedGameField = updatedGameField.updatedDecrementedCounters(updatedPlayer)
-        
+  
 	      // check is won      
         if(gameIsWon(updatedPlayers, updatedGameField)) {
 	        updatedGameMessage = GameMessages.won
@@ -152,8 +148,6 @@ class Game(val id : Int,
               					 newGameMessage = updatedGameMessage)
         }
         
-        // TODO check if all HumanTokens are dead
-    	  
     	  if(updatedGameField == null) updatedGameField = gameField
     	  if(updatedPlayers == null) updatedPlayers = players
     	  if(updatedGameState == null) updatedGameState = gameState
@@ -166,17 +160,14 @@ class Game(val id : Int,
   	  case (NextPlayer, GameState.NeedPlayerSwitch | 
   	      							GameState.InGame |
   	      							GameState.NeedTokenSwitch) => {		  
-        
-  	    // TODO check if tokens can be respawned
-  	    // TODO don't reduce poweruptime if player moved
-  	    updatedGameField = gameField.updatedDecrementedCounters(currentPlayer)
-  	    updatedPlayers = players.updatedRotatedPlayers
+
   	    updatedGameState = GameState.InGame
-      	updatedGameMessage = GameMessages.noMsg
-  	   
+      	updatedGameMessage = GameMessages.noMsg  	      							  
+  	      							  
+  	    updatedPlayers = players.updatedRotatedPlayers
       	updatedPlayer = updatedPlayers.currentPlayer
       	logger += "Next player is " + updatedPlayer + " with token " + 
-      						updatedPlayer.currentToken(updatedGameField)
+      						updatedPlayer.currentToken(gameField)
       	
       	// check for dead tokens
         val playersDeadPlayer = updatedPlayer.deadTokens(gameField)
@@ -184,6 +175,7 @@ class Game(val id : Int,
           updatedPlayer match {
             case zombie : Zombie =>
               // respawn all dead zombie tokens
+              updatedGameField = gameField
               for(deadToken <- playersDeadPlayer) {
               	updatedGameField = updatedGameField respawn deadToken.id
               	logger merge updatedGameField  
@@ -191,13 +183,19 @@ class Game(val id : Int,
               
           	case human : Human =>
           	  // check if next player's currentToken is dead
-          	  if(updatedPlayer.currentToken(updatedGameField).dead) {
+          	  if(updatedPlayer.currentToken(gameField).dead) {
             	  updatedGameState = GameState.NeedTokenSwitch
             	  updatedGameMessage = GameMessages.deadTokenSelected
             	  logger += updatedGameMessage                      	    
           	  }
           }
         }
+  	    
+  	    // FIXME don't reduce poweruptime if player moved
+  	    updatedGameField = { 
+  	      if (updatedGameField == null) gameField
+  	      else updatedGameField
+  	    }.updatedDecrementedCounters(updatedPlayer)  	    
   	    
         return updated(newGameField = updatedGameField,
             					 newPlayers = updatedPlayers,

@@ -5,7 +5,7 @@ import taczombie.model.util.Logger
 trait GameObject extends Logger {
   val id : Int
   val coords : (Int, Int)
-
+  
   override def hashCode(): Int = id
 }
   
@@ -162,8 +162,8 @@ case class ZombieToken(id : Int,
   def isVisitedBy (versatileGameObject : VersatileGameObject) = { 
     versatileGameObject match {
       case humanToken : HumanToken => {
-        (humanToken.dead, humanToken.powerupTime) match {
-          case (true, _) => (this, humanToken) // spawn!
+        (this.dead, humanToken.powerupTime) match {
+          case (true, _) => (this, humanToken)
           case (false, 0) => (this,
               			 humanToken.updated(newScore = 
               			   humanToken.score-defaults.killScore, newDead = true))              			 

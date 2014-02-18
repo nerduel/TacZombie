@@ -13,9 +13,9 @@ trait Logger {
   	  if(print) println(s)
   	}
   	
-  	def init(s : String) =  { 
+  	def init(s : String, print : Boolean = false) =  { 
   	  clear
-  	  +=(s)
+  	  +=(s, print)
   	}
   		
   	def get : List[String] = data.toList

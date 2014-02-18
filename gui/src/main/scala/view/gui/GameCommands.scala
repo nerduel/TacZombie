@@ -118,7 +118,7 @@ class GameCommands(model: ViewModel, controller: Communication) extends BoxPanel
         add(component, constraint)
       }
 
-      addToGridBag(0, 0, new Button("Next Game <m>") {
+      addToGridBag(0, 0, new Button("New Game <m>") {
         listenTo(mouse.clicks)
         reactions += {
           case me: MouseClicked => controller.nextGame

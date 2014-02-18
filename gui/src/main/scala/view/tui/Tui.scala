@@ -77,7 +77,7 @@ class Tui(model: ViewModel, controller: Communication) extends Observer {
     outputBuffer(1)(0) = "Respawn token <f>                "
     outputBuffer(2)(0) = "Switch token: <g>                "
     outputBuffer(3)(0) = "Next player: <n>                 "					 
-    outputBuffer(4)(0) = "Next game: <m>                   "
+    outputBuffer(4)(0) = "New game: <m>                    "
     outputBuffer(5)(0) = "Restart game: <r>                "
     outputBuffer(6)(0) = "                                 "
     outputBuffer(7)(0) = "                                 "
@@ -119,9 +119,9 @@ class Tui(model: ViewModel, controller: Communication) extends Observer {
         if (cell != null) {
           if (cell._2) {
         	  if (cell._1 == 'H' && model.humanTokens(x,y) == true)
-        		  print(Console.RED_B + " 😒 " + Console.RESET)
+        		  print(Console.YELLOW_B + " 😒 " + Console.RESET)
     		  else
-    			  print(Console.RED_B + getChar(cell._1) + Console.RESET)
+    			  print(Console.YELLOW_B + getChar(cell._1) + Console.RESET)
           }
           else {
         	  if (cell._1 == 'H' && model.humanTokens(x,y) == true)

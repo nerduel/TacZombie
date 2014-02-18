@@ -5,10 +5,11 @@ import com.scalaloader.ws.Connecting
 import com.scalaloader.ws.Disconnected
 import com.scalaloader.ws.TextMessage
 import com.scalaloader.ws.WebSocketClientFactory
-
 import model.ViewModel
 import spray.json.pimpString
 import view.main.Main
+import java.util.concurrent.TimeUnit
+import java.util.concurrent.ExecutionException
 
 class Communication(model: ViewModel, main: Main, address: String, port: String = "9000") {
   private var connected = false
@@ -33,8 +34,6 @@ class Communication(model: ViewModel, main: Main, address: String, port: String 
       println _
   }
 
-  connect
-
   def moveUp = send("moveUp")
   def moveDown = send("moveDown")
   def moveLeft = send("moveLeft")
@@ -44,12 +43,23 @@ class Communication(model: ViewModel, main: Main, address: String, port: String 
   def respawnToken = send("respawnToken")
   def nextPlayer = send("nextPlayer")
   def restartGame = send("restartGame")
-  def connect {
-    wsClient.connect
+
+  def connect: Boolean = {
+    try {
+      val ws = wsClient.connect.get
+    } catch {
+      case ex: ExecutionException =>
+        println("Connection refused: " + address + ":" + port)
+        return false
+    }
+
     while (!connected) {
       Thread.sleep(200)
-      send("getGameData")
     }
+
+    send("getGameData")
+
+    (true)
   }
   def disconnect {
     connected = false

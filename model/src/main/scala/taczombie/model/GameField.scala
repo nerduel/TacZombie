@@ -3,7 +3,6 @@ package taczombie.model
 import scala.collection.immutable.HashMap
 import scala.collection.mutable.ListBuffer
 import taczombie.model.util.Logger
-import util.GameHelper._
 import scala.util.Random
 
 class GameField(val id : String,

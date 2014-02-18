@@ -191,7 +191,6 @@ class Game(val id : Int,
           }
         }
   	    
-  	    // FIXME don't reduce poweruptime if player moved
   	    updatedGameField = { 
   	      if (updatedGameField == null) gameField
   	      else updatedGameField

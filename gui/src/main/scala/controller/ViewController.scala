@@ -67,9 +67,9 @@ class Communication(model: ViewModel, main: Main, address: String, port: String 
   }
 
   private def handleInput(data: String) {
-    if (data.contains("all") || data.contains("updated")) {
+    if (data.contains("cmd"))
       model.toObject(data.asJson)
-    } else
+    else
       println("Received unknown message Type!")
   }
 }

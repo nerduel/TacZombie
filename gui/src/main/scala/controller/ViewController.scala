@@ -5,23 +5,25 @@ import com.scalaloader.ws.Connecting
 import com.scalaloader.ws.Disconnected
 import com.scalaloader.ws.TextMessage
 import com.scalaloader.ws.WebSocketClientFactory
+
 import model.ViewModel
 import spray.json.pimpString
-import view.gui.Address
-import view.main.View
+import view.main.Main
 
-class Communication(model: ViewModel, address: Address, view: View) {
+class Communication(model: ViewModel, main: Main, address: String, port: String = "9000") {
   private var connected = false
-  private val wsFactory = WebSocketClientFactory(1)
-  private val wsUri = new java.net.URI("ws://" + address.toString + ":9000/broadcast")
+  val wsFactory = WebSocketClientFactory(1)
+  private val wsUri = new java.net.URI("ws://" + address + ":" + port + "/broadcast")
 
   private val wsClient = wsFactory.newClient(wsUri) {
     case Connecting =>
       println("Connecting")
     case Disconnected(_, reason) =>
-      if (connected != false)
-        view.reconnect
-      println("Disconnected")
+      println("Disconnected with reason: " + reason)
+      if (connected != false) {
+        connected = false
+        main.reconnect
+      }
     case TextMessage(_, data) =>
       handleInput(data)
     case Connected(_) =>
@@ -31,23 +33,31 @@ class Communication(model: ViewModel, address: Address, view: View) {
       println _
   }
 
-  wsClient.connect
-  while (!connected) {
-    Thread.sleep(200)
-    send("getGameData")
-  }
+  connect
 
   def moveUp = send("moveUp")
   def moveDown = send("moveDown")
   def moveLeft = send("moveLeft")
   def moveRight = send("moveRight")
-  def nextGame = send("nextGame")
+  def nextGame = send("newGame")
   def switchToken = send("switchToken")
   def respawnToken = send("respawnToken")
   def nextPlayer = send("nextPlayer")
   def restartGame = send("restartGame")
-  def disconnect = {
+  def connect {
+    wsClient.connect
+    while (!connected) {
+      Thread.sleep(200)
+      send("getGameData")
+    }
+  }
+  def disconnect {
     connected = false
+    wsClient.disconnect
+    close
+  }
+
+  def close {
     wsFactory.shutdownAll
   }
 
@@ -57,9 +67,9 @@ class Communication(model: ViewModel, address: Address, view: View) {
   }
 
   private def handleInput(data: String) {
-    if (data.contains("cmd")) {
+    if (data.contains("cmd"))
       model.toObject(data.asJson)
-    } else
+    else
       println("Received unknown message Type!")
   }
 }

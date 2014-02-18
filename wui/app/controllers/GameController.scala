@@ -11,6 +11,7 @@ import taczombie.model.MoveUp
 import taczombie.model.NextPlayer
 import taczombie.model.NextToken
 import taczombie.model.util.LevelCreator
+import taczombie.model.util.JsonHelper
 import scala.language.implicitConversions
 import taczombie.model.RespawnToken
 
@@ -31,43 +32,77 @@ object GameController {
   def evaluateCommand(cmd: String): String = {
     cmd match {
       case "moveLeft" =>
-        myGame = myGame.executeCommand(MoveLeft)
-        myGame.toJson(Updated)
+        if (myGame.isSet) {
+          myGame = myGame.executeCommand(MoveLeft)
+          myGame.toJson(Updated)
+        } else {
+         "Can't handle command 'moveLeft'! No Game was loaded before!".toErrorJson
+        }
 
       case "moveRight" =>
-        myGame = myGame.executeCommand(MoveRight)
-        myGame.toJson(Updated)
+        if (myGame.isSet) {
+          myGame = myGame.executeCommand(MoveRight)
+          myGame.toJson(Updated)
+        } else {
+          "Can't handle command 'moveRight'! No Game was loaded befor!".toErrorJson
+        }
 
       case "moveUp" =>
-        myGame = myGame.executeCommand(MoveUp)
-        myGame.toJson(Updated)
+        if (myGame.isSet) {
+          myGame = myGame.executeCommand(MoveUp)
+          myGame.toJson(Updated)
+        } else {
+          "Can't handle command 'moveUp'! No Game was loaded before!".toErrorJson
+        }
 
       case "moveDown" =>
-        myGame = myGame.executeCommand(MoveDown)
-        myGame.toJson(Updated)
+        if (myGame.isSet) {
+          myGame = myGame.executeCommand(MoveDown)
+          myGame.toJson(Updated)
+        } else {
+          "Can't handle command 'moveDown'! No Game was loaded before!".toErrorJson
+        }
 
       case "nextPlayer" =>
-        myGame = myGame.executeCommand(NextPlayer)
-        myGame.toJson(Updated)
+        if (myGame.isSet) {
+          myGame = myGame.executeCommand(NextPlayer)
+          myGame.toJson(Updated)
+        } else {
+          "Can't handle command 'nextPlayer'! No Game was loaded before!".toErrorJson
+        }
 
       case "switchToken" =>
-        myGame = myGame.executeCommand(NextToken)
-        myGame.toJson(Updated)
+        if (myGame.isSet) {
+          myGame = myGame.executeCommand(NextToken)
+          myGame.toJson(Updated)
+        } else {
+          ":\"Can't handle command 'switchToken'! No Game was loaded before!".toErrorJson
+        }
 
-      case "restartGame" => {
-        myGame = lastGeneratedGame
-        myGame.toJson(All)
-      }
+      case "restartGame" =>
+        if (myGame.isSet) {
+          myGame = lastGeneratedGame
+          myGame.toJson(All)
+        } else {
+          "Can't handle command 'restartGame'! No Game was loaded before!".toErrorJson
+        }
 
       case "respawnToken" =>
-        myGame = myGame.executeCommand(RespawnToken)
-        myGame.toJson(Updated)
+        if (myGame.isSet) {
+          myGame = myGame.executeCommand(RespawnToken)
+          myGame.toJson(Updated)
+        } else {
+          "Can't handle command 'respawnToken'! No Game was loaded before!".toErrorJson
+        }
 
-      case "newGame" => {
+      case "newGame" =>
         lastGeneratedGame = GameFactory.newGame(random = true)
         myGame = lastGeneratedGame
         myGame.toJson(All)
-      }
+
+      case _ =>
+        "Unknown command was received!".toErrorJson
+
     }
   }
 

@@ -13,8 +13,6 @@ import scala.collection.SortedMap
 case object gameUpdated extends Event
 
 class ViewModel extends Observable {
-  var receivedAll = false
-  import taczombie.model.util.JsonHelper.GameDataJsonProtocol._
   var cmd = ""
   var gameState = " "
   var currentPlayerTokenAsChar = ' '
@@ -33,7 +31,16 @@ class ViewModel extends Observable {
   var log = List[String]()
   var gameMessage = " "
 
-  def toObject(json: JsValue) {
+  def toObject(json: JsValue)
+  {
+    if(json.toString.contains("all") || json.toString.contains("updated"))
+      toData(json)
+    else if(json.toString.contains("error"))
+      toError(json)
+  }
+  
+  import taczombie.model.util.JsonHelper.GameDataJsonProtocol._
+  def toData(json: JsValue) {
     val data: Data = json.convertTo[Data]
     val gameData = data.gameData.convertTo[GameData]
     val updatedCells = data.cells.convertTo[List[Cell]]
@@ -62,9 +69,14 @@ class ViewModel extends Observable {
     log = data.log
     gameMessage = data.gameMessage
 
-    if (cmd == "all")
-      receivedAll = true
-
+    notifyObservers
+  }
+  
+  import taczombie.model.util.JsonHelper.ErrorJsonProtocol._
+  def toError(json: JsValue) {
+    val error : Error = json.convertTo[Error]
+    gameMessage = error.message
+    
     notifyObservers
   }
 }

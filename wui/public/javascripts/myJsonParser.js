@@ -1,9 +1,3 @@
-var myUrl = document.URL.replace("http://","");
-var wsUri = "ws://"+ myUrl +"broadcast";
-var grid;
-var logCounter = 0;
-window.addEventListener("load", init, false);
-
 function init() {
 	grid = document.getElementById("grid");
 	connectToServer();
@@ -350,3 +344,9 @@ function handleKeyEvent(evt) {
 function doSend(command) {
 	websocket.send(command);
 }
+
+var myUrl = document.URL.replace("http://","");
+var wsUri = "ws://"+ myUrl +"broadcast";
+var grid;
+var logCounter = 0;
+window.addEventListener("load", init, false);

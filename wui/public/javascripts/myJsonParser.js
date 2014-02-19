@@ -61,14 +61,22 @@ function onMessage(evt) {
 
 function appendToLog(logList) {
 	var logOutput = document.getElementById("log");
-
-	if (logOutput.value.split(/\r|\r\n|\n/).length >= 100) {
-		logOutput.value = "";
-	}
+	
+	var text = logOutput.value;
+	
 	for ( var i = 0; i < logList.length; i++) {
-		logOutput.value += logList[i];
-		logOutput.value += "\n";
+		text += logList[i];
+		text += "\n";
 	}
+	
+	var total = text.split("\n");
+
+	if (total.length > 25) {
+		total = total.slice(total.length - 25);
+	}
+	
+	logOutput.value = total.join("\n");
+	
 	logOutput.scrollTop = logOutput.scrollHeight
 }
 
@@ -350,7 +358,6 @@ function doSend(command) {
 var myUrl = document.URL.replace("http://", "");
 var wsUri = "ws://" + myUrl + "broadcast";
 var grid;
-var logCounter = 0;
 window.addEventListener("load", init, false);
 
 if (window.addEventListener) {

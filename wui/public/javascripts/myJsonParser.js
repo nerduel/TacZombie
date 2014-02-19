@@ -298,10 +298,17 @@ function handleKeyEvent(evt) {
 	var newGame = 77; // m
 	var nextPlayer = 78; // n
 	var restartGame = 82; // r
-
+	var refreshButton = 116; // F5
+	
 	var textBox = document.getElementById("userInput");
 	var evt = window.event || evt;
 	var charCode = (evt.which) ? evt.which : evt.keyCode;
+	
+	if (charCode != refreshButton) {
+		evt.preventDefault();
+	}
+	
+	
 
 	switch (charCode) {
 	case left:
@@ -362,18 +369,12 @@ window.addEventListener("load", init, false);
 
 if (window.addEventListener) {
 	window.addEventListener("keydown", function(evt) {
-		if ([ 37, 38, 39, 40 ].indexOf(evt.keyCode) > -1) {
-			evt.preventDefault();
-		}
 		handleKeyEvent(evt);
 	});
 }
 
 if (document.body && document.body.attachEvent) {
 	document.body.attachEvent("onkeydown", function(evt) {
-		if ([ 37, 38, 39, 40 ].indexOf(evt.keyCode) > -1) {
-			evt.preventDefault();
-		}
 		handleKeyEvent(evt);
 	});// IE
 }

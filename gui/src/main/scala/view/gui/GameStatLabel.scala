@@ -7,11 +7,11 @@ import scala.swing.Label
 import model.ViewModel
 import util.Observer
 
-class LeftAlignedValueText(model: ViewModel, text: String,
+class GameStatLabel(model: ViewModel, text: String,
   property: String, visibleWhenZombie: Boolean = true)
   extends BorderPanel with Observer {
 
-  model.add(this)
+  model.add(GameStatLabel.this)
 
   private var labelText = new Label(text.padTo(18, ' ')) {
     horizontalTextPosition = Alignment.Left
@@ -37,7 +37,7 @@ class LeftAlignedValueText(model: ViewModel, text: String,
   }
 
   private def value: String = {
-    val mthd = model.getClass.getMethods.find(_.getName.contains(property)).get
+    val mthd = model.getClass.getMethods.find(_.getName.equals(property)).get
     val value = mthd.invoke(model).toString()
     return value
   }

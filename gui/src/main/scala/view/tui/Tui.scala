@@ -1,34 +1,39 @@
 package view.tui
 
+import java.util.concurrent.Callable
+import java.util.concurrent.Executors
+import java.util.concurrent.FutureTask
+import com.google.inject.Inject
 import controller.ViewController
 import model.ViewModel
 import util.Observer
-import view.gui.Address
 import util.RegexHelper
-import view.main.View
-import java.util.concurrent.FutureTask
-import java.util.concurrent.Callable
-import java.util.concurrent.Executor
-import java.util.concurrent.Executors
+import view.main.IView
+import view.main.Main
+import util.Address
 
-class Tui(model: ViewModel, controller: ViewController) extends Observer with View {
+class Tui(val main: Main) extends Observer with IView {
+  val address: Address = askForAddress
+  val model: ViewModel = new ViewModel
   model.add(this)
+  val controller: ViewController = new ViewController(model, main, address.toString)
+
   var continue = true
   var restart = false
   val pool = Executors.newFixedThreadPool(1);
-  
+
   val arrowKeyLeft = '\033' :: '[' :: 'D' :: Nil
   val arrowKeyUp = '\033' :: '[' :: 'A' :: Nil
   val arrowKeyDown = '\033' :: '[' :: 'B' :: Nil
   val arrowKeyRight = '\033' :: '[' :: 'C' :: Nil
 
   val future = new FutureTask[Boolean](new Callable[Boolean]() {
-  	def call() : Boolean = {
-  	  readInput
-  	  return restart
+    def call(): Boolean = {
+      readInput
+      return restart
     }
   })
-  
+
   def readInput {
     while (continue) {
       val input = readLine
@@ -62,22 +67,26 @@ class Tui(model: ViewModel, controller: ViewController) extends Observer with Vi
       }
     }
   }
-  
-  def open : Boolean = {
-  	if(controller.connect) {
+
+  def open = {
+    if (controller.connect) {
       pool.submit(future)
       println("\nWelcome to TacZombie!")
       update
-  
+
       // Wait for future to return.
       val ret = future.get
       controller.close
       pool.shutdownNow()
-      return ret
-  	} else {
-  	  controller.close
-  	  return false
-  	}
+    } else {
+      controller.close
+    }
+  }
+
+  def dispose {
+    println(Console.RED_B + "[CONSOLEFIX] Need to press [ENTER]!" + Console.RESET)
+    restart = true
+    continue = false
   }
 
   def update {
@@ -162,5 +171,20 @@ class Tui(model: ViewModel, controller: ViewController) extends Observer with Vi
       case 'W' => return "███"
       case _ => return "███"
     }
+  }
+
+  def askForAddress(): Address = {
+    println("Please provide IP Address:")
+    var input = readLine
+
+    while (!RegexHelper.checkAddress(input)) {
+      if (input == "q") {
+        sys.exit(0)
+      }
+      println("Invalid IP Address! Please try again!")
+      input = readLine
+    }
+
+    return new Address(input)
   }
 }

@@ -1,14 +1,14 @@
-package controller
+package taczombie.client.controller
 
 import com.scalaloader.ws.Connected
 import com.scalaloader.ws.Connecting
 import com.scalaloader.ws.Disconnected
 import com.scalaloader.ws.TextMessage
 import com.scalaloader.ws.WebSocketClientFactory
-import model.ViewModel
+import taczombie.client.model.ViewModel
 import spray.json.pimpString
 import java.util.concurrent.ExecutionException
-import view.main.IView
+import taczombie.client.view.main.IView
 
 class ViewController(model: ViewModel, view: IView, address: String, port: String = "9000") {
   private var connected = false

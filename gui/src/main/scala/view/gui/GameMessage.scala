@@ -1,4 +1,4 @@
-package view.gui
+package taczombie.client.view.gui
 
 import java.awt.Color
 
@@ -8,8 +8,8 @@ import javax.swing.border.CompoundBorder
 import javax.swing.border.EmptyBorder
 import javax.swing.border.EtchedBorder
 import javax.swing.border.TitledBorder
-import model.ViewModel
-import util.Observer
+import taczombie.client.model.ViewModel
+import taczombie.client.util.Observer
 
 class GameMessage(model: ViewModel) extends Label with Observer {
   focusable = false

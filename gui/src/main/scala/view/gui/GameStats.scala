@@ -1,6 +1,6 @@
-package view.gui
+package taczombie.client.view.gui
 
-import model.ViewModel
+import taczombie.client.model.ViewModel
 
 class GameStats(model: ViewModel) extends HorizontalBoxPanel("GameStats", 300, 220) {
   add(new GameStatLabel(model, "Current Player:", "currentPlayerToken"))

@@ -1,6 +1,6 @@
-package view.main
+package taczombie.client.view.main
 
-import util.Address
+import taczombie.client.util.Address
 import java.util.concurrent.Executors
 
 trait IView {

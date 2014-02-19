@@ -1,9 +1,9 @@
-package view.gui
+package taczombie.client.view.gui
 
 import scala.swing.ListView
 
-import model.ViewModel
-import util.Observer
+import taczombie.client.model.ViewModel
+import taczombie.client.util.Observer
 
 class LogListView(model: ViewModel) extends ListView[String] with Observer {
   focusable = false

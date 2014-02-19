@@ -1,4 +1,4 @@
-package util
+package taczombie.client.util
 
 import scala.language.implicitConversions
 

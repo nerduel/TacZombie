@@ -1,12 +1,12 @@
-package view.gui
+package taczombie.client.view.gui
 
 import scala.swing._
-import util.RegexHelper
+import taczombie.client.util.RegexHelper
 import scala.swing.event.KeyEvent
 import scala.swing.event.KeyPressed
 import scala.swing.event.Key
 import javax.swing.Box
-import util.Address
+import taczombie.client.util.Address
 
 class ConnectDialog extends Dialog {
   var address: Option[Address] = None

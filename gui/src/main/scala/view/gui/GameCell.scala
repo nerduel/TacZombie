@@ -1,10 +1,10 @@
-package view.gui
+package taczombie.client.view.gui
 
 import java.awt.Color
 import javax.swing.BorderFactory
 import javax.swing.ImageIcon
-import model.ViewModel
-import util.Observer
+import taczombie.client.model.ViewModel
+import taczombie.client.util.Observer
 import scala.swing.Swing
 import scala.swing.Alignment
 

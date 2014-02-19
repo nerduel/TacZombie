@@ -9,8 +9,8 @@ import taczombie.model.Coin
 import taczombie.model.Powerup
 import taczombie.model.Wall
 import taczombie.model.GameFactory
-
 import TestObjects._
+import taczombie.model.defaults
 
 class GameFieldCellSpec extends Specification {
   
@@ -116,6 +116,13 @@ class GameFieldCellSpec extends Specification {
     "containsHumanToken return true" in {
       gfc.containsHumanToken must be_==(true)
     }
+    
+    "humanToken must have a coin" in {
+      (gfc.gameObjects.filter(go => go.id == livingHumanToken.id).head match {
+        case human : HumanToken => human.coins
+        case _ => -1
+      }) must be_==(1)
+    }    
   } 
   
   "A living HumanToken MOVED to a cell with a powerup" should {
@@ -133,7 +140,14 @@ class GameFieldCellSpec extends Specification {
     }
     "containsLivingHumanToken return true" in {
       gfc.containsLivingHumanToken must be_==(true)
-    }    
+    }
+    
+    "humanToken must have default powerUpTime" in {
+      (gfc.gameObjects.filter(go => go.id == livingHumanToken.id).head match {
+        case human : HumanToken => human.powerupTime
+        case _ => -1
+      }) must be_==(defaults.powerupTime)
+    } 
   }
     
   "A living HumanToken MOVED to a dead ZombieToken and Powerup" should {
@@ -246,4 +260,68 @@ class GameFieldCellSpec extends Specification {
       gfc.containsLivingZombieToken must be_==(true)
     }        
   }
+    
+  "A living HumanToken gets updated" should {
+    val gfc = emptyGfc.addHere(powerUp)
+    									.moveHere(livingHumanToken)
+    val gfc2 = gfc.updatedWithReplacement(livingHumanToken.updatedDecrementCounters)
+    
+    "isEmpty return false" in {
+      gfc.isEmpty must be_==(false)
+    }  
+    "containsCoin return false" in {
+      gfc.containsCoin must be_==(false)
+    }
+    "containsHumanToken return true" in {
+      gfc.containsHumanToken must be_==(true)
+    }
+    "containsLivingZombieToken return false" in {
+      gfc.containsLivingZombieToken must be_==(false)
+    }
+    "containsLivingHumanToken return true" in {
+      gfc.containsLivingHumanToken must be_==(true)
+    }
+    "containsPowerup return false" in {
+      gfc.containsPowerup must be_==(false)
+    }
+    "containsWall return false" in {
+      gfc.containsWall must be_==(false)
+    }
+    "containsZombieToken return false" in {
+      gfc.containsZombieToken must be_==(false)
+    }   
+  }
+  
+  "A human token and poweredUp Human move to one cell with a dead Human and dead Zombie" should {
+    val gfc = emptyGfc.addHere(powerUp)
+    									.addHere(deadHumanToken)
+    									.addHere(deadZombieToken)
+    									.moveHere(livingHumanToken)
+    									.moveHere(poweredUpHumanToken)
+    
+    "isEmpty return false" in {
+      gfc.isEmpty must be_==(false)
+    }  
+    "containsCoin return false" in {
+      gfc.containsCoin must be_==(false)
+    }
+    "containsHumanToken return true" in {
+      gfc.containsHumanToken must be_==(true)
+    }
+    "containsLivingZombieToken return false" in {
+      gfc.containsLivingZombieToken must be_==(false)
+    }
+    "containsLivingHumanToken return true" in {
+      gfc.containsLivingHumanToken must be_==(true)
+    }
+    "containsPowerup return false" in {
+      gfc.containsPowerup must be_==(false)
+    }
+    "containsWall return false" in {
+      gfc.containsWall must be_==(false)
+    }
+    "containsZombieToken return true" in {
+      gfc.containsZombieToken must be_==(true)
+    }   
+  }  
 }

@@ -1,6 +1,6 @@
 package view.tui
 
-import controller.Communication
+import controller.ViewController
 import model.ViewModel
 import util.Observer
 import view.gui.Address
@@ -11,7 +11,7 @@ import java.util.concurrent.Callable
 import java.util.concurrent.Executor
 import java.util.concurrent.Executors
 
-class Tui(model: ViewModel, controller: Communication) extends Observer with View {
+class Tui(model: ViewModel, controller: ViewController) extends Observer with View {
   model.add(this)
   var continue = true
   var restart = false
@@ -103,18 +103,19 @@ class Tui(model: ViewModel, controller: Communication) extends Observer with Vie
 
     outputBuffer(0)(1) = "Moves remaining:\t" + model.movesRemaining
     outputBuffer(1)(1) = "-------------------------------"
-    outputBuffer(2)(1) = "Current player:\t" + getTokenName(model.currentPlayerTokenAsChar)
+    import util.ViewHelper._
+    outputBuffer(2)(1) = "Current player:\t" + model.currentPlayerToken
     outputBuffer(3)(1) = "Dead Tokens:\t" + model.deadTokens
     outputBuffer(4)(1) = "Total Tokens:\t" + model.totalTokens
-    outputBuffer(5)(1) = if (model.currentPlayerTokenAsChar == 'H') "Lifes:\t\t" + model.lifes
+    outputBuffer(5)(1) = if (model.currentPlayerToken == "Human") "Lifes:\t\t" + model.lifes
     else "Frozen Time:\t" + model.frozenTime
-    outputBuffer(6)(1) = if (model.currentPlayerTokenAsChar == 'H') "Coins collected:\t" + model.coins
+    outputBuffer(6)(1) = if (model.currentPlayerToken == "Human") "Coins collected:\t" + model.coins
     else ""
-    outputBuffer(7)(1) = if (model.currentPlayerTokenAsChar == 'H') "Score:\t\t" + model.score
+    outputBuffer(7)(1) = if (model.currentPlayerToken == "Human") "Score:\t\t" + model.score
     else ""
-    outputBuffer(8)(1) = if (model.currentPlayerTokenAsChar == 'H') "Powerup time:\t" + model.powerUp
+    outputBuffer(8)(1) = if (model.currentPlayerToken == "Human") "Powerup time:\t" + model.powerUp
     else ""
-    outputBuffer(9)(1) = if (model.currentPlayerTokenAsChar == 'H') "Frozen Time:\t" + model.frozenTime
+    outputBuffer(9)(1) = if (model.currentPlayerToken == "Human") "Frozen Time:\t" + model.frozenTime
     else ""
 
     println("----------------------------------|----------------------------------")
@@ -148,14 +149,6 @@ class Tui(model: ViewModel, controller: Communication) extends Observer with Vie
         }
       }
       println
-    }
-  }
-
-  def getTokenName(token: Char): String = {
-    token match {
-      case 'H' => return "Human"
-      case 'Z' => return "Zombie"
-      case _ => return "Unknown"
     }
   }
 

@@ -1,6 +1,6 @@
 package view.main
 
-import controller.Communication
+import controller.ViewController
 import model.ViewModel
 import util.RegexHelper
 import view.gui.Address
@@ -14,7 +14,7 @@ trait Main {
   var view: View = null
   var address: Address = null
   var model: ViewModel = null
-  var controller: Communication = null
+  var controller: ViewController = null
 
   def main(args: Array[String]) {
     show
@@ -28,7 +28,7 @@ object GUI extends Main {
   def show {
     address = new ConnectDialog().address.getOrElse(throw new IllegalStateException("Please provide IP Address!"))
     model = new ViewModel
-    controller = new Communication(model, this, address.toString)
+    controller = new ViewController(model, this, address.toString)
     view = new Gui(model, controller)
     view.asInstanceOf[Gui].open
   }
@@ -48,7 +48,7 @@ object TUI extends Main {
     while (restart) {
       address = askForAddress()
       model = new ViewModel
-      controller = new Communication(model, this, address.toString)
+      controller = new ViewController(model, this, address.toString)
       view = new Tui(model, controller)
       restart = view.asInstanceOf[Tui].open
     }

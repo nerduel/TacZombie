@@ -15,6 +15,7 @@ case object gameUpdated extends Event
 class ViewModel extends Observable {
   var cmd = ""
   var gameState = " "
+  var currentPlayerToken = " "
   var currentPlayerTokenAsChar = ' '
   var deadTokens = 0
   var totalTokens = 0
@@ -40,7 +41,7 @@ class ViewModel extends Observable {
   }
   
   import taczombie.model.util.JsonHelper.GameDataJsonProtocol._
-  def toData(json: JsValue) {
+  private def toData(json: JsValue) {
     val data: Data = json.convertTo[Data]
     val gameData = data.gameData.convertTo[GameData]
     val updatedCells = data.cells.convertTo[List[Cell]]
@@ -57,6 +58,8 @@ class ViewModel extends Observable {
     cmd = data.cmd
     gameState = gameData.gameState.toString()
     currentPlayerTokenAsChar = gameData.currentPlayer
+    import util.ViewHelper._
+    currentPlayerToken = currentPlayerTokenAsChar.toName
     lifes = gameData.lifes
     totalTokens = gameData.totalTokens
     deadTokens = gameData.deadTokens
@@ -73,7 +76,7 @@ class ViewModel extends Observable {
   }
   
   import taczombie.model.util.JsonHelper.ErrorJsonProtocol._
-  def toError(json: JsValue) {
+  private def toError(json: JsValue) {
     val error : Error = json.convertTo[Error]
     gameMessage = error.message
     

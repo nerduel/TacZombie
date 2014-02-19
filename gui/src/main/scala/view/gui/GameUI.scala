@@ -5,7 +5,7 @@ import scala.swing.FlowPanel
 import scala.swing.Label
 import scala.swing.event.Key
 import scala.swing.event.KeyPressed
-import controller.Communication
+import controller.ViewController
 import model.ViewModel
 import util.Observer
 import scala.swing.ScrollPane
@@ -17,7 +17,7 @@ import javax.swing.border.TitledBorder
 import javax.swing.border.EtchedBorder
 import javax.swing.border.EmptyBorder
 
-class GameUI(gui: Gui, model: ViewModel, controller: Communication) extends BorderPanel with Observer {
+class GameUI(gui: Gui, model: ViewModel, controller: ViewController) extends BorderPanel with Observer {
   focusable = true
   model.add(this)
 

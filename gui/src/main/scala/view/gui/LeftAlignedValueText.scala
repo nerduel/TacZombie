@@ -1,9 +1,18 @@
 package view.gui
 
-import scala.swing._
+import scala.swing.Alignment
+import scala.swing.BorderPanel
+import scala.swing.Label
 
-class LeftAlignedValueText(text: String, value: String) extends BorderPanel {
-  focusable = false
+import model.ViewModel
+import util.Observer
+
+class LeftAlignedValueText(model: ViewModel, text: String,
+  property: String, visibleWhenZombie: Boolean = true)
+  extends BorderPanel with Observer {
+
+  model.add(this)
+
   private var labelText = new Label(text.padTo(18, ' ')) {
     horizontalTextPosition = Alignment.Left
   }
@@ -12,10 +21,24 @@ class LeftAlignedValueText(text: String, value: String) extends BorderPanel {
     horizontalTextPosition = Alignment.Right
   }
 
-  def update(value: String) {
-    labelValue.text = value.reverse.padTo(5, ' ').reverse
-  }
-
   add(labelText, BorderPanel.Position.West)
   add(labelValue, BorderPanel.Position.East)
+
+  def update {
+    labelValue.text = value.reverse.padTo(5, ' ').reverse
+
+    if (model.currentPlayerToken == "Zombie" && !visibleWhenZombie) {
+      labelText.visible = false
+      labelValue.visible = false
+    } else {
+      labelText.visible = true
+      labelValue.visible = true
+    }
+  }
+
+  private def value: String = {
+    val mthd = model.getClass.getMethods.find(_.getName.contains(property)).get
+    val value = mthd.invoke(model).toString()
+    return value
+  }
 }

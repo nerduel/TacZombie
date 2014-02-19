@@ -8,15 +8,14 @@ import com.scalaloader.ws.WebSocketClientFactory
 import model.ViewModel
 import spray.json.pimpString
 import view.main.Main
-import java.util.concurrent.TimeUnit
 import java.util.concurrent.ExecutionException
 
-class Communication(model: ViewModel, main: Main, address: String, port: String = "9000") {
+class ViewController(model: ViewModel, main: Main, address: String, port: String = "9000") {
   private var connected = false
   val wsFactory = WebSocketClientFactory(1)
   private val wsUri = new java.net.URI("ws://" + address + ":" + port + "/broadcast")
 
-  private val wsClient = wsFactory.newClient(wsUri) {
+  private val wsClient = wsFactory.newClient(wsUri) ({
     case Connecting =>
       println("Connecting")
     case Disconnected(_, reason) =>
@@ -31,8 +30,9 @@ class Communication(model: ViewModel, main: Main, address: String, port: String 
       println("Connected")
       connected = true
     case _ =>
-      println _
-  }
+      
+        println _
+  })
 
   def moveUp = send("moveUp")
   def moveDown = send("moveDown")

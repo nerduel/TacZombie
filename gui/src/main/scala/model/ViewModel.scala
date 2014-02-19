@@ -31,14 +31,13 @@ class ViewModel extends Observable {
   var log = List[String]()
   var gameMessage = " "
 
-  def toObject(json: JsValue)
-  {
-    if(json.toString.contains("all") || json.toString.contains("updated"))
+  def toObject(json: JsValue) {
+    if (json.toString.contains("all") || json.toString.contains("updated"))
       toData(json)
-    else if(json.toString.contains("error"))
+    else if (json.toString.contains("error"))
       toError(json)
   }
-  
+
   import taczombie.model.util.JsonHelper.GameDataJsonProtocol._
   private def toData(json: JsValue) {
     val data: Data = json.convertTo[Data]
@@ -72,12 +71,12 @@ class ViewModel extends Observable {
 
     notifyObservers
   }
-  
+
   import taczombie.model.util.JsonHelper.ErrorJsonProtocol._
   private def toError(json: JsValue) {
-    val error : Error = json.convertTo[Error]
+    val error: Error = json.convertTo[Error]
     gameMessage = error.message
-    
+
     notifyObservers
   }
 }

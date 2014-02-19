@@ -15,7 +15,7 @@ class ViewController(model: ViewModel, main: Main, address: String, port: String
   val wsFactory = WebSocketClientFactory(1)
   private val wsUri = new java.net.URI("ws://" + address + ":" + port + "/broadcast")
 
-  private val wsClient = wsFactory.newClient(wsUri) ({
+  private val wsClient = wsFactory.newClient(wsUri)({
     case Connecting =>
       println("Connecting")
     case Disconnected(_, reason) =>
@@ -30,8 +30,8 @@ class ViewController(model: ViewModel, main: Main, address: String, port: String
       println("Connected")
       connected = true
     case _ =>
-      
-        println _
+
+      println _
   })
 
   def moveUp = send("moveUp")

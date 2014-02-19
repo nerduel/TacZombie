@@ -8,7 +8,7 @@ object ViewHelper {
     new charName2Helper(token)
 
   class charName2Helper(token: Char) {
-    def toName : String = {
+    def toName: String = {
       token match {
         case 'H' => return "Human"
         case 'Z' => return "Zombie"

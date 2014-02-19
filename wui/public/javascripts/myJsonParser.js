@@ -25,10 +25,11 @@ function onOpen(evt) {
 }
 
 function onClose(evt) {
+	alert("Connection to " + myUrl + " was closed.");
 }
 
 function onError(evt) {
-	alert("ERROR");
+	alert("Something went wrong with the connection to " + myUrl + ". " + evt.data);
 }
 
 function onMessage(evt) {
@@ -175,14 +176,14 @@ function updateView(data) {
 		propagateState(data.gameData.gameState, data.gameData.score);
 	}
 
-	for (var i in data.cells) {
+	for ( var i in data.cells) {
 		updateCell(data.cells[i]);
 	}
-	
-	for (var i in data.humanTokens) {
+
+	for ( var i in data.humanTokens) {
 		changeHuman(data.humanTokens[i])
 	}
-	
+
 }
 
 function clearGameData(obj) {
@@ -216,23 +217,22 @@ function changeElement(id, style, content) {
 function changeHuman(hToken) {
 	var cellId = (hToken.x + "," + hToken.y).toString();
 	var cellNode = document.getElementById(cellId);
-	
-	switch(hToken.powerUp) {
+
+	switch (hToken.powerUp) {
 	case true:
 		if (cellNode.className == "human")
 			cellNode.className = "humanPowerup"
 		else
 			cellNode.className = "hHumanPowerup"
 		break;
-		
+
 	case false:
 		if (cellNode.className == "hHuman")
 			cellNode.className = "hHuman"
 		break;
 	}
-	
-}
 
+}
 
 function updateCell(cell) {
 	var cellId = (cell.x + "," + cell.y).toString();
@@ -292,7 +292,9 @@ function handleKeyEvent(evt) {
 	var restartGame = 82; // r
 
 	var textBox = document.getElementById("userInput");
+	var evt = window.event || evt;
 	var charCode = (evt.which) ? evt.which : evt.keyCode;
+
 	switch (charCode) {
 	case left:
 		doSend("moveLeft");
@@ -345,8 +347,26 @@ function doSend(command) {
 	websocket.send(command);
 }
 
-var myUrl = document.URL.replace("http://","");
-var wsUri = "ws://"+ myUrl +"broadcast";
+var myUrl = document.URL.replace("http://", "");
+var wsUri = "ws://" + myUrl + "broadcast";
 var grid;
 var logCounter = 0;
 window.addEventListener("load", init, false);
+
+if (window.addEventListener) {
+	window.addEventListener("keydown", function(evt) {
+		if ([ 37, 38, 39, 40 ].indexOf(evt.keyCode) > -1) {
+			evt.preventDefault();
+		}
+		handleKeyEvent(evt);
+	});
+}
+
+if (document.body && document.body.attachEvent) {
+	document.body.attachEvent("onkeydown", function(evt) {
+		if ([ 37, 38, 39, 40 ].indexOf(evt.keyCode) > -1) {
+			evt.preventDefault();
+		}
+		handleKeyEvent(evt);
+	});// IE
+}

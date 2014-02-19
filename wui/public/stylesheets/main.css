@@ -105,17 +105,20 @@ div#gameField table#grid td.hEmpty {
 	background-image: URL("/assets/images/hEmpty.png");
 }
 
-div#rightBox {
-	float: left;
+div#gameInfo {
+	display: block;
 	margin-left: 2em;
+	margin-top: 0.1em;
 	vertical-align: middle;
+	float: left;
 	padding: 0 0em;
 }
 
-div#gameInfo {
-	display: inline-block;
-	float: left;
-	padding: 0 0em;
+div#gameInput {
+	display: block;
+	vertical-align: middle;
+  float: left;
+  padding: 0 0em;
 }
 
 div#dividerH {
@@ -173,7 +176,7 @@ div#logger {
 	display: inline-block;
 	float: left;
 	margin-left: 2em;
-	margin-top: -3.4em;
+	margin-top: -1em;
 	padding: 0 0em;
 }
 
@@ -187,13 +190,25 @@ div#logger textarea {
 	resize: none;
 }
 
-div#clear {
-	clear: both;
+div#keyOutput {
+	display: inline-block;
+  float: left;
+  margin-left: 2em;
+  padding: 0 0em;
 }
 
-input#gameInput {
-	margin-left: 0.1em;
-	margin-top: 1.2em;
+div#keyOutput p {
+  color: #999999;
+}
+
+div#keyOutput input {
+  width: 20.5em;
+  margin-top: -1em;
+  resize: none;
+}
+
+div#clear {
+	clear: both;
 }
 
 #footer {

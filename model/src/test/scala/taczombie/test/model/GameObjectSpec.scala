@@ -106,11 +106,11 @@ class GameObjectSpec extends Specification {
     "coin must be gone" in {
       (resultTuple._1 == null) must be_==(true)
     }
-    "HumanToken with Coins > 0" in {
-    	(resultTuple._2.asInstanceOf[HumanToken].coins > 0) must be_==(true)
+    "HumanToken with coin 1" in {
+    	resultTuple._2.asInstanceOf[HumanToken].coins must be_==(1)
     }
-    "HumanToken with Score > 0" in {
-    	(resultTuple._2.asInstanceOf[HumanToken].score > 0) must be_==(true)
+    "HumanToken with score 1" in {
+    	resultTuple._2.asInstanceOf[HumanToken].score must be_==(1)
     }    
   }
   

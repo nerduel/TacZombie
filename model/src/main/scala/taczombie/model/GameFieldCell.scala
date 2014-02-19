@@ -85,15 +85,15 @@ class GameFieldCell(val coords : (Int, Int),
     
     val fightResultTuple = evaluateVisit(updatedVisitorPlayerToken,
         																 hostLivingPlayerTokens.toSet)
-    updatedHostObjects ++= fightResultTuple._1		
-    updatedVisitorPlayerToken = fightResultTuple._2
+    updatedVisitorPlayerToken = fightResultTuple._1
+    updatedHostObjects ++= fightResultTuple._2	
     
     // only living visitors can get the collectables
     if( ! updatedVisitorPlayerToken.dead) {
     	val collectableResultTuple = evaluateVisit(updatedVisitorPlayerToken,
     	    																			 collectableHostObjects.toSet)
-    	updatedHostObjects ++= collectableResultTuple._1
-    	updatedVisitorPlayerToken = collectableResultTuple._2
+    	updatedVisitorPlayerToken = collectableResultTuple._1
+    	updatedHostObjects ++= collectableResultTuple._2
     } else {
       updatedHostObjects ++= collectableHostObjects 
     }
@@ -103,21 +103,22 @@ class GameFieldCell(val coords : (Int, Int),
   }
   
   private def evaluateVisit(visitor : PlayerToken, visitedObjects : Set[VersatileGameObject]) 
-  	 : (Set[VersatileGameObject],PlayerToken) =	{
+  	 : (PlayerToken,Set[VersatileGameObject]) =	{
     var updatedVisitor = visitor
     val updatedVisitedObjects = scala.collection.mutable.HashSet[VersatileGameObject]()
     for(visitedObject <- visitedObjects) {
-      visitedObject match {case hostLivingEnemy : VersatileGameObject =>
       visitedObject isVisitedBy updatedVisitor match {
-        case (hostLivingEnemyResult : VersatileGameObject,
-            		 updatedVisitorPlayerTokenResult : PlayerToken) => {
-            	  
-	        updatedVisitedObjects += hostLivingEnemyResult
+        case (null, updatedVisitorPlayerTokenResult : PlayerToken) => 
 	        updatedVisitor = updatedVisitorPlayerTokenResult
-        } case _ => logger += ("Unexpected match")
-      } case _ => logger += ("Unexpected match")}
+	        
+	      case (visitedObject, updatedVisitorPlayerTokenResult : PlayerToken) =>
+	        updatedVisitor = updatedVisitorPlayerTokenResult
+	        updatedVisitedObjects += visitedObject  
+              
+    		case _ => logger += ("Unexpected match")
+      }
     }
-    return (updatedVisitedObjects.toSet, updatedVisitor)
+    return (updatedVisitor, updatedVisitedObjects.toSet)
   }
   
   /**

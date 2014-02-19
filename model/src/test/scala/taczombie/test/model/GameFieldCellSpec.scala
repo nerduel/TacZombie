@@ -9,8 +9,8 @@ import taczombie.model.Coin
 import taczombie.model.Powerup
 import taczombie.model.Wall
 import taczombie.model.GameFactory
-
 import TestObjects._
+import taczombie.model.defaults
 
 class GameFieldCellSpec extends Specification {
   
@@ -116,6 +116,13 @@ class GameFieldCellSpec extends Specification {
     "containsHumanToken return true" in {
       gfc.containsHumanToken must be_==(true)
     }
+    
+    "humanToken must have a coin" in {
+      (gfc.gameObjects.filter(go => go.id == livingHumanToken.id).head match {
+        case human : HumanToken => human.coins
+        case _ => -1
+      }) must be_==(1)
+    }    
   } 
   
   "A living HumanToken MOVED to a cell with a powerup" should {
@@ -133,7 +140,14 @@ class GameFieldCellSpec extends Specification {
     }
     "containsLivingHumanToken return true" in {
       gfc.containsLivingHumanToken must be_==(true)
-    }    
+    }
+    
+    "humanToken must have default powerUpTime" in {
+      (gfc.gameObjects.filter(go => go.id == livingHumanToken.id).head match {
+        case human : HumanToken => human.powerupTime
+        case _ => -1
+      }) must be_==(defaults.powerupTime)
+    } 
   }
     
   "A living HumanToken MOVED to a dead ZombieToken and Powerup" should {

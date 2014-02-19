@@ -1,9 +1,7 @@
 package taczombie.client.view.gui
 
 import java.awt.Dimension
-
 import scala.swing.ScrollPane
-
 import javax.swing.border.CompoundBorder
 import javax.swing.border.EmptyBorder
 import javax.swing.border.EtchedBorder

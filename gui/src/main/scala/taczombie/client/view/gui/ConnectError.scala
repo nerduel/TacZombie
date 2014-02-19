@@ -1,7 +1,7 @@
 package taczombie.client.view.gui
 
-import scala.swing.Dialog
 import scala.swing.Component
+import scala.swing.Dialog
 
 class ConnectError(gui: Gui) extends Component {
 

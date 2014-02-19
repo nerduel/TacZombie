@@ -1,19 +1,11 @@
 package taczombie.client.view.gui
 
-import scala.swing.BorderPanel
+import scala.swing.BoxPanel
 import scala.swing.Button
-import scala.swing.event.MouseClicked
+import scala.swing.Orientation
+
 import taczombie.client.controller.ViewController
 import taczombie.client.model.ViewModel
-import scala.swing.Action
-import scala.swing.event.Event
-import scala.swing.BoxPanel
-import scala.swing.Orientation
-import scala.swing.Swing
-import java.awt.Dimension
-import scala.swing._
-import javax.swing.border._
-import scala.swing.GridBagPanel._
 
 class GameCommands(gui: Gui, model: ViewModel, controller: ViewController) extends BoxPanel(Orientation.Vertical) {
   focusable = false

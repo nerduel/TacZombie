@@ -1,7 +1,6 @@
 package taczombie.client.view.gui
 
 import taczombie.client.model.ViewModel
-import taczombie.model.util.JsonHelper.Cell
 
 class GameField(model: ViewModel) extends swing.GridPanel(model.levelWidth, model.levelHeight) {
   focusable = false

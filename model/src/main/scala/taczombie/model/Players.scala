@@ -2,22 +2,26 @@ package taczombie.model
 
 
 
-class Players(val playerList : List[Player]) {
-    
+class Players(val playerList : List[Player] = List[Player]()) {
+  
   def currentPlayer() : Player = playerList.head
   
-  def getPlayerByName(name : String) : Player = 
-    playerList.filter(player => player.name.equals(name)).head
+  def getPlayerByName(name : String) : Player = {
+    val filteredPlayers = playerList.filter(player => player.name.equals(name))
+    if(filteredPlayers.size > 0)
+      filteredPlayers.head
+    else null
+  }
   
   def nextPlayer() : Player = { 
-    if(playerList.size == 0) null // TODO exception
-    if(playerList.size == 1) playerList.head
-    else playerList.apply(2)
+    if(playerList.size == 0) return null // TODO exception
+    else if(playerList.size == 1) return playerList.head
+    else playerList.tail.head
   }
   
   def updatedWithNewPlayer(player : Player) : Players = {
     if(!playerList.contains(player))
-      new Players(playerList.+:(player))
+      new Players(playerList ::: player :: Nil)
     else this
   }
   
@@ -26,7 +30,7 @@ class Players(val playerList : List[Player]) {
       val index = playerList.indexOf(getPlayerByName(player.name))
       new Players(playerList.updated(index, player))
     } 
-    else null // TODO exception empty list
+    else this
   }
   
   def updatedRotatedPlayers() : Players = {

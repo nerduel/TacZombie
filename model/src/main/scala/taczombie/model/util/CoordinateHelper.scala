@@ -29,12 +29,12 @@ object CoordinateHelper {
         (tuple._1 * factor, tuple._2 * factor)
     }
     
-    def <(rVal : (Int,Int)) : Boolean = {
+    def isUpperLeftOf(rVal : (Int,Int)) : Boolean = {
     	tuple._1 < rVal._1 &&
     	tuple._2 < rVal._2
     }
     
-    def >(rVal : (Int,Int)) : Boolean = {
+    def isLowerRightOf(rVal : (Int,Int)) : Boolean = {
     	tuple._1 > rVal._1 &&
     	tuple._2 > rVal._2
     }
@@ -47,7 +47,7 @@ object CoordinateHelper {
       for (step <- 0 until range) {
         val nextVisits = for {
           pos <- toVisit
-          neighbours <- getNeighbours(pos, pathList.toList, g.gameField)
+          neighbours <- pos.getNeighbours(pathList.toList, g.gameField)
         } yield neighbours
 
         pathList ++= nextVisits
@@ -57,13 +57,13 @@ object CoordinateHelper {
       pathList.toList
     }
     
-    def getNeighbours(startPoint : (Int,Int), alreadyVisited : List[(Int, Int)], gF : GameField) = {
+    def getNeighbours(alreadyVisited : List[(Int, Int)], gF : GameField) = {
         // von Neumann neighborhood, East, South, West, North
         val neighbours = 
-          ListBuffer(startPoint.rightOf) ++
-          ListBuffer(startPoint.belowOf) ++
-          ListBuffer(startPoint.leftOf) ++
-          ListBuffer(startPoint.aboveOf)
+          ListBuffer(tuple.rightOf) ++
+          ListBuffer(tuple.belowOf) ++
+          ListBuffer(tuple.leftOf) ++
+          ListBuffer(tuple.aboveOf)
   
         for (
             n <- neighbours.toList;

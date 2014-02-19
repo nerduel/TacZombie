@@ -82,18 +82,4 @@ class LevelCreatorSpec extends Specification {
       test10GeneratedMaps(21, 21).filter(_ == true).size must be_==(10)
     }
   }
-
-  "Every walkable field of a generated level (21x19)" should {
-    "be visitable from each walkable position (10 times)" in {
-
-      test10GeneratedMaps(21, 19).filter(_ == true).size must be_==(10)
-    }
-  }
-
-  "Every walkable field of a generated level (25x23)" should {
-    "be visitable from each walkable position (10 times)" in {
-
-      test10GeneratedMaps(25, 23).filter(_ == true).size must be_==(10)
-    }
-  }
 }

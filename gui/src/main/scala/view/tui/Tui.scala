@@ -12,15 +12,11 @@ import view.main.IView
 import view.main.Main
 import util.Address
 
-class Tui(val main: Main) extends Observer with IView {
+class Tui extends Observer with IView {
   val address: Address = askForAddress
   val model: ViewModel = new ViewModel
   model.add(this)
-  val controller: ViewController = new ViewController(model, main, address.toString)
-
-  var continue = true
-  var restart = false
-  val pool = Executors.newFixedThreadPool(1);
+  val controller: ViewController = new ViewController(model, this, address.toString)
 
   val arrowKeyLeft = '\033' :: '[' :: 'D' :: Nil
   val arrowKeyUp = '\033' :: '[' :: 'A' :: Nil
@@ -48,6 +44,7 @@ class Tui(val main: Main) extends Observer with IView {
           case `arrowKeyRight` =>
             controller.moveRight
           case 'q' :: Nil =>
+            restart = false
             continue = false
             controller.disconnect
           case 'm' :: Nil =>
@@ -68,22 +65,27 @@ class Tui(val main: Main) extends Observer with IView {
     }
   }
 
-  def open = {
+  def open {
+    println("\nWelcome to TacZombie!")
+    update
+  }
+
+  def runBlocking: Boolean = {
     if (controller.connect) {
       pool.submit(future)
-      println("\nWelcome to TacZombie!")
-      update
 
       // Wait for future to return.
       val ret = future.get
       controller.close
       pool.shutdownNow()
+      return restart
     } else {
       controller.close
+      return restart
     }
   }
 
-  def dispose {
+  def stop {
     println(Console.RED_B + "[CONSOLEFIX] Need to press [ENTER]!" + Console.RESET)
     restart = true
     continue = false

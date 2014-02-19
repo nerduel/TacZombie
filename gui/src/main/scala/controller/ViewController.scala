@@ -7,10 +7,10 @@ import com.scalaloader.ws.TextMessage
 import com.scalaloader.ws.WebSocketClientFactory
 import model.ViewModel
 import spray.json.pimpString
-import view.main.Main
 import java.util.concurrent.ExecutionException
+import view.main.IView
 
-class ViewController(model: ViewModel, main: Main, address: String, port: String = "9000") {
+class ViewController(model: ViewModel, view: IView, address: String, port: String = "9000") {
   private var connected = false
   val wsFactory = WebSocketClientFactory(1)
   private val wsUri = new java.net.URI("ws://" + address + ":" + port + "/broadcast")
@@ -22,7 +22,7 @@ class ViewController(model: ViewModel, main: Main, address: String, port: String
       println("Disconnected with reason: " + reason)
       if (connected != false) {
         connected = false
-        main.reconnect
+        view.stop
       }
     case TextMessage(_, data) =>
       handleInput(data)

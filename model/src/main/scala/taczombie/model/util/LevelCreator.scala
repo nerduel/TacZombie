@@ -4,7 +4,7 @@ import scala.util.Random
 import CoordinateHelper._
 import scala.language.implicitConversions
 
-private object LevelHelper {
+object LevelHelper {
   val path = " "
   val wall = "#"
   val zombieBase = "Z"
@@ -69,7 +69,7 @@ private object LevelHelper {
     val id = tuple._2
     val height = tuple._1.size
     val xAxis = height / 2
-    val width = tuple._1.length
+    val width = tuple._1(0).length
     val yAxis = width / 2
 
     def copyIntoEachQuadrant = {
@@ -192,7 +192,13 @@ class LevelCreator {
         }
       }
     }
-
+    
+    for (row <- 0 to rInterval._2)
+      field.addWall(row, 0).copyIntoEachQuadrant
+      
+    for (col <- 0 to cInterval._2)
+      field.addWall(0, col).copyIntoEachQuadrant
+    
     addPowerups
     
     for (i <- 0  until amountHumans)

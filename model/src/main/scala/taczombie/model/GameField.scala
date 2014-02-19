@@ -137,18 +137,10 @@ class GameField(val id : String,
     do 
       randomCoords = (rand.nextInt(levelHeight), rand.nextInt(levelWidth))
     while (
-      gameFieldCells.apply(randomCoords).containsWall || (
-      playerToken match {
-        case humanToken : HumanToken => { 
-        	gameFieldCells.apply(randomCoords).containsLivingZombieToken
-        }
-        case zombieToken : ZombieToken => { 
-          gameFieldCells.apply(randomCoords).containsLivingHumanToken
-        }
-      })
+      !isValid(randomCoords) || gameFieldCells.apply(randomCoords).containsWall
+       || gameFieldCells.apply(randomCoords).containsLivingZombieToken
+       || gameFieldCells.apply(randomCoords).containsLivingHumanToken
     )
-
-      
     randomCoords
   }
   

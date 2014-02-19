@@ -47,7 +47,7 @@ class ViewModel extends Observable {
     val updatedCells = data.cells.convertTo[List[Cell]]
 
     updatedCells.foreach { x =>
-      cells += (x.x, x.y) -> (x.token, x.isHiglighted)
+      cells += (x.x, x.y) -> (x.token, x.isHighlighted)
     }
 
     val humanTokensTmp = data.humanTokens.convertTo[List[HumanTokens]]

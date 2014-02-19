@@ -1,6 +1,7 @@
 package taczombie.test.model
 
 import org.specs2.mutable.Specification
+import taczombie.model.GameFactory
 
 class GameFieldSpec extends Specification {
 	"For a manually created gameField" should {
@@ -31,6 +32,9 @@ class GameFieldSpec extends Specification {
 	    val postPoweruptime = h1.currentToken(updatedGf).powerupTime
 	    postPoweruptime must be_==(prePoweruptime-1)
 	  }
-	  
+	}
+	
+	"For a gameField generated from a correct TestLevel" should {
+	  //val game = GameFactory.newGame(random = false, humans = 2, zombies = 4)
 	}
 }

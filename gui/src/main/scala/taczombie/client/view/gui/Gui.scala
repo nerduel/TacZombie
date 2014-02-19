@@ -1,13 +1,13 @@
 package taczombie.client.view.gui
 
+import java.util.concurrent.Callable
+import java.util.concurrent.FutureTask
+
 import taczombie.client.controller.ViewController
 import taczombie.client.model.ViewModel
 import taczombie.client.util.Address
 import taczombie.client.util.Observer
 import taczombie.client.view.main.IView
-import taczombie.client.view.main.Main
-import java.util.concurrent.FutureTask
-import java.util.concurrent.Callable
 
 class Gui extends swing.Frame with Observer with IView {
   title = "TacZombie"

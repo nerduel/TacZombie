@@ -1,7 +1,6 @@
 package taczombie.client.view.gui
 
 import java.awt.Color
-import javax.swing.BorderFactory
 import javax.swing.ImageIcon
 import taczombie.client.model.ViewModel
 import taczombie.client.util.Observer

@@ -2,20 +2,13 @@ package taczombie.client.view.gui
 
 import scala.swing.BorderPanel
 import scala.swing.FlowPanel
-import scala.swing.Label
 import scala.swing.event.Key
 import scala.swing.event.KeyPressed
 import taczombie.client.controller.ViewController
 import taczombie.client.model.ViewModel
 import taczombie.client.util.Observer
-import scala.swing.ScrollPane
-import scala.swing.Separator
 import scala.swing.Orientation
 import scala.swing.BoxPanel
-import javax.swing.border.CompoundBorder
-import javax.swing.border.TitledBorder
-import javax.swing.border.EtchedBorder
-import javax.swing.border.EmptyBorder
 
 class GameUI(gui: Gui, model: ViewModel, controller: ViewController) extends BorderPanel with Observer {
   focusable = true

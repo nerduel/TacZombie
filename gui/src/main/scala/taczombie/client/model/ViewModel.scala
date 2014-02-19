@@ -2,13 +2,15 @@ package taczombie.client.model
 
 import taczombie.model.util.JsonHelper._
 import taczombie.client.util.Observable
-import spray.json.DefaultJsonProtocol
 import spray.json._
-import DefaultJsonProtocol._
-import taczombie.model.GameState
-import scala.swing.Publisher
+import spray.json.DefaultJsonProtocol._
 import scala.swing.event.Event
 import scala.collection.SortedMap
+import taczombie.client.util.ViewHelper.charName2Wrapper
+import taczombie.model.util.JsonHelper.ErrorJsonProtocol.ErrorFormat
+import taczombie.model.util.JsonHelper.GameDataJsonProtocol.DataFormat
+import taczombie.model.util.JsonHelper.GameDataJsonProtocol.GameDataFormat
+import taczombie.model.util.JsonHelper.GameDataJsonProtocol.listFormat
 
 case object gameUpdated extends Event
 

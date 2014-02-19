@@ -1,16 +1,14 @@
 package taczombie.client.view.tui
 
 import java.util.concurrent.Callable
-import java.util.concurrent.Executors
 import java.util.concurrent.FutureTask
-import com.google.inject.Inject
 import taczombie.client.controller.ViewController
 import taczombie.client.model.ViewModel
 import taczombie.client.util.Observer
 import taczombie.client.util.RegexHelper
 import taczombie.client.view.main.IView
-import taczombie.client.view.main.Main
 import taczombie.client.util.Address
+import taczombie.client.util.RegexHelper
 
 class Tui extends Observer with IView {
   val address: Address = askForAddress

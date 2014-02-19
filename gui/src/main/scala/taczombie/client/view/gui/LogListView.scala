@@ -1,7 +1,6 @@
 package taczombie.client.view.gui
 
 import scala.swing.ListView
-
 import taczombie.client.model.ViewModel
 import taczombie.client.util.Observer
 

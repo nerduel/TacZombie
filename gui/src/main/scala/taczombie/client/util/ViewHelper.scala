@@ -1,7 +1,5 @@
 package taczombie.client.util
 
-import scala.language.implicitConversions
-
 object ViewHelper {
 
   implicit def charName2Wrapper(token: Char) =

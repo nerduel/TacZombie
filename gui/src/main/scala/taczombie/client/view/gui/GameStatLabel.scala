@@ -3,7 +3,6 @@ package taczombie.client.view.gui
 import scala.swing.Alignment
 import scala.swing.BorderPanel
 import scala.swing.Label
-
 import taczombie.client.model.ViewModel
 import taczombie.client.util.Observer
 

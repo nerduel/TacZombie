@@ -1,11 +1,9 @@
 package taczombie.client.view.gui
 
 import java.awt.Dimension
-
 import scala.swing.BoxPanel
 import scala.swing.Component
 import scala.swing.Orientation
-
 import javax.swing.border.CompoundBorder
 import javax.swing.border.EmptyBorder
 import javax.swing.border.EtchedBorder

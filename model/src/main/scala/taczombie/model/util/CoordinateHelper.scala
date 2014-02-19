@@ -12,7 +12,6 @@ object CoordinateHelper {
       new IntIntTuple2Helper(tuple)  
   
   class IntIntTuple2Helper(tuple : (Int,Int)) {
-    
     def leftOf : (Int,Int) = (tuple._1, tuple._2 - 1)
     def rightOf : (Int,Int) = (tuple._1, tuple._2 + 1)
     def aboveOf : (Int,Int) = (tuple._1 - 1, tuple._2)
@@ -72,5 +71,5 @@ object CoordinateHelper {
             if (!gF.gameFieldCells(n).containsWall)
         ) yield n
     }      
-	}
+  }
 }

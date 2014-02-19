@@ -119,13 +119,23 @@ object GameFactory {
       }
     }
     
+    // check if we enough human bases for humans
+    val missingHumans = humanTokenCount-humanTokenIds.size
+    for(i <- (0 until missingHumans)) {
+      val humanToken = new HumanToken(this.generateId, (humanBase))
+      humanTokenIds.+=(humanToken.id)
+      gameFieldCells.update(humanBase, gameFieldCells.apply(humanBase)
+          																					 .addHere(humanToken))
+    }
+    
     // Create the player map with a human and a zombie player with tokens
     // TODO: make this scalable for more players
-    var players : Players = new Players(List[Player]())
+    var players : Players = new Players()
+    
+    val humanId = defaults.defaultHumanName + this.generateId
+    players = players.updatedWithNewPlayer(new Human(humanId, humanTokenIds.toList))    
     val zombieId = defaults.defaultZombieName + this.generateId
     players = players.updatedWithNewPlayer(new Zombie(zombieId, zombieTokenIds.toList))
-    val humanId = defaults.defaultHumanName + this.generateId
-    players = players.updatedWithNewPlayer(new Human(humanId, humanTokenIds.toList))
     
     val gameField = new GameField(gameName,
                 gameFieldCells.toMap,

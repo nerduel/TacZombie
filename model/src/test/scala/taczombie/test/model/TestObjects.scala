@@ -80,5 +80,9 @@ object TestObjects {
   
   val gameField = new GameField(""+GameFactory.generateId, gameFieldCells, 10, 10, coordsHumans, coordsZombie, 0)  
   
+  val testfile_correct = getClass().getResource("/TestLevel_correct")
+  val testfile_incorrect = getClass().getResource("/TestLevel_incorrect")
+  val testfile_incorrect2 = getClass().getResource("/TestLevel_incorrect2")
+  
   val players = new Players(List[Player](human, zombie))
 }

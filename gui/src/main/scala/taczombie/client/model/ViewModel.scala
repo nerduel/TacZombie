@@ -59,6 +59,7 @@ class ViewModel extends Observable {
     gameState = gameData.gameState.toString()
     import taczombie.client.util.ViewHelper._
     currentPlayerToken = gameData.currentPlayer.toName
+    coins = gameData.coins
     lifes = gameData.lifes
     totalTokens = gameData.totalTokens
     deadTokens = gameData.deadTokens

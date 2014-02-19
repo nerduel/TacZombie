@@ -43,16 +43,18 @@ class GameFactorySpec extends Specification {
       game.gameState must be_==(GameState.InGame)     
     }
     
-    val testGame = GameFactory.newGame(random = false, 
-      file = TestObjects.testfile_correct.getFile(), humans = 2, zombies = 4)    
+    val gametestLevel = GameFactory.newGame(random = false, 
+      file = TestObjects.testfile_gametest.getFile(), humans = 2, zombies = 4)    
     
     "Human must begin" in {
-      testGame.players.currentPlayer.isInstanceOf[Human]
+      gametestLevel.players.currentPlayer.isInstanceOf[Human]
     }
     
     "produce Token Counts according to arguments" in {
-      testGame.gameField.findPlayerTokensById(testGame.players.currentPlayer.playerTokenIds).size must be_==(2)
-      testGame.gameField.findPlayerTokensById(testGame.players.nextPlayer.playerTokenIds).size must be_==(4)
+      gametestLevel.gameField.findPlayerTokensById(gametestLevel.players.currentPlayer.playerTokenIds).size must be_==(2)
+      gametestLevel.gameField.findPlayerTokensById(gametestLevel.players.nextPlayer.playerTokenIds).size must be_==(4)
     }
+    
+    
   }
 }

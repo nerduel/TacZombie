@@ -66,7 +66,7 @@ class LevelCreatorSpec extends Specification {
 
   sequential
   
-  private def test10GeneratedMaps(height : Int, width : Int) : List[Boolean] = {
+  private def test5GeneratedMaps(height : Int, width : Int) : List[Boolean] = {
     val levelCreator = new LevelCreator()
     for {
       i <- 0 until 10
@@ -77,23 +77,23 @@ class LevelCreatorSpec extends Specification {
   }.toList
 
   "Every walkable field of a generated level (21x21)" should {
-    "be visitable from each walkable position (10 times)" in {
+    "be visitable from each walkable position (5 times)" in {
 
-      test10GeneratedMaps(21, 21).filter(_ == true).size must be_==(10)
+      test5GeneratedMaps(21, 21).filter(_ == true).size must be_==(10)
     }
   }
 
   "Every walkable field of a generated level (21x19)" should {
-    "be visitable from each walkable position (10 times)" in {
+    "be visitable from each walkable position (5 times)" in {
 
-      test10GeneratedMaps(21, 19).filter(_ == true).size must be_==(10)
+      test5GeneratedMaps(21, 19).filter(_ == true).size must be_==(10)
     }
   }
 
   "Every walkable field of a generated level (25x23)" should {
-    "be visitable from each walkable position (10 times)" in {
+    "be visitable from each walkable position (5 times)" in {
 
-      test10GeneratedMaps(25, 23).filter(_ == true).size must be_==(10)
+      test5GeneratedMaps(25, 23).filter(_ == true).size must be_==(10)
     }
   }
 }

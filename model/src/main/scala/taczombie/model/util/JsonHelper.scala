@@ -20,7 +20,7 @@ object JsonHelper {
                       score : Int, powerUp : Int, levelWidth : Int,
                       levelHeight : Int, frozenTime : Int, deadTokens : Int, totalTokens : Int)
 
-  case class Cell(x : Int, y : Int, token : Char, isHiglighted : Boolean)
+  case class Cell(x : Int, y : Int, token : Char, isHighlighted : Boolean)
 
   case class HumanTokens(x : Int, y : Int, powerUp : Boolean)
 

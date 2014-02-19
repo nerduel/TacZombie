@@ -13,8 +13,6 @@ object GameFactory {
     counter
   }
   
-  val levelCreator = new LevelCreator()
-  
   val defaultFile =  
     "src/test/scala/taczombie/test/model/TestLevel_correct"
     
@@ -30,7 +28,7 @@ object GameFactory {
       if(random == false)
         	createGameFieldAndPlayerMap(humans, zombies, file)
       else {
-        	val level = levelCreator.create(defaultHeight, defaultWidth, humans)
+        	val level = (new LevelCreator()).create(defaultHeight, defaultWidth, humans)
         	
         	val array = scala.collection.mutable.ArrayBuffer[String]()
         	

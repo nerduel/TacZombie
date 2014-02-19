@@ -12,7 +12,6 @@
    </table>
   </div>
   
-  <div id="rightBox">
 	  <div id="gameInfo">
 		  <div id="gameData" style="visibility: hidden;">
 	      <table id="gState">
@@ -63,17 +62,21 @@
 		    </table>
 		  </div>
 	  </div>
-	  
-	  <div id="dividerV"></div>
-	  
-	  <div id="logger">
-	     <p>Log: </p>
-	     <textarea id="log" readonly="readonly" wrap="soft"></textarea>
+	
+	
+	<div id="gameInput">
+		<div id="logger">
+		  <p>Log: </p>
+		  <textarea id="log" readonly="readonly" wrap="soft"></textarea>
 	  </div>
+		  
+		<div id="dividerH"></div>
+		
+	  <div id="keyOutput">
+		  <p>Pressed command: </p>	  
+		  <input onkeypress="javascript:return false;" type="text" id="userInput" name="userInput"></input>
+		</div>
 	</div>
-  <div id="clear"></div>
-  
-  <input onkeypress="javascript:return false;" onkeydown="javascript:return handleKeyEvent(event);" type="text" id="userInput" name="userInput"></input>
 	
 	<div id="clear"></div>
   

@@ -120,11 +120,29 @@ class GameField(val id : String,
                                 newFrozenTime = defaults.defaultSpawnFreeze, 
                                 newDead = false)
        
+    logger += "Respawned " + updatedRespawnToken
+                                
     updatedGameFieldCells += updatedSourceCell
     updatedGameFieldCells += gameFieldCells.apply(updatedRespawnToken.coords)
     																			 .addHere(updatedRespawnToken)
     																			 
     updated(updatedGameFieldCells.toList)
+  }
+  
+  /**
+   * Respawn several dead tokens on a random empty spot
+   */
+  def respawn(tokenIds : List[Int]) : GameField = {
+    val updatedGameFieldCellsMap = 
+      scala.collection.mutable.HashMap[(Int,Int),GameFieldCell]()
+      
+    var updatedGameField = this
+    for(tokenId <- tokenIds) {
+      updatedGameField = updatedGameField respawn tokenId
+      updatedGameField.lastUpdatedGameFieldCells.foreach(ugfc => {
+        updatedGameFieldCellsMap.update(ugfc.coords, ugfc)})
+    }
+    updatedGameField.updated(updatedGameFieldCellsMap.values.toList)  
   }
   
   /**

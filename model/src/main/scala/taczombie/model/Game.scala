@@ -181,15 +181,14 @@ class Game(val id : Int,
   	    }.updatedDecrementedCounters(updatedPlayer)      						
       						
       	// check for dead tokens
-        val playersDeadPlayer = updatedPlayer.deadTokens(gameField)
-        if(playersDeadPlayer.size > 0) {
+        val playersDeadTokenIds = updatedPlayer.deadTokenIds(gameField)
+        if(playersDeadTokenIds.size > 0) {
           updatedPlayer match {
             case zombie : Zombie => {
               // respawn all dead zombie tokens
-              for(deadToken <- playersDeadPlayer) {
-              	updatedGameField = updatedGameField respawn deadToken.id
+              updatedGameField = 
+                updatedGameField respawn playersDeadTokenIds
               	logger merge updatedGameField  
-              }
             }
             case human : Human => {
               val curTokenDead = updatedPlayer.currentToken(updatedGameField)
@@ -224,7 +223,7 @@ class Game(val id : Int,
   	    val deadTokens = currentPlayer.deadTokens(gameField)
   	  	if(deadTokens.nonEmpty) {
   	  	  if(currentPlayer.lifes > 0) {
-    	  	  updatedGameField = gameField.respawn(deadTokens.head.id)
+    	  	  updatedGameField = gameField respawn deadTokens.head.id
     	  		updatedPlayers = players.updatedExistingPlayer(
     	  		    										 	currentPlayer.updatedDecreasedLifes)
     	  		    										 	

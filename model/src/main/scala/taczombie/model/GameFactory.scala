@@ -39,8 +39,11 @@ object GameFactory {
         	    humans, zombies, 
         	    level = array.toArray[String], name = array.hashCode().toString)
       }
-    }
-    new Game(generateId, gameField, playerMap, GameState.InGame)
+    } 
+    if(gameField == null || playerMap == null) 
+      return null
+    else     
+    	new Game(generateId, gameField, playerMap, GameState.InGame)
   }
     
   def createGameFieldAndPlayerMap(
@@ -57,18 +60,16 @@ object GameFactory {
       else
         (level, name)
     }
-        
-    lazy val affectedLineSizes = {
-      for (line <- mapStringArray) yield line.length()
-    }.toList.distinct
     
-    def isGameFieldRectangular = affectedLineSizes.size == 1
-    
-    if (! isGameFieldRectangular) {
-      throw new Exception("Level field is not Rectangular")
+    if((mapStringArray.foldLeft(Set[Int]()){(set, line) => 
+      	set + line.length
+      }.size) > 1) {
+      println("level has different line lengths")
+      return (null, null)
     }
+      
     
-    val levelWidth = affectedLineSizes apply 0
+    val levelWidth = (mapStringArray apply 0).size
     val levelHeight = mapStringArray.size
     
     var humanBase : (Int,Int) = (0,0)
@@ -109,7 +110,7 @@ object GameFactory {
               }
           case c : Char => {
             println("unkown char: " + c.toByte)
-            validCharacterRead = false
+            return (null, null)
           }
         }
         if(validCharacterRead) {

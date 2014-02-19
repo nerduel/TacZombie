@@ -13,22 +13,17 @@ object GameFactory {
     counter
   }
   
-  val defaultFile =  
-    "src/test/scala/taczombie/test/model/TestLevel_correct"
+  val defaultFile = getClass().getResource("/TestLevel_correct")
     
-  val defaultHumans = 2
-  val defaultZombies = 4
-  val defaultHeight = 21
-  val defaultWidth = 21
-    
-  def newGame(random : Boolean = false, file : String = defaultFile, 
-      humans: Int = defaultHumans, zombies: Int= defaultZombies) : Game = {
+  def newGame(random : Boolean = false, file : String = defaultFile.toString(), 
+      humans: Int = defaults.defaultHumans, zombies: Int= defaults.defaultZombies) : Game = {
     
     val (gameField, playerMap) = {
       if(random == false)
         	createGameFieldAndPlayerMap(humans, zombies, file)
       else {
-        	val level = (new LevelCreator()).create(defaultHeight, defaultWidth, humans)
+        	val level = (new LevelCreator()).create(
+        	    defaults.defaultHeight, defaults.defaultWidth, humans)
         	
         	val array = scala.collection.mutable.ArrayBuffer[String]()
         	
@@ -126,9 +121,9 @@ object GameFactory {
     // Create the player map with a human and a zombie player with tokens
     // TODO: make this scalable for more players
     var players : Players = new Players(List[Player]())
-    val zombieId = defaults.zombieName + this.generateId
+    val zombieId = defaults.defaultZombieName + this.generateId
     players = players.updatedWithNewPlayer(new Zombie(zombieId, zombieTokenIds.toList))
-    val humanId = defaults.humanName + this.generateId
+    val humanId = defaults.defaultHumanName + this.generateId
     players = players.updatedWithNewPlayer(new Human(humanId, humanTokenIds.toList))
     
     val gameField = new GameField(gameName,

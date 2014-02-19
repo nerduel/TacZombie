@@ -45,7 +45,7 @@ case class Powerup(id : Int,
     versatileGameObject match {
       case humanToken : HumanToken => 
         (null, humanToken.updated(newPowerupTime = 
-          humanToken.powerupTime+defaults.powerupTime, newScore = humanToken.score+1))
+          humanToken.powerupTime+defaults.defaultPowerupTime, newScore = humanToken.score+1))
       case zombieToken : ZombieToken => (this, zombieToken)
   }
 }
@@ -116,12 +116,12 @@ case class HumanToken(id : Int,
           case (false, 0) => {
             logger.+=(this + " death by " + zombieToken, true)
           	(this.updated(newScore = 
-          	  this.score-defaults.killScore, newDead = true), zombieToken)
+          	  this.score-defaults.defaultKillScore, newDead = true), zombieToken)
           }
           case (false, _) => {
             logger.+=(this + " killed " + zombieToken, true)
             (this.updated(newScore = 
-               this.score+defaults.killScore),zombieToken.updated(newDead = true))
+               this.score+defaults.defaultKillScore),zombieToken.updated(newDead = true))
           }
           case (true, _) => (this, zombieToken) // spawn!
         }
@@ -166,10 +166,10 @@ case class ZombieToken(id : Int,
           case (true, _) => (this, humanToken)
           case (false, 0) => (this,
               			 humanToken.updated(newScore = 
-              			   humanToken.score-defaults.killScore, newDead = true))              			 
+              			   humanToken.score-defaults.defaultKillScore, newDead = true))              			 
           case (false, _) => (this.updated(newDead = true),
               			 humanToken.updated(newScore = 
-              			   humanToken.score+defaults.killScore))        
+              			   humanToken.score+defaults.defaultKillScore))        
         }
       }
       case zombieToken : ZombieToken => (this, zombieToken)

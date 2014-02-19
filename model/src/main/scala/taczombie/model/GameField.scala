@@ -116,8 +116,8 @@ class GameField(val id : String,
  
     val updatedRespawnToken = respawnToken.updated(
                                 newCoords = getRandomSpawnCoords(respawnToken), 
-                                newPowerupTime = defaults.spawnPowerupTime, 
-                                newFrozenTime = defaults.spawnFreeze, 
+                                newPowerupTime = defaults.defaultSpawnPowerupTime, 
+                                newFrozenTime = defaults.defaultSpawnFreeze, 
                                 newDead = false)
        
     updatedGameFieldCells += updatedSourceCell

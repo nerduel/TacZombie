@@ -76,7 +76,8 @@ object TestObjects {
       																							(coordsHumans, humanGameFieldCell),
       																							(coordsHumansWithPowerup, humanWithPowerupGameFieldCell),
       																							(coordsZombie, zombieGameFieldCell))
-    
+      																							
+  val players = new Players(List[Player](human, zombie))  
   
   val gameField = new GameField(""+GameFactory.generateId, gameFieldCells, 10, 10, coordsHumans, coordsZombie, 0)  
   
@@ -84,5 +85,15 @@ object TestObjects {
   val testfile_incorrect = getClass().getResource("/TestLevel_incorrect")
   val testfile_incorrect2 = getClass().getResource("/TestLevel_incorrect2")
   
-  val players = new Players(List[Player](human, zombie))
+//  ###
+//  #.#
+//  #Z#
+//  #;#
+//  #.#
+//  #.#
+//  #.#
+//  #.#
+//  #H#
+//  ###
+  val testfile_gametest = getClass().getResource("/TestLevel_gametest")
 }

@@ -174,32 +174,43 @@ class Game(val id : Int,
       	logger += "Next player is " + updatedPlayer + " with token " + 
       						updatedPlayer.currentToken(gameField)
       	
+        // decrement counters - which is frozentime and poweruptime for now
+  	    updatedGameField = { 
+  	      if (updatedGameField == null) gameField
+  	      else updatedGameField
+  	    }.updatedDecrementedCounters(updatedPlayer)      						
+      						
       	// check for dead tokens
         val playersDeadPlayer = updatedPlayer.deadTokens(gameField)
         if(playersDeadPlayer.size > 0) {
           updatedPlayer match {
-            case zombie : Zombie =>
+            case zombie : Zombie => {
               // respawn all dead zombie tokens
-              updatedGameField = gameField
               for(deadToken <- playersDeadPlayer) {
               	updatedGameField = updatedGameField respawn deadToken.id
               	logger merge updatedGameField  
               }
-              
-          	case human : Human =>
-          	  // check if next player's currentToken is dead
-          	  if(updatedPlayer.currentToken(gameField).dead) {
+            }
+            case human : Human => {
+              val curTokenDead = updatedPlayer.currentToken(updatedGameField)
+              																.dead
+            	if(curTokenDead) {
             	  updatedGameState = GameState.NeedTokenSwitch
             	  updatedGameMessage = GameMessages.deadTokenSelected
             	  logger += updatedGameMessage                      	    
           	  }
+            }
           }
         }
   	    
-  	    updatedGameField = { 
-  	      if (updatedGameField == null) gameField
-  	      else updatedGameField
-  	    }.updatedDecrementedCounters(updatedPlayer)  	    
+  	    val curTokenFrozentime = updatedPlayer.currentToken(updatedGameField)
+  	    																			.frozenTime
+        if(curTokenFrozentime > 0) {
+          logger += ("frozen token: " + updatedPlayer.currentToken(updatedGameField), true) 
+      	  updatedGameState = GameState.NeedTokenSwitch
+      	  updatedGameMessage = GameMessages.frozenToken(curTokenFrozentime)
+      	  logger += updatedGameMessage
+    	  }
   	    
         return updated(newGameField = updatedGameField,
             					 newPlayers = updatedPlayers,

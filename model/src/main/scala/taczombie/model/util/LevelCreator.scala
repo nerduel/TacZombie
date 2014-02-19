@@ -480,9 +480,9 @@ class LevelCreator {
       start = list.head
       alreadyVisited = alreadyVisited :+ start
       list = (list ++ getNeighbours(start).filter { coord =>
-        coord > (0, 0)
+        coord isLowerRightOf (0, 0)
       }.filter { coord =>
-        coord < (rInterval._2, cInterval._2)
+        coord isUpperLeftOf (rInterval._2, cInterval._2)
       }.filterNot { elem =>
         alreadyVisited.contains(elem)
       })

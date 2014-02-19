@@ -4,7 +4,7 @@ import taczombie.model.util.Logger
 
 trait Player extends Logger {
 	val name : String
-  val playerTokenIds : List[Int]  
+  val playerTokenIds : List[Int]
   val movesRemaining : Int
 	
 	def currentTokenId = { 
@@ -34,11 +34,11 @@ trait Player extends Logger {
 	
 	def totalTokens = playerTokenIds.size
   
-  def updated(updatedPlayerTokenIds : List[Int] = this.playerTokenIds,
-    				 updatedMovesRemaining : Int = this.movesRemaining,
+  def updated(updatedPlayerTokenIds : List[Int] = playerTokenIds,
+    				 updatedMovesRemaining : Int = movesRemaining,
     				 newLifes : Int = lifes) : Player				 
     				 
-  def updatedMoved() : Player = updated(updatedMovesRemaining = this.movesRemaining-1)
+  def updatedMoved() : Player = updated(updatedMovesRemaining = movesRemaining-1)
   def updatedCycledTokens() : Player = {
     if(playerTokenIds.size > 1)
     	updated(playerTokenIds.tail ::: playerTokenIds.head :: Nil)
@@ -59,7 +59,6 @@ case class Human(val name : String,
   override def currentToken(gameField : GameField) : HumanToken = {
   	gameField.findOnePlayerTokenById(currentTokenId) match {
   	  case humanToken : HumanToken => humanToken
-  	  case _ => null
   	}
   } 
   
@@ -78,12 +77,6 @@ case class Human(val name : String,
         			newLifes)
   }
   
-  def updated(newPlayerTokenIds : List[Int],
-    				 newMovesRemaining : Int) : Human = {
-  	updated(newPlayerTokenIds, newMovesRemaining,
-  	    this.lifes)
-  }
-  
   def updatedResetMovesRemaining() : Human = {
     updated(this.playerTokenIds, defaults.defaultHumanMoves, this.lifes)
   }  
@@ -97,7 +90,6 @@ case class Zombie(val name : String,
   override def currentToken(gameField : GameField) : ZombieToken = {
   	gameField.findOnePlayerTokenById(currentTokenId) match {
   	  case zombieToken : ZombieToken => zombieToken
-  	  case _ => null
   	}
   }  
   

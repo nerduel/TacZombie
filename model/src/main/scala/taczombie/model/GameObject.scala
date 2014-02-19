@@ -113,17 +113,17 @@ case class HumanToken(id : Int,
     versatileGameObject match {
       case zombieToken : ZombieToken => {
         (zombieToken.dead, this.powerupTime) match {
-        case (false, 0) => {
-          logger.+=(this + " death by " + zombieToken, true)
-        	(this.updated(newScore = 
-        	  this.score-defaults.killScore, newDead = true), zombieToken)
-        }
-        case (false, _) => {
-          logger.+=(this + " killed " + zombieToken, true)
-          (this.updated(newScore = 
-             this.score+defaults.killScore),zombieToken.updated(newDead = true))
-        }
-        case (true, _) => (this, zombieToken) // spawn!
+          case (false, 0) => {
+            logger.+=(this + " death by " + zombieToken, true)
+          	(this.updated(newScore = 
+          	  this.score-defaults.killScore, newDead = true), zombieToken)
+          }
+          case (false, _) => {
+            logger.+=(this + " killed " + zombieToken, true)
+            (this.updated(newScore = 
+               this.score+defaults.killScore),zombieToken.updated(newDead = true))
+          }
+          case (true, _) => (this, zombieToken) // spawn!
         }
       }
       case humanToken : HumanToken => (this, humanToken)

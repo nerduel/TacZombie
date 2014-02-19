@@ -248,28 +248,28 @@ function updateCell(cell) {
 
 	switch (cell.token) {
 	case 'H':
-		if (cell.isHiglighted == true)
+		if (cell.isHighlighted == true)
 			cellNode.className = "hHuman";
 		else
 			cellNode.className = "human";
 		break;
 
 	case 'Z':
-		if (cell.isHiglighted == true)
+		if (cell.isHighlighted == true)
 			cellNode.className = "hZombie";
 		else
 			cellNode.className = "zombie";
 		break;
 
 	case 'C':
-		if (cell.isHiglighted == true)
+		if (cell.isHighlighted == true)
 			cellNode.className = "hCoin";
 		else
 			cellNode.className = "coin";
 		break;
 
 	case 'P':
-		if (cell.isHiglighted == true)
+		if (cell.isHighlighted == true)
 			cellNode.className = "hPowerup";
 		else
 			cellNode.className = "powerup";
@@ -280,7 +280,7 @@ function updateCell(cell) {
 		break;
 
 	case 'N':
-		if (cell.isHiglighted == true)
+		if (cell.isHighlighted == true)
 			cellNode.className = "hEmpty";
 		else
 			cellNode.className = "empty";

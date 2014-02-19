@@ -7,20 +7,25 @@ import taczombie.model.util.Logger
 import java.util.Calendar
 
 object defaults {
-  val humanLifes = 3
+  val defaultHumanLifes = 3
   
-  val humanMoves = 7
-  val zombieMoves = 4
+  val defaultHumanMoves = 7
+  val defaultZombieMoves = 4
   
-  val humanName = "Pacman"
-  val zombieName = "Zombie"
+  val defaultHumanName = "Pacman"
+  val defaultZombieName = "Zombie"
   
-  val powerupTime = 5
+  val defaultPowerupTime = 5
   
-  val spawnPowerupTime = 1
-  val spawnFreeze = 1
+  val defaultSpawnPowerupTime = 1
+  val defaultSpawnFreeze = 1
+  
+  val defaultHumans = 2
+  val defaultZombies = 4
+  val defaultHeight = 21
+  val defaultWidth = 21
     
-  val killScore = 3
+  val defaultKillScore = 3
 }
 
 object GameMessages {
@@ -215,7 +220,7 @@ class Game(val id : Int,
     	  		// if the respawned is currently selected
     	  		if(currentToken.id == deadTokens.head.id) {    	  			
     	  			updatedGameState = GameState.NeedTokenSwitch
-    	  			updatedGameMessage = GameMessages.frozenToken(defaults.spawnFreeze)
+    	  			updatedGameMessage = GameMessages.frozenToken(defaults.defaultSpawnFreeze)
     	  		} else {
     	  		  updatedGameState = GameState.InGame
     	  		  updatedGameMessage = GameMessages.respawnedToken(deadTokens.head.id,

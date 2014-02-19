@@ -1,6 +1,5 @@
 package taczombie.model
 
-import scala.collection.immutable.TreeMap
 import taczombie.model.util.Logger
 
 trait Player extends Logger {
@@ -53,8 +52,8 @@ trait Player extends Logger {
 
 case class Human(val name : String,
     						 val playerTokenIds : List[Int],
-    						 val movesRemaining : Int = defaults.humanMoves,
-    						 override val lifes : Int = defaults.humanLifes)
+    						 val movesRemaining : Int = defaults.defaultHumanMoves,
+    						 override val lifes : Int = defaults.defaultHumanLifes)
     extends Player with Logger  {
   
   override def currentToken(gameField : GameField) : HumanToken = {
@@ -86,13 +85,13 @@ case class Human(val name : String,
   }
   
   def updatedResetMovesRemaining() : Human = {
-    updated(this.playerTokenIds, defaults.humanMoves, this.lifes)
+    updated(this.playerTokenIds, defaults.defaultHumanMoves, this.lifes)
   }  
 }
 
 case class Zombie(val name : String,
     						  val playerTokenIds : List[Int],
-									val movesRemaining : Int = defaults.zombieMoves)
+									val movesRemaining : Int = defaults.defaultZombieMoves)
     extends Player {
     
   override def currentToken(gameField : GameField) : ZombieToken = {

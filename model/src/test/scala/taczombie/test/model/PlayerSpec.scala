@@ -29,7 +29,7 @@ class PlayerSpec extends Specification {
 	    humanPlayer.totalTokens must be_==(2)
 	  }
 	  "lifes must be default at beginning" in {
-	    humanPlayer.lifes must be_==(defaults.humanLifes)
+	    humanPlayer.lifes must be_==(defaults.defaultHumanLifes)
 	  }	 	  
  	  "coins must be 0 at beginning" in {
 	    humanPlayer.coins(gameField) must be_==(0)

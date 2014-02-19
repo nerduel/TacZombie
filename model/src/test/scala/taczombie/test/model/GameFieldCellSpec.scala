@@ -146,7 +146,7 @@ class GameFieldCellSpec extends Specification {
       (gfc.gameObjects.filter(go => go.id == livingHumanToken.id).head match {
         case human : HumanToken => human.powerupTime
         case _ => -1
-      }) must be_==(defaults.powerupTime)
+      }) must be_==(defaults.defaultPowerupTime)
     } 
   }
     

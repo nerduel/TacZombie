@@ -97,7 +97,7 @@ class GameObjectSpec extends Specification {
       (resultTuple._1 == null) must be_==(true)
     }
     "HumanToken with Poweruptime default" in {
-    	resultTuple._2.asInstanceOf[HumanToken].powerupTime must be_==(defaults.powerupTime)
+    	resultTuple._2.asInstanceOf[HumanToken].powerupTime must be_==(defaults.defaultPowerupTime)
     }
   }
 

@@ -11,8 +11,7 @@ class Gui(val model: ViewModel, val controller: ViewController) extends swing.Fr
   model.add(this)
   
   if(!controller.connect) {
-    controller.close
-    closeOperation
+    contents = new ConnectError(this)
   }
 
   override def closeOperation() {

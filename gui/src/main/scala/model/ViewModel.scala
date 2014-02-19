@@ -16,7 +16,6 @@ class ViewModel extends Observable {
   var cmd = ""
   var gameState = " "
   var currentPlayerToken = " "
-  var currentPlayerTokenAsChar = ' '
   var deadTokens = 0
   var totalTokens = 0
   var lifes = 0
@@ -57,9 +56,8 @@ class ViewModel extends Observable {
 
     cmd = data.cmd
     gameState = gameData.gameState.toString()
-    currentPlayerTokenAsChar = gameData.currentPlayer
     import util.ViewHelper._
-    currentPlayerToken = currentPlayerTokenAsChar.toName
+    currentPlayerToken = gameData.currentPlayer.toName
     lifes = gameData.lifes
     totalTokens = gameData.totalTokens
     deadTokens = gameData.deadTokens

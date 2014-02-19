@@ -44,7 +44,7 @@ class GameFieldCellSpec extends Specification {
   }
   
   "An empty cell ADDED with a wall" should {
-    val gfc = emptyGfc.addHere(wall)
+    val gfc = emptyGfc.addHere(wall1)
     
     "isEmpty return false" in {
       gfc.isEmpty must be_==(false)

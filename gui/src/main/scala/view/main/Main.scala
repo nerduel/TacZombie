@@ -2,34 +2,27 @@ package view.main
 
 import view.gui.Gui
 import view.tui.Tui
+import com.google.inject.AbstractModule
+import com.google.inject.Guice
 
-class Main extends {
-  var view: IView = null
-
-  def setView(view: IView) = {
-    this.view = view
-  }
-
-  def show {
-    view.open
-  }
-
-  def reconnect {
-    if (view != null) {
-      view.dispose
+class UiModule(ui: Array[String]) extends AbstractModule {
+  def configure {
+    ui.toList match {
+      case "tui" :: Nil => bind(classOf[IView]).to(classOf[Tui])
+      case _ => bind(classOf[IView]).to(classOf[Gui])
     }
-    show
   }
 }
 
 object Main {
   def main(args: Array[String]) {
-    val main = new Main
-    var ui = args.toList match {
-      case "tui" :: Nil => new Tui(main)
-      case _ => new Gui(main)
+    var restart = true
+    val viewInjector = Guice.createInjector(new UiModule(args))
+
+    while (restart) {
+      val view = viewInjector.getInstance(classOf[IView])
+      view.open
+      restart = view.runBlocking
     }
-    main.setView(ui)
-    main.show
   }
 }

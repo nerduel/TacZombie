@@ -1,11 +1,11 @@
-package view.gui
+package taczombie.client.view.gui
 
-import controller.ViewController
-import model.ViewModel
-import util.Address
-import util.Observer
-import view.main.IView
-import view.main.Main
+import taczombie.client.controller.ViewController
+import taczombie.client.model.ViewModel
+import taczombie.client.util.Address
+import taczombie.client.util.Observer
+import taczombie.client.view.main.IView
+import taczombie.client.view.main.Main
 import java.util.concurrent.FutureTask
 import java.util.concurrent.Callable
 

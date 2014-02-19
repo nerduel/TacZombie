@@ -1,4 +1,4 @@
-package view.gui
+package taczombie.client.view.gui
 
 import scala.swing.Component
 import scala.swing.GridBagPanel

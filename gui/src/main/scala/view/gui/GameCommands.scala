@@ -1,10 +1,10 @@
-package view.gui
+package taczombie.client.view.gui
 
 import scala.swing.BorderPanel
 import scala.swing.Button
 import scala.swing.event.MouseClicked
-import controller.ViewController
-import model.ViewModel
+import taczombie.client.controller.ViewController
+import taczombie.client.model.ViewModel
 import scala.swing.Action
 import scala.swing.event.Event
 import scala.swing.BoxPanel

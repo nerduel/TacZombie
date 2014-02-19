@@ -1,13 +1,13 @@
-package view.gui
+package taczombie.client.view.gui
 
 import scala.swing.BorderPanel
 import scala.swing.FlowPanel
 import scala.swing.Label
 import scala.swing.event.Key
 import scala.swing.event.KeyPressed
-import controller.ViewController
-import model.ViewModel
-import util.Observer
+import taczombie.client.controller.ViewController
+import taczombie.client.model.ViewModel
+import taczombie.client.util.Observer
 import scala.swing.ScrollPane
 import scala.swing.Separator
 import scala.swing.Orientation

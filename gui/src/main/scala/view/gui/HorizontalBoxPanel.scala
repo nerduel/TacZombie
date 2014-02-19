@@ -1,4 +1,4 @@
-package view.gui
+package taczombie.client.view.gui
 
 import java.awt.Dimension
 

@@ -1,11 +1,11 @@
-package view.gui
+package taczombie.client.view.gui
 
 import scala.swing.Alignment
 import scala.swing.BorderPanel
 import scala.swing.Label
 
-import model.ViewModel
-import util.Observer
+import taczombie.client.model.ViewModel
+import taczombie.client.util.Observer
 
 class GameStatLabel(model: ViewModel, text: String,
   property: String, visibleWhenZombie: Boolean = true)

@@ -1,7 +1,7 @@
-package model
+package taczombie.client.model
 
 import taczombie.model.util.JsonHelper._
-import util.Observable
+import taczombie.client.util.Observable
 import spray.json.DefaultJsonProtocol
 import spray.json._
 import DefaultJsonProtocol._
@@ -55,7 +55,7 @@ class ViewModel extends Observable {
 
     cmd = data.cmd
     gameState = gameData.gameState.toString()
-    import util.ViewHelper._
+    import taczombie.client.util.ViewHelper._
     currentPlayerToken = gameData.currentPlayer.toName
     lifes = gameData.lifes
     totalTokens = gameData.totalTokens

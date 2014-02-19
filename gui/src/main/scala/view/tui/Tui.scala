@@ -1,16 +1,16 @@
-package view.tui
+package taczombie.client.view.tui
 
 import java.util.concurrent.Callable
 import java.util.concurrent.Executors
 import java.util.concurrent.FutureTask
 import com.google.inject.Inject
-import controller.ViewController
-import model.ViewModel
-import util.Observer
-import util.RegexHelper
-import view.main.IView
-import view.main.Main
-import util.Address
+import taczombie.client.controller.ViewController
+import taczombie.client.model.ViewModel
+import taczombie.client.util.Observer
+import taczombie.client.util.RegexHelper
+import taczombie.client.view.main.IView
+import taczombie.client.view.main.Main
+import taczombie.client.util.Address
 
 class Tui extends Observer with IView {
   val address: Address = askForAddress
@@ -114,7 +114,7 @@ class Tui extends Observer with IView {
 
     outputBuffer(0)(1) = "Moves remaining:\t" + model.movesRemaining
     outputBuffer(1)(1) = "-------------------------------"
-    import util.ViewHelper._
+    import taczombie.client.util.ViewHelper._
     outputBuffer(2)(1) = "Current player:\t" + model.currentPlayerToken
     outputBuffer(3)(1) = "Dead Tokens:\t" + model.deadTokens
     outputBuffer(4)(1) = "Total Tokens:\t" + model.totalTokens

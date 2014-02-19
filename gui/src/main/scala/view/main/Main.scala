@@ -1,7 +1,7 @@
-package view.main
+package taczombie.client.view.main
 
-import view.gui.Gui
-import view.tui.Tui
+import taczombie.client.view.gui.Gui
+import taczombie.client.view.tui.Tui
 import com.google.inject.AbstractModule
 import com.google.inject.Guice
 

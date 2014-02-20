@@ -43,6 +43,8 @@ object GameMessages {
   def deadTokenSelected = "Your last selected token is dead. Please try to " + 
     											"respawn or switch tokens"
   def noOthersAlive = "You have no other living tokens."
+  def noRoomForToken = "There is no room for your token to respawn right now!"
+  def invalidCmd(cmd : Any, s : GameState) = cmd + " does not work for " + s
 }
 
 class Game(val id : Int,
@@ -208,35 +210,45 @@ class Game(val id : Int,
   	  	if(deadTokens.nonEmpty) {
   	  	  if(currentPlayer.lifes > 0) {
     	  	  updatedGameField = gameField respawn deadTokens.head.id
-    	  		updatedPlayers = players.updatedExistingPlayer(
-    	  		    										 	currentPlayer.updatedDecreasedLifes)
-    	  		
-    	  		  										 	
-    	  		    										 	
-    	  		updatedGameState = this.gameState    										 	
-    	  		updatedGameMessage =  GameMessages.respawnedToken(updatedGameField
-    	  		    	.findOnePlayerTokenById(deadTokens.head.id).coords)    	  		    										 	
-
-    	  		// check if this will be the only living token and select it   										 	
-    	  		if(deadTokens.size == updatedPlayers.currentPlayer.totalTokens) {
-    	  		  while(deadTokens.head.id != updatedPlayers.currentPlayer
-    	  		      																			.currentTokenId) {
-    	  		   updatedPlayers = 
-    	  		     players.updatedExistingPlayer(
-    	  		         				currentPlayer.updatedCycledTokens)
-    	  		  }
-    	  		}
     	  	  
-    	  	  // check if the current token is frozen
-    	  	  val updatedCurrentToken = 
-    	  		  updatedPlayers.currentPlayer.currentToken(updatedGameField)  			 	
-    	  		val currentTokenFrozenTime = updatedCurrentToken.frozenTime
-					  if(currentTokenFrozenTime > 0) {		
-    	  			updatedGameState = GameState.NeedTokenSwitch
-    	  			updatedGameMessage += " - " + 
-    	  					GameMessages.frozenToken(currentTokenFrozenTime)
-    	  		}
-
+    	  	     	  	  
+    	  	  // only continue if it was respawned
+    	  	  val tokenRespawned =
+    	  	    !updatedGameField.findOnePlayerTokenById(deadTokens.head.id).dead
+    	  	  if(tokenRespawned) {
+    	  	  	updatedPlayers = players.updatedExistingPlayer(
+      	  		    										 	currentPlayer.updatedDecreasedLifes)
+      	  		logger merge updatedGameField
+      	  		
+      	  		var updatedCurrentPlayer = updatedPlayers.currentPlayer
+      	  		    										 	
+      	  		updatedGameState = this.gameState    										 	
+      	  		updatedGameMessage =  GameMessages.respawnedToken(updatedGameField
+      	  		    	.findOnePlayerTokenById(deadTokens.head.id).coords)    	  		    										 	
+  
+      	  		// check if this will be the only living token and select it   										 	
+      	  		if(deadTokens.size == updatedCurrentPlayer.totalTokens) {
+      	  		  while(deadTokens.head.id != updatedCurrentPlayer.currentTokenId) {
+      	  		   updatedCurrentPlayer = updatedCurrentPlayer.updatedCycledTokens 
+      	  		   updatedPlayers = 
+      	  		     updatedPlayers.updatedExistingPlayer(updatedCurrentPlayer)			
+      	  		  }
+      	  		}
+      	  	  
+      	  	  // check if the current token is frozen
+      	  	  val updatedCurrentToken = updatedCurrentPlayer.currentToken(updatedGameField)  			 	
+      	  		val currentTokenFrozenTime = updatedCurrentToken.frozenTime
+  					  if(currentTokenFrozenTime > 0) {		
+      	  			updatedGameState = GameState.NeedTokenSwitch
+      	  			updatedGameMessage += " - " + 
+      	  					GameMessages.frozenToken(currentTokenFrozenTime)
+      	  		}    	  	    
+    	  	  } else { // if(tokenRespawned)  
+    	  	  	updatedGameMessage = GameMessages.noRoomForToken
+    	  	  	updatedGameState = this.gameState
+    	  	  	updatedPlayers = this.players
+    	  	  }
+    	  	  
       	  	return updated(newGameField = updatedGameField,
       	  	    					 newPlayers = updatedPlayers,
       	  	    					 newGameState = updatedGameState,
@@ -294,11 +306,13 @@ class Game(val id : Int,
   	    }
   		}
   	  
-  	  case (_, GameState.NeedPlayerSwitch |
+  	  case (cmd, GameState.NeedPlayerSwitch |
   	      	   GameState.NeedTokenSwitch |
   	      		 GameState.GameOver | 
   						 GameState.Win) => {
-  	    this
+  			val msg = GameMessages.invalidCmd(cmd, this.gameState)			   
+  	    logger += msg 
+  	    updated(newGameMessage = msg)
   	  }
 	  }
 	  
@@ -310,7 +324,7 @@ class Game(val id : Int,
 	    								newGameMessage : String = GameMessages.noMsg) : Game = {
 	  logger += ("Execution time:  " + 
     	  					 (Calendar.getInstance().getTimeInMillis() - startTime) +
-    	  					" ms", true)
+    	  					" ms")
 	  new Game(id, newGameField, 
         		 newPlayers, newGameState, newGameMessage, this)
 	}

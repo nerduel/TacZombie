@@ -1,6 +1,6 @@
 # TacZombie - A tactical Pacman clone
 
-This game was deceloped by three students of the university of applied science Konstanz ([HTWG-Konstanz](www.htwg-konstanz.de)) for the course "modern programming languages" in the winter semester 2013/2014.
+This game was deceloped by three students of the university of applied science Konstanz ([HTWG Konstanz](www.htwg-konstanz.de)) for the course "modern programming languages" in the winter semester 2013/2014.
 
 The task was given by our Prof. Dr. Boger. It was to:
 - develop a game in scala

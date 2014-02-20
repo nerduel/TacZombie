@@ -64,6 +64,6 @@ class Gui extends swing.Frame with Observer with IView {
     dispose
   }
 
-  def askForAddress = new ConnectDialog().address.get
+  def askForAddress = new ConnectDialog().address.getOrElse(new Address("localhost", "9000"))
 
 }

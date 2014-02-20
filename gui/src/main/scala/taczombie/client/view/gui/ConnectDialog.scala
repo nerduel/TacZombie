@@ -23,7 +23,7 @@ class ConnectDialog extends Dialog {
         handleEvent(this)
     }
   }
-  preferredSize = new Dimension(200, 150)
+  preferredSize = new Dimension(220, 150)
 
   title = "Server Address"
   modal = true
@@ -40,7 +40,7 @@ class ConnectDialog extends Dialog {
 
     add(new FlowPanel(FlowPanel.Alignment.Center)(
       new FlowPanel(FlowPanel.Alignment.Left)(Button("Connect") { handleEvent(this) }),
-      new FlowPanel(FlowPanel.Alignment.Right)(Button("Quit") { sys.exit(0) })), BorderPanel.Position.South)
+      new FlowPanel(FlowPanel.Alignment.Right)(Button("Default") { close })), BorderPanel.Position.South)
   }
 
   centerOnScreen()
@@ -49,7 +49,7 @@ class ConnectDialog extends Dialog {
   def handleEvent(elem: Component) {
     if (RegexHelper.checkPort(port.text)) {
       address = Some(Address(ip.text, port.text))
-      close()
+      close
     } else {
       Dialog.showMessage(elem, "Invalid Adress!", "Login Error", Dialog.Message.Error)
     }

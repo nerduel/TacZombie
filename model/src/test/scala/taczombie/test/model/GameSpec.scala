@@ -15,11 +15,11 @@ import taczombie.model.NextToken
 import taczombie.model.RespawnToken
 
 class GameSpec extends Specification {
-  
-  val testGame = GameFactory.newGame(random = false, 
-  file = TestObjects.testfile_gametest.getFile(), humans = 2, zombies = 3)
+
   
   "A game on the gametest Level" should {
+      val testGame = GameFactory.newGame(random = false, 
+      		file = TestObjects.testfile_gametest.getFile(), humans = 2, zombies = 3)
 
     "allow the human to start and move up until he wins" in {
       testGame.players.currentPlayer.isInstanceOf[Human] must be_==(true)
@@ -50,6 +50,9 @@ class GameSpec extends Specification {
   }
     
   "A game on the gametest Level, kill the zombies and switch players" should {
+    
+    val testGame = GameFactory.newGame(random = false, 
+    		file = TestObjects.testfile_gametest.getFile(), humans = 2, zombies = 3)
     
     var updatedGame = testGame
     var counter = 0
@@ -104,6 +107,9 @@ class GameSpec extends Specification {
   }
   
   "A game on the gametest where zombies blocks the upper 3 fields" should {
+    val testGame = GameFactory.newGame(random = false, 
+      		file = TestObjects.testfile_gametest.getFile(), humans = 2, zombies = 3)
+      		
     val updatedGame1 = testGame.executeCommand(NextPlayer)
     													 .executeCommand(MoveDown)
     													 .executeCommand(NextToken)    													 
@@ -207,6 +213,8 @@ class GameSpec extends Specification {
   }
   
   "A game on the gametest Level" should {
+    val testGame = GameFactory.newGame(random = false, 
+  		file = TestObjects.testfile_gametest.getFile(), humans = 2, zombies = 3)
     
     "not respawn any tokens" in {
       var updatedGame = testGame.executeCommand(RespawnToken)

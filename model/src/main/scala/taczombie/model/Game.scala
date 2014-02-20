@@ -308,9 +308,9 @@ class Game(val id : Int,
 	    								newPlayers : Players = this.players,
 	    								newGameState : GameState = this.gameState,
 	    								newGameMessage : String = GameMessages.noMsg) : Game = {
-	  logger += "Execution time:  " + 
+	  logger += ("Execution time:  " + 
     	  					 (Calendar.getInstance().getTimeInMillis() - startTime) +
-    	  					" ms"
+    	  					" ms", true)
 	  new Game(id, newGameField, 
         		 newPlayers, newGameState, newGameMessage, this)
 	}

@@ -54,7 +54,5 @@ class GameFactorySpec extends Specification {
       gametestLevel.gameField.findPlayerTokensById(gametestLevel.players.currentPlayer.playerTokenIds).size must be_==(2)
       gametestLevel.gameField.findPlayerTokensById(gametestLevel.players.nextPlayer.playerTokenIds).size must be_==(4)
     }
-    
-    
   }
 }

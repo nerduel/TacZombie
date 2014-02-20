@@ -24,13 +24,16 @@ The aim of the game ist:
 
 The commands are:
 - <←>, <↑>, <→>, <↓> to navigate on the map
-- <g> to switch between tokens
-- <f> to respawn a dead token (Human: only if lifes left)
-- <n> to switch to next player
-- <m> to create a new map
-- <r> to reset current map
-- Gui & Tui: <q> to quit
+- \<g> to switch between tokens
+- \<f> to respawn a dead token (Human: only if lifes left)
+- \<n> to switch to next player
+- \<m> to create a new map
+- \<r> to reset current map
+- Gui & Tui: \<q> to quit
 
+## Presentation
+
+TODO: LINK TO YOUTUBE VIDEO
 
 ## Play
 

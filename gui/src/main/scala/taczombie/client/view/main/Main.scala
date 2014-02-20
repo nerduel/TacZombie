@@ -3,7 +3,6 @@ package taczombie.client.view.main
 import taczombie.client.view.tui.Tui
 import com.google.inject.AbstractModule
 import com.google.inject.Guice
-import taczombie.client.view.tui.Tui
 import taczombie.client.view.gui.Gui
 
 class UiModule(ui: Array[String]) extends AbstractModule {

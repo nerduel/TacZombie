@@ -14,8 +14,11 @@ import taczombie.model.MoveRight
 import taczombie.model.NextToken
 import taczombie.model.RespawnToken
 
+/**
+ * Tests the game as if it was controlled by the Controller
+ */
 class GameSpec extends Specification {
-
+  sequential
   
   "A game on the gametest Level" should {
       val testGame = GameFactory.newGame(random = false, 
@@ -30,7 +33,7 @@ class GameSpec extends Specification {
         counter += 1
         updatedGame = updatedGame.executeCommand(MoveUp)
       }
-      updatedGame.gameState must be_==(GameState.Win)  
+      updatedGame.gameState must be_==(GameState.Win) 		
     }    
     
     "dont reduce moves remaining when walking against a wall" in {
@@ -147,8 +150,9 @@ class GameSpec extends Specification {
     val updatedGame4 = updatedGame3.executeCommand(NextPlayer)
     														   .executeCommand(NextPlayer)
     														   .executeCommand(NextToken)
-    "no more tokens to move with" in {
+    "no more tokens to move with but still all lifes remaining" in {
       updatedGame4.players.currentPlayer.isInstanceOf[Human] must be_==(true)
+      updatedGame4.players.currentPlayer.lifes must be_==(defaults.defaultHumanLifes)
       updatedGame4.gameState must be_==(GameState.NeedTokenSwitch)
     }
     
@@ -175,7 +179,6 @@ class GameSpec extends Specification {
       (updatedGame6.players.currentPlayer.currentToken(updatedGame6.gameField).dead 
       must be_==(false))
       updatedGame6.players.currentPlayer.lifes must be_==(defaults.defaultHumanLifes-2)
-      
     }
     
     "lose the game" in {
@@ -296,5 +299,47 @@ class GameSpec extends Specification {
   	  currentPlayer.currentToken(tmpGame1.gameField).dead must be_==(false)
   	  
   	}
-  }  
+  }
+  
+    "A game on the gametest where zombies blocks the upper 3 fields" should {
+    val testGame = GameFactory.newGame(random = false, 
+      		file = TestObjects.testfile_gametest.getFile(), humans = 5, zombies = 4)
+      		
+      		
+    val updatedGame1 = testGame.executeCommand(MoveUp)
+    													 .executeCommand(NextToken)
+    													 .executeCommand(MoveUp)    													 
+    													 .executeCommand(MoveUp)
+    													 .executeCommand(NextToken)
+    													 .executeCommand(MoveUp)
+    													 .executeCommand(MoveUp)
+    													 .executeCommand(MoveUp)
+    													 .executeCommand(NextPlayer)
+    													 .executeCommand(MoveUp)
+    													 .executeCommand(NextToken)
+    													 .executeCommand(MoveDown)
+    													 .executeCommand(NextToken)
+    													 .executeCommand(MoveDown)
+    													 .executeCommand(MoveDown)
+    													 .executeCommand(NextPlayer)
+    "with all fields occupied and one dead token" in {
+      val updatedGame2 = updatedGame1.executeCommand(NextToken)
+      															 .executeCommand(MoveUp)
+          													 .executeCommand(MoveUp)
+          													 .executeCommand(MoveUp)
+          													 .executeCommand(MoveUp)
+          													 .executeCommand(NextPlayer)
+          													 .executeCommand(NextPlayer)
+      val currentToken = updatedGame2.players.currentPlayer.currentToken(updatedGame2.gameField)
+      currentToken.dead must be_==(true)
+      
+      "trying to respawn" should {
+        "fail" in {
+          val updatedGame3 = updatedGame2.executeCommand(RespawnToken)
+          (updatedGame3.players.currentPlayer.deadTokenCount(updatedGame3.gameField)
+           must be_==(updatedGame2.players.currentPlayer.deadTokenCount(updatedGame2.gameField)))
+        }
+      }
+    }												 
+  }
 }

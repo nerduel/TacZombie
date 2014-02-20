@@ -10,13 +10,14 @@ import scala.concurrent.Lock
 object GameFactory {
   var counter : Int = 1
   
-  val lock : Lock = new Lock()
+  val generateIdLock : Lock = new Lock()
+  val readFileLock : Lock = new Lock()
   
   def generateId : Int = {
-    lock.acquire
+    generateIdLock.acquire
   	counter = counter + 1
   	val newId = counter
-    lock.release
+    generateIdLock.release
     newId
   }
   
@@ -24,7 +25,7 @@ object GameFactory {
     
   def newGame(random : Boolean = false, file : String = defaultFile.toString(), 
       humans: Int = defaults.defaultHumans, zombies: Int= defaults.defaultZombies) : Game = {
-    
+       
     val (gameField, playerMap) = {
       if(random == false)
         	createGameFieldAndPlayerMap(humans, zombies, file)
@@ -47,13 +48,14 @@ object GameFactory {
         	    level = array.toArray[String], name = array.hashCode().toString)
       }
     } 
+        
     if(gameField == null || playerMap == null) 
       return null
     else     
     	new Game(generateId, gameField, playerMap, GameState.InGame)
   }
     
-  def createGameFieldAndPlayerMap(
+  private def createGameFieldAndPlayerMap(
       							humanTokenCount : Int, zombieTokenCount : Int,
                     file : String = null,
                     level : Array[String] = null,
@@ -61,12 +63,15 @@ object GameFactory {
         
         : (GameField, Players)  = {
     
+    readFileLock.acquire
     val (mapStringArray, gameName) = {
-      if(file != null)
+      if(file != null) {
         (Source.fromFile(file).getLines.toArray, file.split("/").last)
+      }
       else
         (level, name)
     }
+    readFileLock.release
     
     if((mapStringArray.foldLeft(Set[Int]()){(set, line) => 
       	set + line.length

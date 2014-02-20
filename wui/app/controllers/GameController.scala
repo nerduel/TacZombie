@@ -98,7 +98,7 @@ object GameController {
       case "newGame" =>
         //lastGeneratedGame = GameFactory.newGame(random = true)
         lastGeneratedGame = GameFactory.newGame(random = false, 
-        file = getClass().getResource("/TestLevel_gametest").getFile(), humans = 3, zombies = 3)
+        file = getClass().getResource("/TestLevel_gametest").getFile(), humans = 5, zombies = 4)
         
         myGame = lastGeneratedGame
         myGame.toJson(All)

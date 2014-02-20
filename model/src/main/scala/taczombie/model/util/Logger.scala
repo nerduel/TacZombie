@@ -5,7 +5,7 @@ import scala.collection.mutable.ListBuffer
 trait Logger {
   object logger {
     
-    private var printlog : Boolean = false
+    private var printOnGet : Boolean = false
     
     private val data : ListBuffer[String] = ListBuffer[String]()
   	
@@ -13,20 +13,22 @@ trait Logger {
     
   	def +=(s : String, print : Boolean = false) = {
   	  data += s
-  	  if(print || printlog) println(s)
+  	  if(print) println(s)
   	}
   	
-  	def init(s : String, print : Boolean = false) =  { 
+  	def init(s : String, print : Boolean = false, printOnGet : Boolean = false) =  { 
   	  clear
-  	  printlog = print
+  	  this.printOnGet = printOnGet
   	  +=(s, print)
   	}
   		
-  	def get : List[String] = data.toList
+  	def get : List[String] = {
+  	  if(printOnGet) print
+  	  data.toList
+  	}
   	
   	def merge(l : Logger) = {
-  	  data.++=(l.logger.get)
-  	  if(printlog) print 
+  	  data.++=(l.logger.get) 
   	  l
   	}
   	

@@ -107,13 +107,21 @@ class GameField(val id : String,
    * Respawn a dead token on a random empty spot
    */
   def respawn(tokenId : Int) : GameField = {
+    
+    
+    
     val updatedGameFieldCells = ListBuffer[GameFieldCell]()
         
     val respawnToken = findOnePlayerTokenById(tokenId)
 
     val updatedSourceCell = gameFieldCells.apply(respawnToken.coords)
     																			.remove(respawnToken)
- 
+    																			
+	  val randomSpawnCoords = getRandomSpawnCoords(respawnToken)
+	  
+	  if(randomSpawnCoords == null)
+	    return this
+	    
     val updatedRespawnToken = respawnToken.updated(
                                 newCoords = getRandomSpawnCoords(respawnToken), 
                                 newPowerupTime = defaults.defaultSpawnPowerupTime, 

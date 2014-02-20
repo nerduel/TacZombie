@@ -18,6 +18,7 @@ class LoggerSpec extends Specification {
       val game = GameFactory.newGame(random = false, 
           file = TestObjects.testfile_correct.getFile())
       game.logger.init("We run "+this, false, true)
+      game.logger += ("We still run "+this, true)
       game.logger.get.toList.size must be_>(0)
     }
   }     	

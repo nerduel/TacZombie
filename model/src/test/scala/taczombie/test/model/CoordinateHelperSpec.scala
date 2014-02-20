@@ -15,7 +15,6 @@ class CoordinateHelperSpec extends Specification {
   
   val -- = (a:Int,b:Int) => a - b
   val ++ = (a:Int,b:Int) => a + b
-  val nn = (a:Int,b:Int) => a
   
   private def upperLeftFor5StepsInBothDimensions(coord : (Int,Int))
   	(y : Int, fn1 : (Int,Int) => Int)

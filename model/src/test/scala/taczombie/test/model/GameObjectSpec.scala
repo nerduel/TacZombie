@@ -45,6 +45,16 @@ class GameObjectSpec extends Specification {
     }    
   }
   
+  "HumanToken visited by a dead ZombieToken" should {
+    val resultTuple = livingHumanToken.isVisitedBy(deadZombieToken)
+    "HumanToken must be alive" in {
+      resultTuple._1.asInstanceOf[HumanToken].dead must be_==(false)
+    }
+    "ZombieToken must be dead" in {
+      resultTuple._2.asInstanceOf[ZombieToken].dead must be_==(true)
+    }    
+  }  
+  
   "HumanToken with powerup visited by a ZombieToken" should {
     val resultTuple = poweredUpHumanToken.isVisitedBy(livingZombieToken)
     "HumanToken must be alive" in {

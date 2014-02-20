@@ -1,6 +1,7 @@
 package taczombie.model
 
 import taczombie.model.util.Logger
+import scala.collection.mutable.ListBuffer
 
 trait Player extends Logger {
 	val name : String
@@ -11,7 +12,7 @@ trait Player extends Logger {
 	  if(playerTokenIds.nonEmpty) 
 	    playerTokenIds.head 
 	  else {
-	    logger += ("This player doesn't have any tokens?!", true)
+	    logger += ("This player doesn't have any tokens?!")
 	    0
 	  }
 	}
@@ -27,6 +28,12 @@ trait Player extends Logger {
 	  gameField.findPlayerTokensById(playerTokenIds)
 	  				 .filter(token => token.dead)
 	}
+  
+  def deadTokenIds(gameField : GameField) : List[Int] = {
+	  gameField.findPlayerTokensById(playerTokenIds).foldLeft(ListBuffer[Int]())({
+	    (list, token) => if(token.dead) list+=token.id else list
+	  }).toList
+	}  
   
   def deadTokenCount(gameField : GameField) : Int = {
 	  deadTokens(gameField).size

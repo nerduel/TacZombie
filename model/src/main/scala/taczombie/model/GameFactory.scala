@@ -5,12 +5,19 @@ import scala.collection.immutable.HashSet
 import scala.io.Source
 import scala.collection.mutable.HashMap
 import taczombie.model.util.LevelCreator
+import scala.concurrent.Lock
 
 object GameFactory {
   var counter : Int = 1
+  
+  val lock : Lock = new Lock()
+  
   def generateId : Int = {
-    counter = counter + 1
-    counter
+    lock.acquire
+  	counter = counter + 1
+  	val newId = counter
+    lock.release
+    newId
   }
   
   val defaultFile = getClass().getResource("/TestLevel_correct")

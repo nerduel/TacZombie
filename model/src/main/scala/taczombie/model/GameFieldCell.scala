@@ -20,18 +20,14 @@ class GameFieldCell(val coords : (Int, Int),
   }   
   
   def containsLivingZombieToken() : Boolean = {
-    gameObjects.filter(gameObject =>
-      gameObject match {
-        case zombieToken : ZombieToken => !zombieToken.dead
-        case _ => false
+    gameObjects.collect({
+      case zombieToken : ZombieToken if !zombieToken.dead => zombieToken
       }).nonEmpty
   }
   
   def containsLivingHumanToken() : Boolean = {
-    gameObjects.filter(gameObject =>
-      gameObject match {
-        case humanToken : HumanToken => !humanToken.dead
-        case _ => false
+    gameObjects.collect({
+        case humanToken : HumanToken if !humanToken.dead => humanToken
       }).nonEmpty
   }  
   
@@ -62,7 +58,7 @@ class GameFieldCell(val coords : (Int, Int),
    */
   def moveHere (visitorPlayerToken : PlayerToken) 
   		: GameFieldCell = {
-    logger.init(visitorPlayerToken + " arriving at " + this.coords, true)
+    logger.init(visitorPlayerToken + " arriving at " + this.coords, false)
     var updatedVisitorPlayerToken : PlayerToken = visitorPlayerToken.updated(coords)
     
     val updatedHostObjects = scala.collection.mutable.HashSet[GameObject]()
@@ -77,7 +73,6 @@ class GameFieldCell(val coords : (Int, Int),
           else
             restHostObjects += pt
         case c : Collectable => collectableHostObjects += c
-        case _ => restHostObjects(_)
     	}
     }
     
@@ -113,9 +108,7 @@ class GameFieldCell(val coords : (Int, Int),
 	        
 	      case (visitedObject, updatedVisitorPlayerTokenResult : PlayerToken) =>
 	        updatedVisitor = updatedVisitorPlayerTokenResult
-	        updatedVisitedObjects += visitedObject  
-              
-    		case _ => logger += ("Unexpected match")
+	        updatedVisitedObjects += visitedObject
       }
     }
     return (updatedVisitor, updatedVisitedObjects.toSet)

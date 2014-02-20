@@ -17,7 +17,7 @@ lazy val model = Project(
 lazy val wui = Project(id = "wui",
 	base = file("wui")) settings (ScctPlugin.instrumentSettings: _*) dependsOn(model)
 
-lazy val gui = Project(id = "TacZombieClient",
+lazy val gui = Project(id = "gui",
 	base = file("gui"),
 	dependencies = Seq(model)).settings(assemblySettings: _*).
 	settings (ScctPlugin.instrumentSettings: _*).

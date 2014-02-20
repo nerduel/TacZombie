@@ -2,14 +2,15 @@ package taczombie.client.util
 
 object RegexHelper {
 
-  def checkAddress(input: String): Boolean = {
-    val ipPatternNumber = """^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}""".r
+  def checkPort(input: String): Boolean = {
+    val portPatternNumber = """^([0-9]{1,4}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5])$""".r
 
-    if (input == "localhost" || ipPatternNumber.findFirstIn(input) != None) {
+    if (portPatternNumber.findFirstIn(input) != None) {
       return true
     } else {
       return false
     }
   }
 
+  
 }

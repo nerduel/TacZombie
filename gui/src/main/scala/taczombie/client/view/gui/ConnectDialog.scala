@@ -16,9 +16,16 @@ class ConnectDialog extends Dialog {
         handleEvent(this)
     }
   }
-  preferredSize = new Dimension(200, 120)
+  val port = new TextField {
+    listenTo(keys)
+    reactions += {
+      case KeyPressed(_, Key.Enter, _, _) =>
+        handleEvent(this)
+    }
+  }
+  preferredSize = new Dimension(200, 150)
 
-  title = "Server IP Address"
+  title = "Server Address"
   modal = true
 
   contents = new BorderPanel {
@@ -27,6 +34,8 @@ class ConnectDialog extends Dialog {
 
       contents += new Label("IP:")
       contents += ip
+      contents += new Label("Port:")
+      contents += port
     }, BorderPanel.Position.North)
 
     add(new FlowPanel(FlowPanel.Alignment.Center)(
@@ -38,11 +47,11 @@ class ConnectDialog extends Dialog {
   open()
 
   def handleEvent(elem: Component) {
-    if (RegexHelper.checkAddress(ip.text)) {
-      address = Some(Address(ip.text))
+    if (RegexHelper.checkPort(port.text)) {
+      address = Some(Address(ip.text, port.text))
       close()
     } else {
-      Dialog.showMessage(elem, "Invalid IP Adress!", "Login Error", Dialog.Message.Error)
+      Dialog.showMessage(elem, "Invalid Adress!", "Login Error", Dialog.Message.Error)
     }
   }
 

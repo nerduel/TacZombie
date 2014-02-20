@@ -3,9 +3,9 @@ package taczombie.client.view.gui
 import scala.swing.Component
 import scala.swing.Dialog
 
-class ConnectError(gui: Gui) extends Component {
+class ConnectError(gui: Gui, msg: String) extends Component {
 
-  Dialog.showMessage(this, "Connection was refused!", "ConnectionTimeout", Dialog.Message.Error)
+  Dialog.showMessage(this, msg, "Connection Failed", Dialog.Message.Error)
   gui.controller.close
   gui.closeOperation
 }

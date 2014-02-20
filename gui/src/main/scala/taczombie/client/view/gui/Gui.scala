@@ -18,8 +18,9 @@ class Gui extends swing.Frame with Observer with IView {
   model.add(this)
   var controller: ViewController = new ViewController(model, this, address.toString)
 
-  if (!controller.connect) {
-    contents = new ConnectError(this)
+  val ret = controller.connect
+  if (!ret.isEmpty) {
+    contents = new ConnectError(this, ret)
   }
 
   override def closeOperation() {

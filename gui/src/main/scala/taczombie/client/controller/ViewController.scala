@@ -9,11 +9,14 @@ import taczombie.client.model.ViewModel
 import spray.json.pimpString
 import java.util.concurrent.ExecutionException
 import taczombie.client.view.main.IView
+import java.util.concurrent.TimeUnit
+import java.util.concurrent.TimeoutException
 
-class ViewController(model: ViewModel, view: IView, address: String, port: String = "9000") {
+class ViewController(model: ViewModel, view: IView, address: String) {
   private var connected = false
   val wsFactory = WebSocketClientFactory(1)
-  private val wsUri = new java.net.URI("ws://" + address + ":" + port + "/broadcast")
+  private val wsUri = new java.net.URI("ws://" + address + "/broadcast")
+  println(wsUri.toString())
 
   private val wsClient = wsFactory.newClient(wsUri)({
     case Connecting =>
@@ -44,22 +47,29 @@ class ViewController(model: ViewModel, view: IView, address: String, port: Strin
   def nextPlayer = send("nextPlayer")
   def restartGame = send("restartGame")
 
-  def connect: Boolean = {
+  def connect: String = {
+    var ret = ""
     try {
-      val ws = wsClient.connect.get
+      val ws = wsClient.connect.get(5, TimeUnit.SECONDS)
     } catch {
       case ex: ExecutionException =>
-        println("Connection refused: " + address + ":" + port)
-        return false
+        ret="Connection refused: " + address
+      case ex: TimeoutException =>
+        ret ="Connection timeout: " + address
+      case ex: Throwable => 
+        ret = "Connection errir: " + address
     }
 
+    if(!ret.isEmpty())
+      return ret
+    
     while (!connected) {
       Thread.sleep(200)
     }
 
     send("getGameData")
 
-    (true)
+    ret
   }
   def disconnect {
     connected = false

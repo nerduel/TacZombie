@@ -1,7 +1,7 @@
 package taczombie.client.util
 
-case class Address(ip: String) {
+case class Address(ip: String, port: String) {
   override def toString: String = {
-    return ip
+    (ip + ":" + port)
   }
 }

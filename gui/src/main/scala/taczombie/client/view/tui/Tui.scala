@@ -2,13 +2,13 @@ package taczombie.client.view.tui
 
 import java.util.concurrent.Callable
 import java.util.concurrent.FutureTask
+
 import taczombie.client.controller.ViewController
 import taczombie.client.model.ViewModel
+import taczombie.client.util.Address
 import taczombie.client.util.Observer
 import taczombie.client.util.RegexHelper
 import taczombie.client.view.main.IView
-import taczombie.client.util.Address
-import taczombie.client.util.RegexHelper
 
 class Tui extends Observer with IView {
   val address: Address = askForAddress
@@ -64,13 +64,15 @@ class Tui extends Observer with IView {
   }
 
   def open {
-    println("\nWelcome to TacZombie!")
-    update
   }
 
   def runBlocking: Boolean = {
-    if (controller.connect) {
+    val ret = controller.connect
+    if (ret.isEmpty()) {
       pool.submit(future)
+
+      println("\nWelcome to TacZombie!")
+      update
 
       // Wait for future to return.
       val ret = future.get
@@ -78,6 +80,7 @@ class Tui extends Observer with IView {
       pool.shutdownNow()
       return restart
     } else {
+      println(ret)
       controller.close
       return restart
     }
@@ -174,17 +177,24 @@ class Tui extends Observer with IView {
   }
 
   def askForAddress(): Address = {
-    println("Please provide IP Address:")
-    var input = readLine
+    var foundAddress = false
+    var address = new Address("localhost", "9000")
 
-    while (!RegexHelper.checkAddress(input)) {
-      if (input == "q") {
-        sys.exit(0)
+    while (!foundAddress) {
+      println("Please provide IP Address and Port (IP:PORT):")
+      val input = readLine.split(":").toList
+
+      input match {
+        case "q" :: Nil => sys.exit(0)
+        case ip :: port :: Nil =>
+          if (RegexHelper.checkPort(port))
+            return new Address(ip, port)
+        case _ => println(input)
       }
-      println("Invalid IP Address! Please try again!")
-      input = readLine
+
+      println("Invalid Address! Please try again!")
     }
 
-    return new Address(input)
+    return address
   }
 }

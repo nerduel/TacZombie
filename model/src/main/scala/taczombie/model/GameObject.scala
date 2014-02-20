@@ -28,7 +28,7 @@ case class Coin(id : Int,
   def isVisitedBy (versatileGameObject : VersatileGameObject) = 
     versatileGameObject match {
       case humanToken : HumanToken => {
-        logger.+=("human collected coin", true)
+        logger.+=(humanToken + "collected coin")
         (null, humanToken.updated(newCoins = 
           humanToken.coins + 1, newScore = humanToken.score+1))  
       }
@@ -114,12 +114,12 @@ case class HumanToken(id : Int,
       case zombieToken : ZombieToken => {
         (zombieToken.dead, this.powerupTime) match {
           case (false, 0) => {
-            logger.+=(this + " death by " + zombieToken, true)
+            logger.+=(this + " death by " + zombieToken)
           	(this.updated(newScore = 
           	  this.score-defaults.defaultKillScore, newDead = true), zombieToken)
           }
           case (false, _) => {
-            logger.+=(this + " killed " + zombieToken, true)
+            logger.+=(this + " killed " + zombieToken)
             (this.updated(newScore = 
                this.score+defaults.defaultKillScore),zombieToken.updated(newDead = true))
           }

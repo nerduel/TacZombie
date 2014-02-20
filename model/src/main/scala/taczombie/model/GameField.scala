@@ -44,7 +44,7 @@ class GameField(val id : String,
   def findOnePlayerTokenById(id : Int) : PlayerToken = {
     val playerTokens = findPlayerTokensById(List[Int](id))
     if(playerTokens.isEmpty) {
-      logger += ("Did not find any playerTokens!" ,true)
+      logger += ("Did not find any playerTokens!")
       null // FIXME exception
     } else playerTokens.head
   }
@@ -150,16 +150,22 @@ class GameField(val id : String,
    */
   private def getRandomSpawnCoords(playerToken : PlayerToken) : (Int, Int) = {
     var randomCoords : (Int, Int) = null    
-    val rand = new Random(System.currentTimeMillis());
     
-    do 
-      randomCoords = (rand.nextInt(levelHeight), rand.nextInt(levelWidth))
-    while (
-    		  gameFieldCells.apply(randomCoords).containsWall
-       || gameFieldCells.apply(randomCoords).containsLivingZombieToken
-       || gameFieldCells.apply(randomCoords).containsLivingHumanToken
-    )
-    randomCoords
+    val candidateCells = gameFieldCells.values.filter({cell =>
+      !cell.containsWall && 
+      !cell.containsLivingZombieToken &&
+      !cell.containsLivingHumanToken
+    })
+    
+    if(candidateCells.size > 0) {
+      val random = new Random(System.currentTimeMillis())
+      randomCoords = 
+        candidateCells.toList.apply(random.nextInt(candidateCells.size)).coords
+    }
+      
+    if(randomCoords == null)
+  	  logger += ("There is no random spot to respawn!")
+  	randomCoords
   }
    
   /**
@@ -181,5 +187,4 @@ class GameField(val id : String,
   	    					updatedCells,
   	    					this)
   }
-
 }

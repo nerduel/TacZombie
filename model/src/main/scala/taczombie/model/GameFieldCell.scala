@@ -58,7 +58,7 @@ class GameFieldCell(val coords : (Int, Int),
    */
   def moveHere (visitorPlayerToken : PlayerToken) 
   		: GameFieldCell = {
-    logger.init(visitorPlayerToken + " arriving at " + this.coords, true)
+    logger.init(visitorPlayerToken + " arriving at " + this.coords, false)
     var updatedVisitorPlayerToken : PlayerToken = visitorPlayerToken.updated(coords)
     
     val updatedHostObjects = scala.collection.mutable.HashSet[GameObject]()

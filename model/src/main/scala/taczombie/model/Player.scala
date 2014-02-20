@@ -12,7 +12,7 @@ trait Player extends Logger {
 	  if(playerTokenIds.nonEmpty) 
 	    playerTokenIds.head 
 	  else {
-	    logger += ("This player doesn't have any tokens?!", true)
+	    logger += ("This player doesn't have any tokens?!")
 	    0
 	  }
 	}

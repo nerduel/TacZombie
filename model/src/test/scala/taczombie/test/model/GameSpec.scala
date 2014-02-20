@@ -25,8 +25,11 @@ class GameSpec extends Specification {
       testGame.players.currentPlayer.isInstanceOf[Human] must be_==(true)
       
       var updatedGame = testGame
-      while(updatedGame.gameState == GameState.InGame)
+      var counter = 0
+      while(counter < 100 && updatedGame.gameState == GameState.InGame) {
+        counter += 1
         updatedGame = updatedGame.executeCommand(MoveUp)
+      }
       updatedGame.gameState must be_==(GameState.Win)  
     }    
     
@@ -47,9 +50,13 @@ class GameSpec extends Specification {
   }
     
   "A game on the gametest Level, kill the zombies and switch players" should {
+    
     var updatedGame = testGame
-    while(updatedGame.players.nextPlayer.deadTokenCount(updatedGame.gameField) == 0)
+    var counter = 0
+    while(counter < 100 && (updatedGame.players.nextPlayer.deadTokenCount(updatedGame.gameField) == 0)) {
+      counter += 1
       updatedGame = updatedGame.executeCommand(MoveUp)
+    }
     val updatedGame1 = updatedGame
     val updatedGame2 = updatedGame.executeCommand(NextPlayer)
     
@@ -159,7 +166,10 @@ class GameSpec extends Specification {
       must be_==(defaults.defaultSpawnFreeze))
       updatedGame6.players.currentPlayer.movesRemaining must be_==(defaults.defaultHumanMoves)
       updatedGame6.gameState must be_==(GameState.NeedTokenSwitch)
+      (updatedGame6.players.currentPlayer.currentToken(updatedGame6.gameField).dead 
+      must be_==(false))
       updatedGame6.players.currentPlayer.lifes must be_==(defaults.defaultHumanLifes-2)
+      
     }
     
     "lose the game" in {
@@ -172,12 +182,15 @@ class GameSpec extends Specification {
       
       toBeLostGame.players.currentPlayer.deadTokenCount(toBeLostGame.gameField) must be_==(0)
         															 
-      															 
-      while(toBeLostGame.gameState != GameState.GameOver) {
+      var counter = 0	
+      while(counter < 100 && (toBeLostGame.gameState != GameState.GameOver) ) {
+        counter += 1
         var currentPlayer = toBeLostGame.players.currentPlayer
       	var currentToken = currentPlayer.currentToken(toBeLostGame.gameField)
       	
-      	while(!currentToken.dead && currentToken.frozenTime == 0) {
+      	var counter2 = 0
+      	while(counter2 < 100 && (!currentToken.dead && currentToken.frozenTime == 0)) {
+      	  counter2 += 1
       	  toBeLostGame = toBeLostGame.executeCommand(MoveUp)
       	  currentPlayer = toBeLostGame.players.currentPlayer
       	  currentToken = currentPlayer.currentToken(toBeLostGame.gameField)
@@ -206,7 +219,7 @@ class GameSpec extends Specification {
       var counter = 0
       var updatedGame = testGame
 
-      while(updatedGame.players.currentPlayer.movesRemaining > 0) {
+      while(counter <= (defaults.defaultHumanMoves+1) && updatedGame.players.currentPlayer.movesRemaining > 0) {
         if(counter % 2 == 0)
         	updatedGame = updatedGame.executeCommand(MoveUp)
 				else
@@ -269,11 +282,11 @@ class GameSpec extends Specification {
   														  .executeCommand(RespawnToken)
   
   	"respawn selects the new living token even if he wasn't selected previously" in {
-  	  
   	  var tmpGame1 = updatedGame1
   	  val currentPlayer = tmpGame1.players.currentPlayer
   	  currentPlayer.deadTokenCount(tmpGame1.gameField) must be_==(2)
   	  currentPlayer.currentToken(tmpGame1.gameField).dead must be_==(false)
+  	  
   	}
   }  
 }

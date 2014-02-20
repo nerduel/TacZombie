@@ -189,7 +189,7 @@ class Game(val id : Int,
   	    val curTokenFrozentime = updatedPlayer.currentToken(updatedGameField)
   	    																			.frozenTime
         if(curTokenFrozentime > 0) {
-          logger += ("frozen token: " + updatedPlayer.currentToken(updatedGameField), true) 
+          logger += ("frozen token: " + updatedPlayer.currentToken(updatedGameField)) 
       	  updatedGameState = GameState.NeedTokenSwitch
       	  updatedGameMessage = GameMessages.frozenToken(curTokenFrozentime)
       	  logger += updatedGameMessage
@@ -259,7 +259,7 @@ class Game(val id : Int,
   	          	  			 .filter(token => !token.dead)
   	    if(otherAliveTokens.isEmpty) {
   	      updatedGameMessage = GameMessages.noOthersAlive
-  	      logger += (updatedGameMessage, true)
+  	      logger += (updatedGameMessage)
   	      if(currentToken.dead)
   	      	updatedGameState = GameState.NeedTokenSwitch
 	      	else

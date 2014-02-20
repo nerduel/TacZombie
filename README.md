@@ -31,9 +31,9 @@ The commands are:
 - \<r> to reset current map
 - Gui & Tui: \<q> to quit
 
-## Presentation
+## Screencast
 
-TODO: LINK TO YOUTUBE VIDEO
+http://www.youtube.com/watch?v=raC0odiJOic&feature=youtu.be
 
 ## Play
 

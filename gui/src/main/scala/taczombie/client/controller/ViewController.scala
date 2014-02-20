@@ -16,7 +16,6 @@ class ViewController(model: ViewModel, view: IView, address: String) {
   private var connected = false
   val wsFactory = WebSocketClientFactory(1)
   private val wsUri = new java.net.URI("ws://" + address + "/broadcast")
-  println(wsUri.toString())
 
   private val wsClient = wsFactory.newClient(wsUri)({
     case Connecting =>

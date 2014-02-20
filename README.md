@@ -110,3 +110,5 @@ java -jar TacZombieClient.jar
 java -jar TacZombieClient.jar tui
 ```
 
+Have fun & enjoy playing!
+

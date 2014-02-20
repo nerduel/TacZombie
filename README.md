@@ -12,6 +12,26 @@ The task was to:
 - use eclipse as ide
 - live the spirit of scala
 
+There are currently two players in this game which have multiple tokens:
+- Human
+- Zombie
+
+The game is round based.
+
+The aim of the game ist:
+- as Human: collect all coins and survive
+- as Zombie: chase and kill the Human
+
+The commands are:
+- <←>, <↑>, <→>, <↓> to navigate on the map
+- <g> to switch between tokens
+- <f> to respawn a dead token (Human: only if lifes left)
+- <n> to switch to next player
+- <m> to create a new map
+- <r> to reset current map
+- Gui & Tui: <q> to quit
+
+
 ## Play
 
 ### Run WebServer (incl. Wui)
@@ -89,4 +109,6 @@ java -jar TacZombieClient.jar
 ``` bash
 java -jar TacZombieClient.jar tui
 ```
+
+Have fun & enjoy playing!
 

@@ -69,7 +69,7 @@ class LevelCreatorSpec extends Specification {
   private def test5GeneratedMaps(height : Int, width : Int) : List[Boolean] = {
     val levelCreator = new LevelCreator()
     for {
-      i <- 0 until 10
+      i <- 0 until 20
       level = levelCreator.create(height, width, 1)
       walkable = level.getWalkableFields(height, width)
       reachedFields = level.getAllVisitableFields(walkable(0))
@@ -77,23 +77,9 @@ class LevelCreatorSpec extends Specification {
   }.toList
 
   "Every walkable field of a generated level (21x21)" should {
-    "be visitable from each walkable position (5 times)" in {
+    "be visitable from each walkable position (20 times)" in {
 
-      test5GeneratedMaps(21, 21).filter(_ == true).size must be_==(10)
-    }
-  }
-
-  "Every walkable field of a generated level (21x19)" should {
-    "be visitable from each walkable position (5 times)" in {
-
-      test5GeneratedMaps(21, 19).filter(_ == true).size must be_==(10)
-    }
-  }
-
-  "Every walkable field of a generated level (25x23)" should {
-    "be visitable from each walkable position (5 times)" in {
-
-      test5GeneratedMaps(25, 23).filter(_ == true).size must be_==(10)
+      test5GeneratedMaps(21, 21).filter(_ == true).size must be_==(20)
     }
   }
 }

@@ -155,21 +155,13 @@ class GameField(val id : String,
     do 
       randomCoords = (rand.nextInt(levelHeight), rand.nextInt(levelWidth))
     while (
-      !isValid(randomCoords) || gameFieldCells.apply(randomCoords).containsWall
+    		  gameFieldCells.apply(randomCoords).containsWall
        || gameFieldCells.apply(randomCoords).containsLivingZombieToken
        || gameFieldCells.apply(randomCoords).containsLivingHumanToken
     )
     randomCoords
   }
-  
-  private def isValid(pos : (Int, Int)) = {
-      if ((pos._1 < levelHeight) && (pos._1 >= 0) &&
-          (pos._2 < levelWidth) && (pos._2 >= 0))
-          true
-      else
-          false
-  }
-  
+   
   /**
    * Update a GameField's Cells
    */

@@ -25,6 +25,7 @@ class Gui extends swing.Frame with Observer with IView {
 
   override def closeOperation() {
     controller.disconnect
+    continue = false
     dispose
     sys.exit(0)
   }

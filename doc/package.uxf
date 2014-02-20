@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <diagram program="umlet" version="12.2">
-  <zoom_level>6</zoom_level>
+  <zoom_level>8</zoom_level>
   <element>
     <type>com.umlet.element.custom.PackageAggregationHierarchy</type>
     <coordinates>
-      <x>306</x>
+      <x>408</x>
       <y>0</y>
-      <w>210</w>
-      <h>312</h>
+      <w>280</w>
+      <h>416</h>
     </coordinates>
-    <panel_attributes>Taczombie
-	Model
+    <panel_attributes>taczombie
+	model
 		taczombie.model
 			util
-	TacZombieClient
+	gui
 		taczombie.client
 			controller
 			model
@@ -22,7 +22,7 @@
 				main
 				gui
 				tui
-	WebServer
+	wui
 		controllers
 		views
 </panel_attributes>
@@ -31,12 +31,12 @@
   <element>
     <type>com.umlet.element.Package</type>
     <coordinates>
-      <x>204</x>
-      <y>204</y>
-      <w>90</w>
-      <h>42</h>
+      <x>272</x>
+      <y>256</y>
+      <w>120</w>
+      <h>56</h>
     </coordinates>
-    <panel_attributes>Model
+    <panel_attributes>model
 --
 taczombie.model</panel_attributes>
     <additional_attributes/>
@@ -44,12 +44,12 @@ taczombie.model</panel_attributes>
   <element>
     <type>com.umlet.element.Package</type>
     <coordinates>
-      <x>48</x>
-      <y>48</y>
-      <w>72</w>
-      <h>42</h>
+      <x>64</x>
+      <y>32</y>
+      <w>96</w>
+      <h>56</h>
     </coordinates>
-    <panel_attributes>WebServer
+    <panel_attributes>wui
 --
 controllers</panel_attributes>
     <additional_attributes/>
@@ -57,12 +57,12 @@ controllers</panel_attributes>
   <element>
     <type>com.umlet.element.Package</type>
     <coordinates>
-      <x>108</x>
-      <y>324</y>
-      <w>114</w>
-      <h>48</h>
+      <x>144</x>
+      <y>432</y>
+      <w>152</w>
+      <h>64</h>
     </coordinates>
-    <panel_attributes>TacZombieClient
+    <panel_attributes>gui
 --
 taczombie.client.model</panel_attributes>
     <additional_attributes/>
@@ -70,12 +70,12 @@ taczombie.client.model</panel_attributes>
   <element>
     <type>com.umlet.element.Package</type>
     <coordinates>
-      <x>42</x>
-      <y>204</y>
-      <w>96</w>
-      <h>42</h>
+      <x>56</x>
+      <y>256</y>
+      <w>128</w>
+      <h>56</h>
     </coordinates>
-    <panel_attributes>Model
+    <panel_attributes>model
 --
 taczombie.model.util</panel_attributes>
     <additional_attributes/>
@@ -83,24 +83,24 @@ taczombie.model.util</panel_attributes>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>24</x>
-      <y>228</y>
-      <w>96</w>
-      <h>132</h>
+      <x>32</x>
+      <y>288</y>
+      <w>128</w>
+      <h>192</h>
     </coordinates>
     <panel_attributes>lt=.&lt;
 &lt;&lt;import&gt;&gt;</panel_attributes>
-    <additional_attributes>48;18;48;90;84;120</additional_attributes>
+    <additional_attributes>48;24;48;144;80;176;112;176</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Package</type>
     <coordinates>
-      <x>132</x>
-      <y>696</y>
-      <w>132</w>
-      <h>48</h>
+      <x>144</x>
+      <y>928</y>
+      <w>176</w>
+      <h>64</h>
     </coordinates>
-    <panel_attributes>TacZombieClient
+    <panel_attributes>gui
 --
 taczombie.client.controller</panel_attributes>
     <additional_attributes/>
@@ -109,23 +109,23 @@ taczombie.client.controller</panel_attributes>
     <type>com.umlet.element.Relation</type>
     <coordinates>
       <x>0</x>
-      <y>336</y>
-      <w>144</w>
-      <h>414</h>
+      <y>456</y>
+      <w>160</w>
+      <h>544</h>
     </coordinates>
-    <panel_attributes>lt=.&lt;
+    <panel_attributes>lt=&gt;.
 &lt;&lt;import&gt;&gt;</panel_attributes>
-    <additional_attributes>132;402;84;402;48;360;48;78;108;18</additional_attributes>
+    <additional_attributes>144;528;112;528;64;472;64;72;112;24;144;24</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Package</type>
     <coordinates>
-      <x>336</x>
-      <y>468</y>
-      <w>126</w>
-      <h>48</h>
+      <x>448</x>
+      <y>624</y>
+      <w>168</w>
+      <h>64</h>
     </coordinates>
-    <panel_attributes>TacZombieClient
+    <panel_attributes>gui
 --
 taczombie.client.view.main</panel_attributes>
     <additional_attributes/>
@@ -133,24 +133,24 @@ taczombie.client.view.main</panel_attributes>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>138</x>
-      <y>642</y>
-      <w>86</w>
-      <h>66</h>
+      <x>184</x>
+      <y>856</y>
+      <w>118</w>
+      <h>104</h>
     </coordinates>
     <panel_attributes>lt=&lt;.
 &lt;&lt;import&gt;&gt;</panel_attributes>
-    <additional_attributes>48;54;48;18</additional_attributes>
+    <additional_attributes>64;88;64;24</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Package</type>
     <coordinates>
-      <x>348</x>
-      <y>324</y>
-      <w>114</w>
-      <h>48</h>
+      <x>464</x>
+      <y>432</y>
+      <w>152</w>
+      <h>64</h>
     </coordinates>
-    <panel_attributes>TacZombieClient
+    <panel_attributes>gui
 --
 taczombie.client.util</panel_attributes>
     <additional_attributes/>
@@ -158,60 +158,60 @@ taczombie.client.util</panel_attributes>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>18</x>
-      <y>72</y>
-      <w>86</w>
-      <h>144</h>
+      <x>24</x>
+      <y>64</y>
+      <w>118</w>
+      <h>208</h>
     </coordinates>
     <panel_attributes>lt=.&lt;
 &lt;&lt;import&gt;&gt;</panel_attributes>
-    <additional_attributes>48;132;48;18</additional_attributes>
+    <additional_attributes>64;192;64;24</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>78</x>
-      <y>72</y>
-      <w>156</w>
-      <h>144</h>
+      <x>104</x>
+      <y>64</y>
+      <w>208</w>
+      <h>208</h>
     </coordinates>
     <panel_attributes>lt=.&lt;
 &lt;&lt;import&gt;&gt;</panel_attributes>
-    <additional_attributes>144;132;144;108;60;108;18;66;18;18</additional_attributes>
+    <additional_attributes>192;192;192;168;72;168;24;120;24;24</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>348</x>
-      <y>354</y>
-      <w>86</w>
-      <h>126</h>
+      <x>464</x>
+      <y>472</y>
+      <w>118</w>
+      <h>184</h>
     </coordinates>
-    <panel_attributes>lt=&lt;.
+    <panel_attributes>lt=&gt;.
 &lt;&lt;import&gt;&gt;</panel_attributes>
-    <additional_attributes>48;114;48;18</additional_attributes>
+    <additional_attributes>64;168;64;24</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>204</x>
-      <y>324</y>
-      <w>156</w>
-      <h>42</h>
+      <x>272</x>
+      <y>432</y>
+      <w>208</w>
+      <h>56</h>
     </coordinates>
-    <panel_attributes>lt=&lt;.
+    <panel_attributes>lt=&gt;.
 &lt;&lt;import&gt;&gt;</panel_attributes>
-    <additional_attributes>18;30;144;30</additional_attributes>
+    <additional_attributes>24;40;192;40</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Package</type>
     <coordinates>
-      <x>108</x>
-      <y>468</y>
-      <w>114</w>
-      <h>48</h>
+      <x>144</x>
+      <y>624</y>
+      <w>152</w>
+      <h>64</h>
     </coordinates>
-    <panel_attributes>TacZombieClient
+    <panel_attributes>gui
 --
 taczombie.client.view.gui</panel_attributes>
     <additional_attributes/>
@@ -219,12 +219,12 @@ taczombie.client.view.gui</panel_attributes>
   <element>
     <type>com.umlet.element.Package</type>
     <coordinates>
-      <x>108</x>
-      <y>612</y>
-      <w>126</w>
-      <h>48</h>
+      <x>144</x>
+      <y>816</y>
+      <w>168</w>
+      <h>64</h>
     </coordinates>
-    <panel_attributes>TacZombieClient
+    <panel_attributes>gui
 --
 taczombie.client.view.tui</panel_attributes>
     <additional_attributes/>
@@ -232,96 +232,96 @@ taczombie.client.view.tui</panel_attributes>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>30</x>
-      <y>498</y>
-      <w>138</w>
-      <h>228</h>
+      <x>40</x>
+      <y>664</y>
+      <w>184</w>
+      <h>304</h>
     </coordinates>
     <panel_attributes>lt=.&lt;
 &lt;&lt;import&gt;&gt;</panel_attributes>
-    <additional_attributes>102;216;78;216;48;180;48;90;126;18</additional_attributes>
+    <additional_attributes>104;288;104;288;64;240;64;120;168;24</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>204</x>
-      <y>462</y>
-      <w>144</w>
-      <h>42</h>
+      <x>272</x>
+      <y>616</y>
+      <w>192</w>
+      <h>56</h>
     </coordinates>
     <panel_attributes>lt=&lt;.
 &lt;&lt;import&gt;&gt;</panel_attributes>
-    <additional_attributes>18;30;132;30</additional_attributes>
+    <additional_attributes>24;40;176;40</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>216</x>
-      <y>498</y>
-      <w>150</w>
-      <h>150</h>
+      <x>288</x>
+      <y>664</y>
+      <w>200</w>
+      <h>200</h>
     </coordinates>
     <panel_attributes>lt=&lt;.
 &lt;&lt;import&gt;&gt;</panel_attributes>
-    <additional_attributes>18;138;48;138;138;42;138;18</additional_attributes>
+    <additional_attributes>24;184;64;184;184;56;184;24</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>240</x>
-      <y>498</y>
-      <w>168</w>
-      <h>222</h>
+      <x>296</x>
+      <y>664</y>
+      <w>272</w>
+      <h>312</h>
     </coordinates>
     <panel_attributes>lt=&lt;.
 &lt;&lt;import&gt;&gt;</panel_attributes>
-    <additional_attributes>156;18;156;48;18;186;18;210</additional_attributes>
+    <additional_attributes>256;24;256;64;48;296;24;296</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>198</x>
-      <y>414</y>
-      <w>156</w>
-      <h>78</h>
+      <x>248</x>
+      <y>560</y>
+      <w>224</w>
+      <h>96</h>
     </coordinates>
     <panel_attributes>lt=&lt;.
 &lt;&lt;import&gt;&gt;</panel_attributes>
-    <additional_attributes>144;54;144;30;54;30;18;66</additional_attributes>
+    <additional_attributes>208;64;208;40;64;40;40;64;40;80</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>198</x>
-      <y>492</y>
-      <w>150</w>
-      <h>144</h>
+      <x>264</x>
+      <y>656</y>
+      <w>200</w>
+      <h>192</h>
     </coordinates>
     <panel_attributes>lt=&lt;.
 &lt;&lt;import&gt;&gt;</panel_attributes>
-    <additional_attributes>138;18;84;18;18;84;18;132</additional_attributes>
+    <additional_attributes>184;24;112;24;24;112;24;176</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>102</x>
-      <y>228</y>
-      <w>150</w>
-      <h>60</h>
+      <x>136</x>
+      <y>288</y>
+      <w>200</w>
+      <h>80</h>
     </coordinates>
     <panel_attributes>lt=.&gt;
 &lt;&lt;import&gt;&gt;</panel_attributes>
-    <additional_attributes>138;18;108;48;18;48;18;18</additional_attributes>
+    <additional_attributes>184;24;144;64;24;64;24;24</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Package</type>
     <coordinates>
-      <x>168</x>
-      <y>48</y>
-      <w>72</w>
-      <h>42</h>
+      <x>224</x>
+      <y>32</y>
+      <w>96</w>
+      <h>56</h>
     </coordinates>
-    <panel_attributes>WebServer
+    <panel_attributes>wui
 --
 views</panel_attributes>
     <additional_attributes/>
@@ -329,70 +329,70 @@ views</panel_attributes>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>120</x>
-      <y>198</y>
-      <w>96</w>
-      <h>42</h>
+      <x>160</x>
+      <y>248</y>
+      <w>128</w>
+      <h>56</h>
     </coordinates>
     <panel_attributes>lt=&lt;.
 &lt;&lt;import&gt;&gt;</panel_attributes>
-    <additional_attributes>84;30;18;30</additional_attributes>
+    <additional_attributes>112;40;24;40</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>132</x>
-      <y>354</y>
-      <w>86</w>
-      <h>126</h>
+      <x>176</x>
+      <y>472</y>
+      <w>118</w>
+      <h>184</h>
     </coordinates>
-    <panel_attributes>lt=&lt;.
+    <panel_attributes>lt=&gt;.
 &lt;&lt;import&gt;&gt;</panel_attributes>
-    <additional_attributes>48;114;48;18</additional_attributes>
+    <additional_attributes>64;168;64;24</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>30</x>
-      <y>354</y>
-      <w>126</w>
-      <h>270</h>
+      <x>40</x>
+      <y>472</y>
+      <w>168</w>
+      <h>360</h>
     </coordinates>
-    <panel_attributes>lt=&lt;.
+    <panel_attributes>lt=&gt;.
 &lt;&lt;import&gt;&gt;</panel_attributes>
-    <additional_attributes>114;258;48;192;48;108;114;42;114;18</additional_attributes>
+    <additional_attributes>152;344;64;256;64;144;152;56;152;24</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>186</x>
-      <y>354</y>
-      <w>186</w>
-      <h>138</h>
+      <x>248</x>
+      <y>472</y>
+      <w>248</w>
+      <h>184</h>
     </coordinates>
-    <panel_attributes>lt=&lt;.
+    <panel_attributes>lt=&gt;.
 &lt;&lt;import&gt;&gt;</panel_attributes>
-    <additional_attributes>18;126;18;96;72;36;162;36;174;24;174;18</additional_attributes>
+    <additional_attributes>24;168;24;128;88;64;232;64;232;24</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>216</x>
-      <y>354</y>
-      <w>302</w>
-      <h>312</h>
+      <x>288</x>
+      <y>448</y>
+      <w>422</w>
+      <h>440</h>
     </coordinates>
-    <panel_attributes>lt=&lt;.
+    <panel_attributes>lt=&gt;.
 &lt;&lt;import&gt;&gt;</panel_attributes>
-    <additional_attributes>18;300;192;300;264;228;264;60;228;18</additional_attributes>
+    <additional_attributes>24;424;256;424;368;304;368;40;352;24;328;24</additional_attributes>
   </element>
   <element>
     <id>UMLClass</id>
     <coordinates>
       <x>24</x>
-      <y>318</y>
-      <w>492</w>
-      <h>450</h>
+      <y>424</y>
+      <w>664</w>
+      <h>600</h>
     </coordinates>
     <panel_attributes>bg=red</panel_attributes>
     <additional_attributes/>
@@ -400,10 +400,10 @@ views</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>18</x>
-      <y>24</y>
-      <w>282</w>
-      <h>102</h>
+      <x>24</x>
+      <y>0</y>
+      <w>376</w>
+      <h>136</h>
     </coordinates>
     <panel_attributes>bg=green</panel_attributes>
     <additional_attributes/>
@@ -411,10 +411,10 @@ views</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>18</x>
-      <y>162</y>
-      <w>282</w>
-      <h>132</h>
+      <x>24</x>
+      <y>200</y>
+      <w>376</w>
+      <h>176</h>
     </coordinates>
     <panel_attributes>bg=yellow</panel_attributes>
     <additional_attributes/>
